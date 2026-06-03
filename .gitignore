@@ -1,0 +1,29 @@
+# Virtual environment
+venv/
+
+# Data files (too large for Git)
+data/raw/
+data/processed/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+logs/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Model outputs (regeneratable)
+outputs/
+
+# Secrets / API keys (never commit these)
+.env
+*.env
