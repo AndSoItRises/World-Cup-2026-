@@ -7,17 +7,31 @@
 ### How We Work
 - Explain decisions before writing code — options considered, why we chose this path
 - One phase at a time — don't jump ahead
-- Jake runs everything himself in PowerShell (venv activated) with Cursor as editor
-- PowerShell runs one command at a time: `python -m src.<module>.<script>`
-- Never paste Python into PowerShell
-- Full file replacements when edits get complex (Ctrl+A in Cursor)
+- Claude Code executes scripts autonomously — no need to prompt Jake to run them
+- Venv must be activated before any python execution: `venv\Scripts\activate`
+- Scripts run as: `python -m src.<module>.<script>`
+- Full file replacements when edits get complex — rewrite the whole file cleanly
+
+### Session Start Ritual (Claude Code — Every Session)
+1. Read the current context doc fully
+2. Run `git status` — confirm clean state or note what's uncommitted
+3. State which phase we're in and what the next action is
+4. Confirm understanding before touching any file
 
 ### Non-Negotiables
 - No leakage — all features must use only information available before the match
-- Every new feature must be validated: does it improve CV log loss? If not, cut it
+- Every new feature must be validated: retrain → compare CV log loss to prior version baseline. If no improvement, cut it.
 - Keep prior version models intact — new versions save to new file paths (xgb_v2, lgbm_v2, etc.)
+- Any new data source requires a team name audit before merging — mismatches have caused silent NaN bugs twice
 - Git checkpoint commits during active work; version tag only when version is fully closed
-- Context doc is the source of truth — every decision gets logged with options considered and rationale
+- Context doc decision log gets written immediately after a decision is made — not at end of session
+
+### End-of-Phase Checklist (Before Moving to Next Phase)
+- [ ] All outputs saved to correct paths
+- [ ] No unexpected NaNs in new features (check the feature summary printout)
+- [ ] Prior version model files untouched
+- [ ] Decision log updated in context doc
+- [ ] Checkpoint commit pushed
 
 ### Git Protocol
 - Active work: `git add . && git commit -m "descriptive message"`
@@ -34,7 +48,7 @@ Python 3.10+, pandas, numpy, scikit-learn, xgboost, lightgbm, scipy, statsmodels
 ### Tooling
 - Editor: Cursor
 - Terminal: PowerShell (venv activated)
-- Agent: Claude Code (as of V2 checkpoint)
+- Agent: Claude Code (autonomous execution)
 - Version tracking: Git + context doc per version
 
 ---
