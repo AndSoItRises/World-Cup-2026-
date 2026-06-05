@@ -1,6 +1,10 @@
 """
 Phase 6 Step 2: WC2026 Match Predictions
-Builds feature vectors for all 104 fixtures and runs them through the ensemble.
+Builds feature vectors for all 104 fixtures and runs them through the V2 ensemble.
+
+V2: uses xgb_v2 / lgbm_v2, the full 41-feature set (ELO + quality-weighted
+rolling form), and the 80-rank sentinel for WC-qualified teams. Lookup logic
+mirrors monte_carlo.py so the two stay consistent.
 
 Outputs:
   data/processed/wc2026_predictions.csv
@@ -31,18 +35,24 @@ RANKINGS_PATH  = DATA_RAW  / "current_fifa_rankings.csv"
 TRAIN_PATH     = DATA_PROC / "train_features.csv"
 TEST_PATH      = DATA_PROC / "test_features.csv"
 DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params.json"
-XGB_MODEL_PATH = MODELS_DIR / "xgb_v1.json"
-LGB_MODEL_PATH = MODELS_DIR / "lgbm_v1.txt"
+XGB_MODEL_PATH = MODELS_DIR / "xgb_v2.json"
+LGB_MODEL_PATH = MODELS_DIR / "lgbm_v2.txt"
 
 WEIGHTS = {"xgb": 0.275, "lgb": 0.275, "dc": 0.45}
 MAX_GOALS = 10
+RANK_SENTINEL = 80   # WC-qualified teams: conservative floor (see decision log)
 
 FEATURE_COLS = [
     "home_fifa_rank", "away_fifa_rank", "fifa_rank_diff",
+    "home_elo", "away_elo", "elo_diff",
     "home_win_rate_5", "home_avg_goals_5", "home_avg_gd_5",
     "home_win_rate_10", "home_avg_goals_10", "home_avg_gd_10",
     "away_win_rate_5", "away_avg_goals_5", "away_avg_gd_5",
     "away_win_rate_10", "away_avg_goals_10", "away_avg_gd_10",
+    "home_weighted_win_rate_5",  "home_weighted_avg_goals_5",  "home_weighted_avg_gd_5",
+    "home_weighted_win_rate_10", "home_weighted_avg_goals_10", "home_weighted_avg_gd_10",
+    "away_weighted_win_rate_5",  "away_weighted_avg_goals_5",  "away_weighted_avg_gd_5",
+    "away_weighted_win_rate_10", "away_weighted_avg_goals_10", "away_weighted_avg_gd_10",
     "h2h_home_wins", "h2h_draws", "h2h_away_wins",
     "h2h_total", "h2h_home_win_rate",
     "home_days_rest", "away_days_rest",
@@ -82,26 +92,18 @@ def load_all():
 
 # ── Build FIFA rank lookup ────────────────────────────────────────────────────
 def build_rank_lookup(rankings: pd.DataFrame) -> dict:
-    """Map team_name → rank. Fallback: 150 for unknown teams."""
-    lookup = {}
-    for _, row in rankings.iterrows():
-        lookup[row["team_name"]] = int(row["rank"])
-    return lookup
+    """Map team_name → rank."""
+    return {row["team_name"]: int(row["rank"]) for _, row in rankings.iterrows()}
 
 
-# ── Build rolling form lookup ─────────────────────────────────────────────────
+# ── Build rolling form lookup (V2: includes ELO + quality-weighted form) ──────
 def build_form_lookup(all_data: pd.DataFrame) -> dict:
     """
-    For each team, find their most recent match in the historical data
-    and extract their rolling form features (win rates, avg goals, avg GD).
-
-    Returns dict: team_name → {win_rate_5, avg_goals_5, avg_gd_5,
-                                win_rate_10, avg_goals_10, avg_gd_10,
-                                days_rest}
+    For each team, find their most recent match in history and extract rolling
+    form, quality-weighted form, and ELO. Mirrors monte_carlo.build_form_lookup.
     """
     form = {}
 
-    # Check as home team
     for team, grp in all_data.groupby("home_team"):
         latest = grp.sort_values("date").iloc[-1]
         form[team] = {
@@ -111,11 +113,17 @@ def build_form_lookup(all_data: pd.DataFrame) -> dict:
             "win_rate_10":  latest["home_win_rate_10"],
             "avg_goals_10": latest["home_avg_goals_10"],
             "avg_gd_10":    latest["home_avg_gd_10"],
+            "weighted_win_rate_5":   latest["home_weighted_win_rate_5"],
+            "weighted_avg_goals_5":  latest["home_weighted_avg_goals_5"],
+            "weighted_avg_gd_5":     latest["home_weighted_avg_gd_5"],
+            "weighted_win_rate_10":  latest["home_weighted_win_rate_10"],
+            "weighted_avg_goals_10": latest["home_weighted_avg_goals_10"],
+            "weighted_avg_gd_10":    latest["home_weighted_avg_gd_10"],
+            "elo":          latest["home_elo"],
             "days_rest":    latest["home_days_rest"],
             "date":         latest["date"],
         }
 
-    # Check as away team — update if more recent
     for team, grp in all_data.groupby("away_team"):
         latest = grp.sort_values("date").iloc[-1]
         if team not in form or latest["date"] > form[team]["date"]:
@@ -126,6 +134,13 @@ def build_form_lookup(all_data: pd.DataFrame) -> dict:
                 "win_rate_10":  latest["away_win_rate_10"],
                 "avg_goals_10": latest["away_avg_goals_10"],
                 "avg_gd_10":    latest["away_avg_gd_10"],
+                "weighted_win_rate_5":   latest["away_weighted_win_rate_5"],
+                "weighted_avg_goals_5":  latest["away_weighted_avg_goals_5"],
+                "weighted_avg_gd_5":     latest["away_weighted_avg_gd_5"],
+                "weighted_win_rate_10":  latest["away_weighted_win_rate_10"],
+                "weighted_avg_goals_10": latest["away_weighted_avg_goals_10"],
+                "weighted_avg_gd_10":    latest["away_weighted_avg_gd_10"],
+                "elo":          latest["away_elo"],
                 "days_rest":    latest["away_days_rest"],
                 "date":         latest["date"],
             }
@@ -135,30 +150,23 @@ def build_form_lookup(all_data: pd.DataFrame) -> dict:
 
 # ── H2H lookup ────────────────────────────────────────────────────────────────
 def build_h2h_lookup(all_data: pd.DataFrame) -> dict:
-    """
-    For each (home, away) pair, find their most recent H2H stats from history.
-    Returns dict keyed by (home_team, away_team).
-    """
+    """For each (home, away) pair, find most recent H2H stats from history."""
     h2h = {}
-
-    # Pull from home team perspective rows
     for _, row in all_data.iterrows():
         key = (row["home_team"], row["away_team"])
-        entry = {
-            "h2h_home_wins":     row["h2h_home_wins"],
-            "h2h_draws":         row["h2h_draws"],
-            "h2h_away_wins":     row["h2h_away_wins"],
-            "h2h_total":         row["h2h_total"],
-            "h2h_home_win_rate": row["h2h_home_win_rate"],
-            "date":              row["date"],
-        }
         if key not in h2h or row["date"] > h2h[key]["date"]:
-            h2h[key] = entry
-
+            h2h[key] = {
+                "h2h_home_wins":     row["h2h_home_wins"],
+                "h2h_draws":         row["h2h_draws"],
+                "h2h_away_wins":     row["h2h_away_wins"],
+                "h2h_total":         row["h2h_total"],
+                "h2h_home_win_rate": row["h2h_home_win_rate"],
+                "date":              row["date"],
+            }
     return h2h
 
 
-# ── Default form (median of training data) ────────────────────────────────────
+# ── Default form (median of historical data, V2 fields) ───────────────────────
 def compute_defaults(all_data: pd.DataFrame) -> dict:
     return {
         "win_rate_5":   all_data["home_win_rate_5"].median(),
@@ -167,6 +175,13 @@ def compute_defaults(all_data: pd.DataFrame) -> dict:
         "win_rate_10":  all_data["home_win_rate_10"].median(),
         "avg_goals_10": all_data["home_avg_goals_10"].median(),
         "avg_gd_10":    all_data["home_avg_gd_10"].median(),
+        "weighted_win_rate_5":   all_data["home_weighted_win_rate_5"].median(),
+        "weighted_avg_goals_5":  all_data["home_weighted_avg_goals_5"].median(),
+        "weighted_avg_gd_5":     all_data["home_weighted_avg_gd_5"].median(),
+        "weighted_win_rate_10":  all_data["home_weighted_win_rate_10"].median(),
+        "weighted_avg_goals_10": all_data["home_weighted_avg_goals_10"].median(),
+        "weighted_avg_gd_10":    all_data["home_weighted_avg_gd_10"].median(),
+        "elo":          1500.0,
         "days_rest":    all_data["home_days_rest"].median(),
     }
 
@@ -176,13 +191,16 @@ def build_feature_row(row, rank_lookup, form_lookup, h2h_lookup, defaults):
     home = normalize(row["home_team"])
     away = normalize(row["away_team"])
 
-    # FIFA ranks
-    home_rank = rank_lookup.get(home, 150)
-    away_rank = rank_lookup.get(away, 150)
+    # FIFA ranks (80 sentinel for WC-qualified teams missing from lookup)
+    home_rank = rank_lookup.get(home, RANK_SENTINEL)
+    away_rank = rank_lookup.get(away, RANK_SENTINEL)
 
-    # Form
+    # Form (V2: includes ELO + weighted)
     hf = form_lookup.get(home, defaults)
     af = form_lookup.get(away, defaults)
+
+    home_elo = hf.get("elo", 1500.0)
+    away_elo = af.get("elo", 1500.0)
 
     # H2H — try both orderings (fixtures may flip home/away vs history)
     key     = (home, away)
@@ -210,16 +228,13 @@ def build_feature_row(row, rank_lookup, form_lookup, h2h_lookup, defaults):
     stage = str(row.get("stage", "Group Stage"))
     is_knockout = 0 if stage == "Group Stage" else 1
 
-    # tournament_tier: WC = 1
-    tournament_tier = 1
-
-    # neutral: all WC2026 matches are neutral
-    neutral = 1
-
     return {
         "home_fifa_rank":    home_rank,
         "away_fifa_rank":    away_rank,
         "fifa_rank_diff":    home_rank - away_rank,
+        "home_elo":          home_elo,
+        "away_elo":          away_elo,
+        "elo_diff":          home_elo - away_elo,
         "home_win_rate_5":   hf["win_rate_5"],
         "home_avg_goals_5":  hf["avg_goals_5"],
         "home_avg_gd_5":     hf["avg_gd_5"],
@@ -232,6 +247,18 @@ def build_feature_row(row, rank_lookup, form_lookup, h2h_lookup, defaults):
         "away_win_rate_10":  af["win_rate_10"],
         "away_avg_goals_10": af["avg_goals_10"],
         "away_avg_gd_10":    af["avg_gd_10"],
+        "home_weighted_win_rate_5":   hf["weighted_win_rate_5"],
+        "home_weighted_avg_goals_5":  hf["weighted_avg_goals_5"],
+        "home_weighted_avg_gd_5":     hf["weighted_avg_gd_5"],
+        "home_weighted_win_rate_10":  hf["weighted_win_rate_10"],
+        "home_weighted_avg_goals_10": hf["weighted_avg_goals_10"],
+        "home_weighted_avg_gd_10":    hf["weighted_avg_gd_10"],
+        "away_weighted_win_rate_5":   af["weighted_win_rate_5"],
+        "away_weighted_avg_goals_5":  af["weighted_avg_goals_5"],
+        "away_weighted_avg_gd_5":     af["weighted_avg_gd_5"],
+        "away_weighted_win_rate_10":  af["weighted_win_rate_10"],
+        "away_weighted_avg_goals_10": af["weighted_avg_goals_10"],
+        "away_weighted_avg_gd_10":    af["weighted_avg_gd_10"],
         "h2h_home_wins":     h2h_home_wins,
         "h2h_draws":         h2h_draws,
         "h2h_away_wins":     h2h_away_wins,
@@ -241,8 +268,8 @@ def build_feature_row(row, rank_lookup, form_lookup, h2h_lookup, defaults):
         "away_days_rest":    af["days_rest"],
         "is_knockout":       is_knockout,
         "altitude_m":        row.get("altitude_m", 0) or 0,
-        "tournament_tier":   tournament_tier,
-        "neutral":           neutral,
+        "tournament_tier":   1,   # WC = tier 1
+        "neutral":           1,   # all WC2026 matches neutral
     }
 
 
@@ -291,14 +318,14 @@ def load_models():
     with open(DC_PARAMS_PATH) as f:
         dc_params = json.load(f)
 
-    print("  XGB, LGBM, Dixon-Coles loaded")
+    print("  XGB v2, LGBM v2, Dixon-Coles loaded")
     return xgb_model, lgb_booster, dc_params
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 def main():
     print("═" * 60)
-    print("  Phase 6 Step 2: WC2026 Predictions")
+    print("  Phase 6 Step 2: WC2026 Predictions (V2)")
     print("═" * 60)
 
     fixtures, rankings, all_data = load_all()
@@ -403,7 +430,7 @@ def main():
         print(f"  {k:<12}: {v} ({v/len(out)*100:.1f}%)")
 
     print(f"\nPhase 6 Step 2 complete ✅")
-    print(f"Next: Phase 7 — Bracket Simulator (Monte Carlo)")
+    print(f"Next: python -m src.models.monte_carlo")
 
 
 if __name__ == "__main__":

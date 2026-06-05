@@ -72,8 +72,8 @@ data/
     train_features.csv                    (9,281 rows, 51 cols) ✅ V2
     test_features.csv                     (2,257 rows, 51 cols) ✅ V2
     elo_ratings.csv                       (49,296 rows) ✅ V2 NEW
-    wc2026_predictions.csv                ✅ V1 (needs V2 rerun)
-    tournament_probs.csv                  ✅ V1 (needs V2 rerun)
+    wc2026_predictions.csv                ✅ V2 (draw-fix models)
+    tournament_probs.csv                  ✅ V2 (draw-fix models)
     cleaning_metadata.json                ✅
 models/
   xgb_v1.json                            ✅ V1 (preserved)
@@ -95,7 +95,7 @@ src/
     dixon_coles.py                       ✅
     train_lgbm.py                        ✅ V2 updated
     ensemble.py                          ✅ V2 updated
-    predict_wc2026.py                    ✅ (needs V2 update)
+    predict_wc2026.py                    ✅ V2 updated
     monte_carlo.py                       ✅ V2 updated
   visualization/
     charts.py                            ✅
@@ -219,26 +219,31 @@ src/
 
 Draw fix trades ~0.9pp accuracy and +0.0085 log loss for a 27× draw-recall gain.
 Per-model after fix: XGB acc 0.581 / ll 0.869 / draw-rec 0.246; LGBM acc 0.579 / ll 0.868 / draw-rec 0.259; DC acc 0.583 / ll 0.882 / draw-rec 0.101.
-NOTE: tournament probabilities below are pre-draw-fix — predict_wc2026 + monte_carlo need a V2 rerun.
 
-### V2 Tournament Win Probabilities (10k simulations)
-| Team | FIFA Rank | Win% | Final% |
+### V2 Tournament Win Probabilities (10k sims, draw-fix models)
+| Team | FIFA Rank | Win% (pre-fix) | Win% (draw-fix) |
 |---|---|---|---|
-| Spain | 2 | 16.1% | 24.9% |
-| Mexico | 15 | 9.1% | 16.2% |
-| Portugal | 5 | 6.9% | 12.2% |
-| England | 4 | 6.6% | 12.2% |
-| France | 1 | 6.5% | 12.1% |
-| Brazil | 6 | 6.2% | 11.5% |
-| Canada | 30 | 5.6% | 11.1% |
-| USA | 16 | 5.1% | 10.7% |
-| Argentina | 3 | 3.9% | 7.5% |
+| Spain | 2 | 16.1% | 15.4% |
+| Mexico | 15 | 9.1% | 10.1% |
+| Canada | 30 | 5.6% | 6.6% |
+| Portugal | 5 | 6.9% | 6.4% |
+| France | 1 | 6.5% | 6.2% |
+| Brazil | 6 | 6.2% | 6.1% |
+| England | 4 | 6.6% | 6.0% |
+| USA | 16 | 5.1% | 5.6% |
+| Iran | 80* | — | 3.4% |
+| Argentina | 3 | 3.9% | 3.2% |
+
+\*Iran uses the 80 rank-sentinel (unranked in our lookup). Win-prob sum = 1.0000 (valid).
+Draw fix moved the bracket only modestly, as expected: group stage simulates from pure DC
+Poisson (unaffected) and knockout renormalizes draws out, so the fix only nudges knockout matchups.
 
 ### Remaining Known Issues
-- Mexico 9.1% — still inflated, residual CONCACAF form bias. Phase 5 (tuning).
-- Argentina 3.9% — still low for defending champion. Phase 5 (tuning).
+- Mexico 10.1% — still inflated, residual CONCACAF form bias. Phase 5 (tuning). Draw fix nudged it *up*, confirming it's not a draw-calibration issue.
+- Argentina 3.2% — still low for defending champion. Phase 5 (tuning).
 - ~~Draw recall 0.6% — structural.~~ ✅ Fixed in Phase 4 (now 16.2%).
-- Tournament sim (predict_wc2026 + monte_carlo) not yet rerun on draw-fix models.
+- ~~Tournament sim not rerun on draw-fix models.~~ ✅ Rerun (predict_wc2026 + monte_carlo, both V2).
+- **DR Congo** falls back to default form in predict_wc2026 — fixture name not matched in training/ELO data. Needs a NAME_MAP entry (team-name audit). Low impact (playoff-contingent slot).
 
 ---
 
