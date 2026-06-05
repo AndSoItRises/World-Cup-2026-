@@ -37,16 +37,26 @@ META_PATH  = DATA_PROC / "cleaning_metadata.json"
 # ── Feature columns ───────────────────────────────────────────────────────────
 # These are the 24 engineered features. Excludes raw match info and target.
 FEATURE_COLS = [
+    # FIFA rankings
     "home_fifa_rank", "away_fifa_rank", "fifa_rank_diff",
+    # ELO (V2)
+    "home_elo", "away_elo", "elo_diff",
+    # Simple rolling form
     "home_win_rate_5", "home_avg_goals_5", "home_avg_gd_5",
     "home_win_rate_10", "home_avg_goals_10", "home_avg_gd_10",
     "away_win_rate_5", "away_avg_goals_5", "away_avg_gd_5",
     "away_win_rate_10", "away_avg_goals_10", "away_avg_gd_10",
+    # Quality-weighted rolling form (V2)
+    "home_weighted_win_rate_5",  "home_weighted_avg_goals_5",  "home_weighted_avg_gd_5",
+    "home_weighted_win_rate_10", "home_weighted_avg_goals_10", "home_weighted_avg_gd_10",
+    "away_weighted_win_rate_5",  "away_weighted_avg_goals_5",  "away_weighted_avg_gd_5",
+    "away_weighted_win_rate_10", "away_weighted_avg_goals_10", "away_weighted_avg_gd_10",
+    # H2H
     "h2h_home_wins", "h2h_draws", "h2h_away_wins",
     "h2h_total", "h2h_home_win_rate",
+    # Context
     "home_days_rest", "away_days_rest",
     "is_knockout", "altitude_m",
-    # Base features already in train.csv
     "tournament_tier", "neutral",
 ]
 
@@ -227,7 +237,7 @@ def print_feature_importance(model, top_n=15):
 
 # ── Save ──────────────────────────────────────────────────────────────────────
 def save_artifacts(model, importance, acc, ll, cv_acc, cv_ll, report):
-    model_path = MODELS_DIR / "xgb_v1.json"
+    model_path = MODELS_DIR / "xgb_v2.json"
     model.save_model(str(model_path))
     print(f"\n✅ Model saved: {model_path}")
 
@@ -245,7 +255,7 @@ def save_artifacts(model, importance, acc, ll, cv_acc, cv_ll, report):
         "feature_importance_gain": {k: round(v, 2) for k, v in list(importance.items())[:20]},
     }
 
-    report_path = MODELS_DIR / "training_report.json"
+    report_path = MODELS_DIR / "training_report_v2.json"
     with open(report_path, "w") as f:
         json.dump(training_report, f, indent=2)
     print(f"✅ Training report saved: {report_path}")

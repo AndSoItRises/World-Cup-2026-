@@ -41,8 +41,8 @@ RANKINGS_PATH  = DATA_RAW  / "current_fifa_rankings.csv"
 TRAIN_PATH     = DATA_PROC / "train_features.csv"
 TEST_PATH      = DATA_PROC / "test_features.csv"
 DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params.json"
-XGB_MODEL_PATH = MODELS_DIR / "xgb_v1.json"
-LGB_MODEL_PATH = MODELS_DIR / "lgbm_v1.txt"
+XGB_MODEL_PATH = MODELS_DIR / "xgb_v2.json"
+LGB_MODEL_PATH = MODELS_DIR / "lgbm_v2.txt"
 
 N_SIMULATIONS = 10_000
 WEIGHTS = {"xgb": 0.275, "lgb": 0.275, "dc": 0.45}
@@ -50,10 +50,15 @@ MAX_GOALS = 8  # cap for Poisson score simulation
 
 FEATURE_COLS = [
     "home_fifa_rank", "away_fifa_rank", "fifa_rank_diff",
+    "home_elo", "away_elo", "elo_diff",
     "home_win_rate_5", "home_avg_goals_5", "home_avg_gd_5",
     "home_win_rate_10", "home_avg_goals_10", "home_avg_gd_10",
     "away_win_rate_5", "away_avg_goals_5", "away_avg_gd_5",
     "away_win_rate_10", "away_avg_goals_10", "away_avg_gd_10",
+    "home_weighted_win_rate_5",  "home_weighted_avg_goals_5",  "home_weighted_avg_gd_5",
+    "home_weighted_win_rate_10", "home_weighted_avg_goals_10", "home_weighted_avg_gd_10",
+    "away_weighted_win_rate_5",  "away_weighted_avg_goals_5",  "away_weighted_avg_gd_5",
+    "away_weighted_win_rate_10", "away_weighted_avg_goals_10", "away_weighted_avg_gd_10",
     "h2h_home_wins", "h2h_draws", "h2h_away_wins",
     "h2h_total", "h2h_home_win_rate",
     "home_days_rest", "away_days_rest",
@@ -145,6 +150,13 @@ def build_form_lookup(all_data):
             "win_rate_10": latest["home_win_rate_10"],
             "avg_goals_10": latest["home_avg_goals_10"],
             "avg_gd_10": latest["home_avg_gd_10"],
+            "weighted_win_rate_5": latest["home_weighted_win_rate_5"],
+            "weighted_avg_goals_5": latest["home_weighted_avg_goals_5"],
+            "weighted_avg_gd_5": latest["home_weighted_avg_gd_5"],
+            "weighted_win_rate_10": latest["home_weighted_win_rate_10"],
+            "weighted_avg_goals_10": latest["home_weighted_avg_goals_10"],
+            "weighted_avg_gd_10": latest["home_weighted_avg_gd_10"],
+            "elo": latest["home_elo"],
             "days_rest": latest["home_days_rest"],
             "date": latest["date"],
         }
@@ -158,6 +170,13 @@ def build_form_lookup(all_data):
                 "win_rate_10": latest["away_win_rate_10"],
                 "avg_goals_10": latest["away_avg_goals_10"],
                 "avg_gd_10": latest["away_avg_gd_10"],
+                "weighted_win_rate_5": latest["away_weighted_win_rate_5"],
+                "weighted_avg_goals_5": latest["away_weighted_avg_goals_5"],
+                "weighted_avg_gd_5": latest["away_weighted_avg_gd_5"],
+                "weighted_win_rate_10": latest["away_weighted_win_rate_10"],
+                "weighted_avg_goals_10": latest["away_weighted_avg_goals_10"],
+                "weighted_avg_gd_10": latest["away_weighted_avg_gd_10"],
+                "elo": latest["away_elo"],
                 "days_rest": latest["away_days_rest"],
                 "date": latest["date"],
             }
@@ -188,6 +207,13 @@ def compute_defaults(all_data):
         "win_rate_10": all_data["home_win_rate_10"].median(),
         "avg_goals_10": all_data["home_avg_goals_10"].median(),
         "avg_gd_10": all_data["home_avg_gd_10"].median(),
+        "weighted_win_rate_5": all_data["home_weighted_win_rate_5"].median(),
+        "weighted_avg_goals_5": all_data["home_weighted_avg_goals_5"].median(),
+        "weighted_avg_gd_5": all_data["home_weighted_avg_gd_5"].median(),
+        "weighted_win_rate_10": all_data["home_weighted_win_rate_10"].median(),
+        "weighted_avg_goals_10": all_data["home_weighted_avg_goals_10"].median(),
+        "weighted_avg_gd_10": all_data["home_weighted_avg_gd_10"].median(),
+        "elo": 1500.0,
         "days_rest": all_data["home_days_rest"].median(),
     }
 
@@ -213,8 +239,8 @@ def get_matchup_prob(home, away, is_knockout,
     hf = form_lookup.get(home, defaults)
     af = form_lookup.get(away, defaults)
 
-    home_rank = rank_lookup.get(home, 150)
-    away_rank = rank_lookup.get(away, 150)
+    home_rank = rank_lookup.get(home, 80)
+    away_rank = rank_lookup.get(away, 80)
 
     key     = (home, away)
     key_rev = (away, home)
@@ -231,15 +257,30 @@ def get_matchup_prob(home, away, is_knockout,
         h2h_hw = h2h_d = h2h_aw = h2h_tot = 0
         h2h_hwr = 0.5
 
+    home_elo = hf.get("elo", 1500.0)
+    away_elo = af.get("elo", 1500.0)
     feat = {
         "home_fifa_rank": home_rank, "away_fifa_rank": away_rank,
         "fifa_rank_diff": home_rank - away_rank,
+        "home_elo": home_elo, "away_elo": away_elo, "elo_diff": home_elo - away_elo,
         "home_win_rate_5": hf["win_rate_5"], "home_avg_goals_5": hf["avg_goals_5"],
         "home_avg_gd_5": hf["avg_gd_5"], "home_win_rate_10": hf["win_rate_10"],
         "home_avg_goals_10": hf["avg_goals_10"], "home_avg_gd_10": hf["avg_gd_10"],
         "away_win_rate_5": af["win_rate_5"], "away_avg_goals_5": af["avg_goals_5"],
         "away_avg_gd_5": af["avg_gd_5"], "away_win_rate_10": af["win_rate_10"],
         "away_avg_goals_10": af["avg_goals_10"], "away_avg_gd_10": af["avg_gd_10"],
+        "home_weighted_win_rate_5": hf["weighted_win_rate_5"],
+        "home_weighted_avg_goals_5": hf["weighted_avg_goals_5"],
+        "home_weighted_avg_gd_5": hf["weighted_avg_gd_5"],
+        "home_weighted_win_rate_10": hf["weighted_win_rate_10"],
+        "home_weighted_avg_goals_10": hf["weighted_avg_goals_10"],
+        "home_weighted_avg_gd_10": hf["weighted_avg_gd_10"],
+        "away_weighted_win_rate_5": af["weighted_win_rate_5"],
+        "away_weighted_avg_goals_5": af["weighted_avg_goals_5"],
+        "away_weighted_avg_gd_5": af["weighted_avg_gd_5"],
+        "away_weighted_win_rate_10": af["weighted_win_rate_10"],
+        "away_weighted_avg_goals_10": af["weighted_avg_goals_10"],
+        "away_weighted_avg_gd_10": af["weighted_avg_gd_10"],
         "h2h_home_wins": h2h_hw, "h2h_draws": h2h_d, "h2h_away_wins": h2h_aw,
         "h2h_total": h2h_tot, "h2h_home_win_rate": h2h_hwr,
         "home_days_rest": hf["days_rest"], "away_days_rest": af["days_rest"],
@@ -360,7 +401,7 @@ def rank_group(records, rank_lookup):
         -records[t]["pts"],
         -records[t]["gd"],
         -records[t]["gf"],
-        rank_lookup.get(t, 150),
+        rank_lookup.get(t, 80),
     ))
     return teams
 
@@ -456,7 +497,7 @@ def simulate_tournament(group_fixtures, dc_params, prob_cache,
 
     # Sort third-place teams by pts DESC, gd DESC, gf DESC, rank ASC
     third_place_list.sort(key=lambda x: (
-        -x[2], -x[3], -x[4], rank_lookup.get(x[0], 150)
+        -x[2], -x[3], -x[4], rank_lookup.get(x[0], 80)
     ))
 
     third_assignments = assign_third_place_teams(third_place_list, rank_lookup)
@@ -597,7 +638,7 @@ def main():
         c = counts[team]
         rows.append({
             "team":           team,
-            "fifa_rank":      rank_lookup.get(team, 150),
+            "fifa_rank":      rank_lookup.get(team, 80),
             "p_group_adv":    round(c[2] / N_SIMULATIONS, 4),
             "p_r16":          round(c[3] / N_SIMULATIONS, 4),
             "p_quarterfinal": round(c[4] / N_SIMULATIONS, 4),

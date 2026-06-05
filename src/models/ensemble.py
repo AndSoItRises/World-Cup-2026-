@@ -33,8 +33,8 @@ MODELS_DIR = BASE / "models"
 TRAIN_PATH = DATA_PROC / "train_features.csv"
 TEST_PATH  = DATA_PROC / "test_features.csv"
 
-XGB_MODEL_PATH = MODELS_DIR / "xgb_v1.json"
-LGB_MODEL_PATH = MODELS_DIR / "lgbm_v1.txt"
+XGB_MODEL_PATH = MODELS_DIR / "xgb_v2.json"
+LGB_MODEL_PATH = MODELS_DIR / "lgbm_v2.txt"
 DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params.json"
 
 # ── Ensemble weights (must sum to 1.0) ────────────────────────────────────────
@@ -47,10 +47,15 @@ WEIGHTS = {
 # ── Feature columns (same as training) ────────────────────────────────────────
 FEATURE_COLS = [
     "home_fifa_rank", "away_fifa_rank", "fifa_rank_diff",
+    "home_elo", "away_elo", "elo_diff",
     "home_win_rate_5", "home_avg_goals_5", "home_avg_gd_5",
     "home_win_rate_10", "home_avg_goals_10", "home_avg_gd_10",
     "away_win_rate_5", "away_avg_goals_5", "away_avg_gd_5",
     "away_win_rate_10", "away_avg_goals_10", "away_avg_gd_10",
+    "home_weighted_win_rate_5",  "home_weighted_avg_goals_5",  "home_weighted_avg_gd_5",
+    "home_weighted_win_rate_10", "home_weighted_avg_goals_10", "home_weighted_avg_gd_10",
+    "away_weighted_win_rate_5",  "away_weighted_avg_goals_5",  "away_weighted_avg_gd_5",
+    "away_weighted_win_rate_10", "away_weighted_avg_goals_10", "away_weighted_avg_gd_10",
     "h2h_home_wins", "h2h_draws", "h2h_away_wins",
     "h2h_total", "h2h_home_win_rate",
     "home_days_rest", "away_days_rest",
@@ -207,7 +212,7 @@ def print_comparison(results: list[dict]):
 # ── Save outputs ──────────────────────────────────────────────────────────────
 def save_outputs(ensemble_proba: np.ndarray, results: list[dict]):
     # Save raw probabilities for Phase 6 Step 2
-    npy_path = MODELS_DIR / "ensemble_test_proba.npy"
+    npy_path = MODELS_DIR / "ensemble_test_proba_v2.npy"
     np.save(str(npy_path), ensemble_proba)
     print(f"\n✅ Ensemble probabilities saved: {npy_path}")
 
@@ -224,7 +229,7 @@ def save_outputs(ensemble_proba: np.ndarray, results: list[dict]):
             for r in results
         ]
     }
-    report_path = MODELS_DIR / "ensemble_report.json"
+    report_path = MODELS_DIR / "ensemble_report_v2.json"
     with open(report_path, "w") as f:
         json.dump(report_out, f, indent=2)
     print(f"✅ Ensemble report saved:        {report_path}")

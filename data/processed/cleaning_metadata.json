@@ -12,18 +12,33 @@
     "home_fifa_rank",
     "away_fifa_rank",
     "fifa_rank_diff",
+    "home_elo",
+    "away_elo",
+    "elo_diff",
     "home_win_rate_5",
     "home_avg_goals_5",
     "home_avg_gd_5",
     "home_win_rate_10",
     "home_avg_goals_10",
     "home_avg_gd_10",
+    "home_weighted_win_rate_5",
+    "home_weighted_avg_goals_5",
+    "home_weighted_avg_gd_5",
+    "home_weighted_win_rate_10",
+    "home_weighted_avg_goals_10",
+    "home_weighted_avg_gd_10",
     "away_win_rate_5",
     "away_avg_goals_5",
     "away_avg_gd_5",
     "away_win_rate_10",
     "away_avg_goals_10",
     "away_avg_gd_10",
+    "away_weighted_win_rate_5",
+    "away_weighted_avg_goals_5",
+    "away_weighted_avg_gd_5",
+    "away_weighted_win_rate_10",
+    "away_weighted_avg_goals_10",
+    "away_weighted_avg_gd_10",
     "h2h_home_wins",
     "h2h_draws",
     "h2h_away_wins",
@@ -36,10 +51,10 @@
   ],
   "train_features_shape": [
     9281,
-    36
+    51
   ],
   "test_features_shape": [
     2257,
-    36
+    51
   ]
 }

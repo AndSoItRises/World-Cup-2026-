@@ -3,8 +3,8 @@ Phase 5c: LightGBM Model Training
 Direct comparison against XGBoost using identical features and evaluation.
 
 Outputs:
-  models/lgbm_v1.txt           (trained model)
-  models/lgbm_report.json      (metrics, feature importance)
+  models/lgbm_v2.txt           (trained model)
+  models/lgbm_report_v2.json      (metrics, feature importance)
 
 Run with:
   python -m src.models.train_lgbm
@@ -28,13 +28,24 @@ TRAIN_PATH = DATA_PROC / "train_features.csv"
 TEST_PATH  = DATA_PROC / "test_features.csv"
 
 FEATURE_COLS = [
+    # FIFA rankings
     "home_fifa_rank", "away_fifa_rank", "fifa_rank_diff",
+    # ELO (V2)
+    "home_elo", "away_elo", "elo_diff",
+    # Simple rolling form
     "home_win_rate_5", "home_avg_goals_5", "home_avg_gd_5",
     "home_win_rate_10", "home_avg_goals_10", "home_avg_gd_10",
     "away_win_rate_5", "away_avg_goals_5", "away_avg_gd_5",
     "away_win_rate_10", "away_avg_goals_10", "away_avg_gd_10",
+    # Quality-weighted rolling form (V2)
+    "home_weighted_win_rate_5",  "home_weighted_avg_goals_5",  "home_weighted_avg_gd_5",
+    "home_weighted_win_rate_10", "home_weighted_avg_goals_10", "home_weighted_avg_gd_10",
+    "away_weighted_win_rate_5",  "away_weighted_avg_goals_5",  "away_weighted_avg_gd_5",
+    "away_weighted_win_rate_10", "away_weighted_avg_goals_10", "away_weighted_avg_gd_10",
+    # H2H
     "h2h_home_wins", "h2h_draws", "h2h_away_wins",
     "h2h_total", "h2h_home_win_rate",
+    # Context
     "home_days_rest", "away_days_rest",
     "is_knockout", "altitude_m",
     "tournament_tier", "neutral",
@@ -136,8 +147,8 @@ def print_feature_importance(model, top_n=15):
 
 
 def save_artifacts(model, importance, acc, ll, report):
-    model.booster_.save_model(str(MODELS_DIR / "lgbm_v1.txt"))
-    print(f"\n✅ Model saved: models/lgbm_v1.txt")
+    model.booster_.save_model(str(MODELS_DIR / "lgbm_v2.txt"))
+    print(f"\n✅ Model saved: models/lgbm_v2.txt")
 
     out = {
         "model": "lgbm_v1",
@@ -150,7 +161,7 @@ def save_artifacts(model, importance, acc, ll, report):
     }
     with open(MODELS_DIR / "lgbm_report.json", "w") as f:
         json.dump(out, f, indent=2)
-    print(f"✅ Report saved: models/lgbm_report.json")
+    print(f"✅ Report saved: models/lgbm_report_v2.json")
 
 
 def main():
@@ -164,7 +175,7 @@ def main():
     save_artifacts(model, importance, acc, ll, report)
 
     # Side-by-side vs XGBoost
-    xgb_report_path = MODELS_DIR / "training_report.json"
+    xgb_report_path = MODELS_DIR / "training_report_v2.json"
     if xgb_report_path.exists():
         with open(xgb_report_path) as f:
             xgb = json.load(f)

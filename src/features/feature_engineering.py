@@ -26,6 +26,7 @@ TEST_PATH  = DATA_PROC / "test.csv"
 RANKINGS_DIR = DATA_RAW / "FIFA_rankings_training"
 CURRENT_RANKINGS = DATA_RAW / "current_fifa_rankings.csv"
 FIXTURES_PATH = DATA_RAW / "wc2026_fixtures.csv"
+ELO_PATH      = DATA_PROC / "elo_ratings.csv"
 
 
 # ── 1. Load data ─────────────────────────────────────────────────────────────
@@ -105,31 +106,83 @@ def add_fifa_ranking_diff(matches: pd.DataFrame, rankings: pd.DataFrame) -> pd.D
     return matches
 
 
-# ── 4. Rolling form features ──────────────────────────────────────────────────
+# ── Name map: training data names → results.csv / ELO names ─────────────────
+ELO_NAME_MAP = {
+    "USA":                        "United States",
+    "Congo DR":                   "DR Congo",
+    "Côte d'Ivoire":              "Ivory Coast",
+    "Korea Republic":             "South Korea",
+    "Korea DPR":                  "North Korea",
+    "Bosnia-Herzegovina":         "Bosnia and Herzegovina",
+    "Czechia":                    "Czech Republic",
+    "Ireland":                    "Republic of Ireland",
+    "Cape Verde Islands":         "Cape Verde",
+    "Kyrgyz Republic":            "Kyrgyzstan",
+    "Brunei Darussalam":          "Brunei",
+    "St. Kitts and Nevis":        "Saint Kitts and Nevis",
+    "St. Lucia":                  "Saint Lucia",
+    "St. Vincent and the Grenadines": "Saint Vincent and the Grenadines",
+}
+
+
+# ── 4. ELO ratings ───────────────────────────────────────────────────────────
+def add_elo(matches: pd.DataFrame) -> pd.DataFrame:
+    """
+    Merges pre-match ELO for home and away teams onto each match.
+    Uses the ELO recorded at match time (already pre-match in elo_ratings.csv).
+    Falls back to 1500 for any team not found.
+    """
+    matches = matches.copy()
+    elo = pd.read_csv(ELO_PATH, parse_dates=["date"])
+
+    # Translate training data team names to match results.csv naming
+    lookup = matches.copy()
+    lookup["home_team"] = lookup["home_team"].replace(ELO_NAME_MAP)
+    lookup["away_team"] = lookup["away_team"].replace(ELO_NAME_MAP)
+
+    # Merge home ELO
+    home_elo = lookup.merge(
+        elo[["date", "home_team", "away_team", "home_elo", "away_elo"]],
+        on=["date", "home_team", "away_team"],
+        how="left"
+    )
+    matches["home_elo"] = home_elo["home_elo"].fillna(1500).values
+    matches["away_elo"] = home_elo["away_elo"].fillna(1500).values
+    matches["elo_diff"] = matches["home_elo"] - matches["away_elo"]
+
+    missing = home_elo["home_elo"].isna().sum()
+    print(f"ELO features added | {missing:,} matches fell back to default 1500")
+    return matches
+
+
+# ── 6. Rolling form features ──────────────────────────────────────────────────
 def add_rolling_form(matches: pd.DataFrame) -> pd.DataFrame:
     """
     Per team, compute over their last 5 and 10 matches (before current):
-      - win rate
-      - avg goals scored
-      - avg goal difference
+      Simple:           win rate, avg goals, avg goal diff
+      Quality-weighted: same three stats, weighted by opponent ELO / 1500
     Uses shift(1) to avoid leaking current match result.
     """
     matches = matches.copy()
     matches = matches.sort_values("date").reset_index(drop=True)
 
     # Build a flat per-team match history (each match appears twice: once as home, once as away)
-    home_view = matches[["date", "home_team", "home_score", "away_score", "result"]].copy()
-    home_view.columns = ["date", "team", "goals_for", "goals_against", "result_raw"]
+    # Include opponent ELO for quality weighting
+    home_view = matches[["date", "home_team", "home_score", "away_score", "result", "away_elo"]].copy()
+    home_view.columns = ["date", "team", "goals_for", "goals_against", "result_raw", "opp_elo"]
     home_view["win"] = (home_view["result_raw"] == 2).astype(int)
     home_view["goal_diff"] = home_view["goals_for"] - home_view["goals_against"]
 
-    away_view = matches[["date", "away_team", "away_score", "home_score", "result"]].copy()
-    away_view.columns = ["date", "team", "goals_for", "goals_against", "result_raw"]
+    away_view = matches[["date", "away_team", "away_score", "home_score", "result", "home_elo"]].copy()
+    away_view.columns = ["date", "team", "goals_for", "goals_against", "result_raw", "opp_elo"]
     away_view["win"] = (away_view["result_raw"] == 0).astype(int)
     away_view["goal_diff"] = away_view["goals_for"] - away_view["goals_against"]
 
     team_history = pd.concat([home_view, away_view], ignore_index=True)
     team_history = team_history.sort_values(["team", "date"]).reset_index(drop=True)
+
+    # Opponent quality weight: normalized around default ELO of 1500
+    team_history["opp_weight"] = team_history["opp_elo"] / 1500.0
 
     def rolling_stats(df, window):
         grp = df.groupby("team")
@@ -138,15 +191,62 @@ def add_rolling_form(matches: pd.DataFrame) -> pd.DataFrame:
         avg_gd    = grp["goal_diff"].transform(lambda x: x.shift(1).rolling(window, min_periods=1).mean())
         return win_rate, avg_goals, avg_gd
 
+    def weighted_rolling_stats(df, window):
+        """Weighted mean using opponent ELO as weight."""
+        results = {}
+        for team, grp in df.groupby("team"):
+            grp = grp.copy()
+            for col in ["win", "goals_for", "goal_diff"]:
+                vals    = grp[col].shift(1)
+                weights = grp["opp_weight"].shift(1)
+                def wmean(v, w, win=window):
+                    out = []
+                    for i in range(len(v)):
+                        start = max(0, i - win)
+                        v_win = v.iloc[start:i]
+                        w_win = w.iloc[start:i]
+                        w_win = w_win.fillna(1.0)
+                        if w_win.sum() == 0 or len(v_win.dropna()) == 0:
+                            out.append(np.nan)
+                        else:
+                            mask = v_win.notna()
+                            out.append(
+                                np.average(v_win[mask], weights=w_win[mask])
+                            )
+                    return pd.Series(out, index=v.index)
+                results.setdefault(col, {})[team] = wmean(vals, weights)
+
+        def combine(col_dict, index):
+            s = pd.Series(index=index, dtype=float)
+            for team, series in col_dict.items():
+                s.update(series)
+            return s
+
+        idx = df.index
+        return (
+            combine(results["win"],        idx),
+            combine(results["goals_for"],  idx),
+            combine(results["goal_diff"],  idx),
+        )
+
     for w in [5, 10]:
         wr, ag, agd = rolling_stats(team_history, w)
         team_history[f"win_rate_{w}"]  = wr
         team_history[f"avg_goals_{w}"] = ag
         team_history[f"avg_gd_{w}"]    = agd
 
+        wwr, wag, wagd = weighted_rolling_stats(team_history, w)
+        team_history[f"weighted_win_rate_{w}"]  = wwr
+        team_history[f"weighted_avg_goals_{w}"] = wag
+        team_history[f"weighted_avg_gd_{w}"]    = wagd
+
     # Deduplicate to one row per (team, date) — take last if same team played twice same day
-    stat_cols = ["win_rate_5", "avg_goals_5", "avg_gd_5",
-                 "win_rate_10", "avg_goals_10", "avg_gd_10"]
+    stat_cols = [
+        "win_rate_5", "avg_goals_5", "avg_gd_5",
+        "win_rate_10", "avg_goals_10", "avg_gd_10",
+        "weighted_win_rate_5", "weighted_avg_goals_5", "weighted_avg_gd_5",
+        "weighted_win_rate_10", "weighted_avg_goals_10", "weighted_avg_gd_10",
+    ]
     team_stats = (
         team_history.groupby(["team", "date"])[stat_cols]
         .last()
@@ -164,7 +264,7 @@ def add_rolling_form(matches: pd.DataFrame) -> pd.DataFrame:
         for col in stat_cols:
             matches[f"{side}_{col}"] = merged[col].values
 
-    print(f"Rolling form features added (windows: 5, 10)")
+    print(f"Rolling form features added (simple + quality-weighted, windows: 5, 10)")
     return matches
 
 
@@ -294,6 +394,7 @@ def add_altitude(matches: pd.DataFrame) -> pd.DataFrame:
 def build_features(df: pd.DataFrame, rankings: pd.DataFrame, label: str) -> pd.DataFrame:
     print(f"\n── Building features for {label} ({len(df):,} rows) ──")
     df = add_fifa_ranking_diff(df, rankings)
+    df = add_elo(df)
     df = add_rolling_form(df)
     df = add_h2h(df)
     df = add_days_rest(df)
@@ -312,6 +413,7 @@ def main():
     print(f"\nCombined for feature building: {len(combined):,} rows")
 
     combined = add_fifa_ranking_diff(combined, rankings)
+    combined = add_elo(combined)
     combined = add_rolling_form(combined)
     combined = add_h2h(combined)
     combined = add_days_rest(combined)
