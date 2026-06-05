@@ -88,12 +88,13 @@ def load_and_prep():
     return train, X_train, y_train, w_train, X_test, y_test
 
 
+# max_depth tuned in Phase 5 (tune_hyperparams.py): depth 3 beat 4/5 on CV log loss.
 LGBM_PARAMS = {
     "objective":       "multiclass",
     "num_class":       3,
-    "n_estimators":    500,
+    "n_estimators":    600,
     "learning_rate":   0.05,
-    "max_depth":       4,
+    "max_depth":       3,
     "num_leaves":      15,
     "subsample":       0.8,
     "colsample_bytree": 0.8,

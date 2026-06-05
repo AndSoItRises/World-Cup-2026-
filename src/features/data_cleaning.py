@@ -77,7 +77,11 @@ TRAIN_CUTOFF = pd.Timestamp("2022-11-20")
 
 # ── STEP 4: Exponential decay weighting ───────────────────────────────────────
 
-DECAY_HALF_LIFE_DAYS = 730
+# Tuned in Phase 5 (tune_hyperparams.py): CV log loss improved monotonically as
+# half-life lengthened (365→0.8806 ... 1460→0.8717 ... none→0.8703). Time decay
+# was discarding useful signal — international team strength is stable. Effectively
+# disabled (very long half-life ≈ uniform weights).
+DECAY_HALF_LIFE_DAYS = 99999
 
 def compute_decay_weights(dates: pd.Series, reference_date: pd.Timestamp) -> pd.Series:
     lam = np.log(2) / DECAY_HALF_LIFE_DAYS

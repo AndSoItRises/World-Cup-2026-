@@ -66,6 +66,7 @@ data/
     FIFA_rankings_training/               (3 CSVs, ~200k ranking records)
     current_fifa_rankings.csv             (211 rows: rank, team_name, team_code, points)
     wc2026_fixtures.csv                   (104 matches)
+    wc2026_market_odds.csv                (48 teams, ESPN ~Jun 2026) ✅ V2 NEW
   processed/
     train.csv                             (9,281 rows) ✅
     test.csv                              (2,257 rows) ✅
@@ -97,6 +98,10 @@ src/
     ensemble.py                          ✅ V2 updated
     predict_wc2026.py                    ✅ V2 updated
     monte_carlo.py                       ✅ V2 updated
+    tune_draw_weight.py                  ✅ V2 NEW (Phase 4 sweep)
+    tune_hyperparams.py                  ✅ V2 NEW (Phase 5 CV tuning)
+    market_divergence.py                 ✅ V2 NEW (Phase 6)
+    stacking.py                          ✅ V2 NEW (Phase 7 meta-learner)
   visualization/
     charts.py                            ✅
   utils/
@@ -194,6 +199,24 @@ src/
 
 ---
 
+### Decision: Phase 5 tuning — disable time decay, shallower trees
+**Method:** `src/models/tune_hyperparams.py` — 5-fold TimeSeriesSplit CV on the train set (test untouched), tuning the cheap levers that reuse the existing features: decay half-life (recomputed from dates, no feature rebuild), XGB params, LGBM params. ELO K-factors NOT tuned (needs full O(n²) feature rebuild — documented lever for later).
+**Findings:**
+- **Decay half-life:** CV log loss improved *monotonically* with longer memory (365→0.8806, 730→0.8748, 1095→0.8730, 1460→0.8717, none→0.8703). The 730-day half-life was discarding useful signal. → **disabled time decay** (DECAY_HALF_LIFE_DAYS=99999 ≈ uniform).
+- **Tree depth:** depth 3 beat 4/5 for both models (mild overfitting at depth 4). XGB → depth3/lr0.03; LGBM → depth3/lr0.05.
+
+**Result (full pipeline rerun, all 3 models consistent):** Ensemble log loss **0.8562 → 0.8458** (best yet, beats even pre-draw-fix 0.8477), accuracy **60.3% → 62.1%**. Trade-off: ensemble draw recall fell 16.2% → 9.7% — removing decay made Dixon-Coles fit rho≈−0.008 (almost no low-score draw correction), so DC rarely calls draws and drags the 45%-weighted blend down. Per-model draw recall stayed healthy (XGB 0.26, LGBM 0.27).
+**Bias impact (the real win):** no-decay gave CONMEBOL teams credit for their full record — **Argentina 3.2%→7.0%, Brazil 6.1%→11.9%**, while inflated host **Canada 6.6%→3.5%** came down. Directly addresses two V1 known issues.
+
+---
+
+### Decision: Phase 6 market analysis — no demonstrable edge
+**Method:** `src/models/market_divergence.py` — pulled live WC2026 outright odds (48 teams, ESPN, ~June 2026) into `data/raw/wc2026_market_odds.csv`, converted American→implied, de-vigged (17.5% overround) to fair market probs, compared to model `p_winner`.
+**Findings:** model-market correlation 0.68; mean abs divergence 1.6pp. Biggest divergences: model HIGH on Mexico (+9.4pp), Iran (+4.0), Canada (+3.1), USA (+2.9); model LOW on France (−10.2pp), Portugal (−5.8), England (−5.8).
+**Conclusion:** the standout divergences coincide almost exactly with the model's *documented biases* (CONCACAF inflation high; Euro powers faded). So these gaps read as model error, not market mispricing. **No trustworthy edge demonstrated → V3 betting build NOT justified on this evidence** (per the project's own gate). The framework is reusable if the model's biases are fixed later.
+
+---
+
 ## V2 Phase Status
 
 | Phase | Description | Status |
@@ -202,48 +225,46 @@ src/
 | Opponent-weighted rolling stats | 12 new weighted features in feature_engineering.py | ✅ Done |
 | Retrain models | XGB V2, LGBM V2, Ensemble V2, Monte Carlo V2 | ✅ Done |
 | Draw fix (class upweighting, w=1.75) | Draw recall 0.6% → 16.2% via XGB/LGBM sample weights | ✅ Done |
-| Hyperparameter tuning | Decay half-life, K-factors, model params via CV | ⬜ Next |
-| Market divergence analysis | Scrape odds, find edge vs market | ⬜ Key goal |
-| Stacking meta-learner | Replace fixed weights with trained meta-learner | ⬜ |
-| Updated visualization + README | V1 vs V2 comparison charts | ⬜ |
+| Hyperparameter tuning | Decay disabled + depth-3 trees → ll 0.8458, acc 62.1% | ✅ Done |
+| Market divergence analysis | No trustworthy edge (divergences = known biases) | ✅ Done |
+| Stacking meta-learner | Replace fixed weights with trained meta-learner | ⬜ Running |
+| Updated visualization + README | V1 vs V2 comparison charts | ⬜ Next |
 
 ---
 
-## V2 Model Results (Phases 1–4 complete)
+## V2 Model Results (Phases 1–6 complete)
 
-| Metric | V1 Ensemble | V2 (pre-draw-fix) | V2 (draw fix) | Δ vs V1 |
+| Metric | V1 | V2 pre-draw-fix | V2 draw-fix | **V2 tuned** | Δ vs V1 |
+|---|---|---|---|---|---|
+| Test Accuracy | 60.6% | 61.2% | 60.3% | **62.1%** | +1.5pp |
+| Log Loss | 0.8605 | 0.8477 | 0.8562 | **0.8458** | -0.015 |
+| Draw Recall | 0.4% | 0.6% | 16.2% | 9.7% | +9.3pp |
+
+Tuned ensemble is best-yet on log loss + accuracy. Draw recall settled at 9.7% (still 16× the
+broken baseline) — removing time decay made DC fit rho≈−0.008, suppressing its draw calls.
+Per-model (tuned): XGB acc 0.582 / ll 0.864 / draw-rec 0.261; LGBM acc 0.586 / ll 0.865 / draw-rec 0.269; DC acc 0.607 / ll 0.861 / draw-rec 0.004.
+
+### V2 Tournament Win Probabilities (10k sims)
+| Team | FIFA Rank | draw-fix | **tuned** | vs market (de-vig) |
 |---|---|---|---|---|
-| Test Accuracy | 60.6% | 61.2% | 60.3% | -0.3pp |
-| Log Loss | 0.8605 | 0.8477 | 0.8562 | -0.004 |
-| Draw Recall | 0.4% | 0.6% | 16.2% | +15.8pp |
+| Spain | 2 | 15.4% | 13.9% | 15.5% |
+| Brazil | 6 | 6.1% | 11.9% | 8.1% |
+| Mexico | 15 | 10.1% | 10.4% | 1.1% |
+| Argentina | 3 | 3.2% | 7.0% | 8.5% |
+| England | 4 | 6.0% | 4.9% | 10.6% |
+| France | 1 | 6.2% | 4.5% | 14.8% |
+| Canada | 30 | 6.6% | 3.5% | 0.4% |
+| Portugal | 5 | 6.4% | 3.1% | 9.0% |
 
-Draw fix trades ~0.9pp accuracy and +0.0085 log loss for a 27× draw-recall gain.
-Per-model after fix: XGB acc 0.581 / ll 0.869 / draw-rec 0.246; LGBM acc 0.579 / ll 0.868 / draw-rec 0.259; DC acc 0.583 / ll 0.882 / draw-rec 0.101.
-
-### V2 Tournament Win Probabilities (10k sims, draw-fix models)
-| Team | FIFA Rank | Win% (pre-fix) | Win% (draw-fix) |
-|---|---|---|---|
-| Spain | 2 | 16.1% | 15.4% |
-| Mexico | 15 | 9.1% | 10.1% |
-| Canada | 30 | 5.6% | 6.6% |
-| Portugal | 5 | 6.9% | 6.4% |
-| France | 1 | 6.5% | 6.2% |
-| Brazil | 6 | 6.2% | 6.1% |
-| England | 4 | 6.6% | 6.0% |
-| USA | 16 | 5.1% | 5.6% |
-| Iran | 80* | — | 3.4% |
-| Argentina | 3 | 3.9% | 3.2% |
-
-\*Iran uses the 80 rank-sentinel (unranked in our lookup). Win-prob sum = 1.0000 (valid).
-Draw fix moved the bracket only modestly, as expected: group stage simulates from pure DC
-Poisson (unaffected) and knockout renormalizes draws out, so the fix only nudges knockout matchups.
+Tuning (no decay) fixed two V1 biases: Argentina + Brazil rose, Canada fell. Win-prob sum = 1.0000.
 
 ### Remaining Known Issues
-- Mexico 10.1% — still inflated, residual CONCACAF form bias. Phase 5 (tuning). Draw fix nudged it *up*, confirming it's not a draw-calibration issue.
-- Argentina 3.2% — still low for defending champion. Phase 5 (tuning).
-- ~~Draw recall 0.6% — structural.~~ ✅ Fixed in Phase 4 (now 16.2%).
-- ~~Tournament sim not rerun on draw-fix models.~~ ✅ Rerun (predict_wc2026 + monte_carlo, both V2).
-- **DR Congo** falls back to default form in predict_wc2026 — fixture name not matched in training/ELO data. Needs a NAME_MAP entry (team-name audit). Low impact (playoff-contingent slot).
+- **Mexico 10.4%** — still inflated (market 1.1%). Biggest model-vs-market gap; residual CONCACAF bias not fixed by tuning. V3 candidate.
+- **France 4.5% / Portugal 3.1%** — model underrates Euro powers vs market (France market 14.8%). No-decay over-rewards CONMEBOL recent dominance. V3 candidate.
+- ~~Argentina too low~~ ✅ Improved 3.2%→7.0% (market 8.5% — now market-aligned).
+- ~~Draw recall structural~~ ✅ Fixed (9.7%, was 0.6%).
+- **DR Congo** name-audit gap in predict_wc2026 (low impact).
+- ELO K-factors never CV-tuned (needs full feature rebuild) — open lever.
 
 ---
 

@@ -5,7 +5,7 @@
     "2": 0.6765070340403819
   },
   "train_cutoff": "2022-11-20",
-  "decay_half_life_days": 730,
+  "decay_half_life_days": 99999,
   "train_rows": 9281,
   "test_rows": 2257,
   "feature_columns": [

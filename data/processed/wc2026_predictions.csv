@@ -1,73 +1,73 @@
 match_id,date,stage,group,home_team,away_team,altitude_m,p_home_win,p_draw,p_away_win,predicted_result
-1,2026-06-11,Group Stage,A,Mexico,South Africa,2240,0.6648,0.2688,0.0664,home_win
-2,2026-06-11,Group Stage,A,South Korea,Czechia,1566,0.4807,0.3354,0.1839,home_win
-3,2026-06-12,Group Stage,B,Canada,Bosnia and Herzegovina,76,0.7931,0.1626,0.0443,home_win
-4,2026-06-12,Group Stage,D,USA,Paraguay,75,0.6036,0.2472,0.1492,home_win
-5,2026-06-13,Group Stage,B,Qatar,Switzerland,22,0.2645,0.3254,0.4101,away_win
-6,2026-06-13,Group Stage,C,Brazil,Morocco,5,0.3028,0.4057,0.2915,draw
-7,2026-06-13,Group Stage,C,Haiti,Scotland,30,0.3708,0.3013,0.3279,home_win
-8,2026-06-13,Group Stage,D,Australia,Turkey,5,0.5251,0.2686,0.2063,home_win
-9,2026-06-14,Group Stage,E,Germany,Curacao,15,0.6606,0.1852,0.1543,home_win
-10,2026-06-14,Group Stage,F,Netherlands,Japan,189,0.3021,0.3284,0.3695,away_win
-11,2026-06-14,Group Stage,E,Ivory Coast,Ecuador,10,0.4454,0.2588,0.2958,home_win
-12,2026-06-14,Group Stage,F,Tunisia,Sweden,537,0.3611,0.2928,0.346,home_win
-13,2026-06-15,Group Stage,H,Spain,Cape Verde,320,0.6664,0.247,0.0866,home_win
-14,2026-06-15,Group Stage,G,Belgium,Egypt,8,0.5267,0.2965,0.1768,home_win
-15,2026-06-15,Group Stage,H,Saudi Arabia,Uruguay,3,0.3802,0.3016,0.3182,home_win
-16,2026-06-15,Group Stage,G,Iran,New Zealand,75,0.4574,0.3528,0.1898,home_win
-17,2026-06-16,Group Stage,I,France,Senegal,5,0.3607,0.3439,0.2954,home_win
-18,2026-06-16,Group Stage,I,Norway,Iraq,30,0.3835,0.3661,0.2503,home_win
-19,2026-06-16,Group Stage,J,Argentina,Algeria,274,0.5028,0.2686,0.2287,home_win
-20,2026-06-16,Group Stage,J,Austria,Jordan,22,0.3221,0.3197,0.3582,away_win
-21,2026-06-17,Group Stage,K,Portugal,DR Congo,15,0.5758,0.2371,0.187,home_win
-22,2026-06-17,Group Stage,L,England,Croatia,189,0.4621,0.3781,0.1598,home_win
-23,2026-06-17,Group Stage,L,Ghana,Panama,76,0.1454,0.2901,0.5645,away_win
-24,2026-06-17,Group Stage,K,Uzbekistan,Colombia,2240,0.2887,0.3444,0.3669,away_win
-25,2026-06-18,Group Stage,A,South Africa,Czechia,320,0.2767,0.3712,0.3521,draw
-26,2026-06-18,Group Stage,B,Switzerland,Bosnia and Herzegovina,75,0.694,0.2105,0.0955,home_win
-27,2026-06-18,Group Stage,B,Canada,Qatar,5,0.5837,0.2952,0.1211,home_win
-28,2026-06-18,Group Stage,A,Mexico,South Korea,1566,0.3565,0.4035,0.24,draw
-29,2026-06-19,Group Stage,D,USA,Australia,8,0.3837,0.3423,0.274,home_win
-30,2026-06-19,Group Stage,C,Scotland,Morocco,30,0.1515,0.3829,0.4656,away_win
-31,2026-06-19,Group Stage,C,Brazil,Haiti,10,0.574,0.2924,0.1336,home_win
-32,2026-06-19,Group Stage,D,Paraguay,Turkey,22,0.2386,0.3097,0.4517,away_win
-33,2026-06-20,Group Stage,F,Netherlands,Sweden,15,0.5716,0.2831,0.1454,home_win
-34,2026-06-20,Group Stage,E,Germany,Ivory Coast,76,0.4002,0.3595,0.2403,home_win
-35,2026-06-20,Group Stage,E,Ecuador,Curacao,274,0.5181,0.206,0.2759,home_win
-36,2026-06-20,Group Stage,F,Tunisia,Japan,537,0.1403,0.3183,0.5414,away_win
-37,2026-06-21,Group Stage,H,Spain,Saudi Arabia,320,0.5376,0.2948,0.1676,home_win
-38,2026-06-21,Group Stage,G,Belgium,Iran,75,0.3381,0.3167,0.3452,away_win
-39,2026-06-21,Group Stage,H,Uruguay,Cape Verde,3,0.4848,0.3037,0.2114,home_win
-40,2026-06-21,Group Stage,G,New Zealand,Egypt,5,0.4434,0.3454,0.2112,home_win
-41,2026-06-22,Group Stage,J,Argentina,Austria,189,0.5794,0.2566,0.1639,home_win
-42,2026-06-22,Group Stage,I,France,Iraq,10,0.6042,0.2811,0.1147,home_win
-43,2026-06-22,Group Stage,I,Norway,Senegal,5,0.2141,0.3769,0.409,away_win
-44,2026-06-22,Group Stage,J,Jordan,Algeria,22,0.3217,0.3538,0.3245,draw
-45,2026-06-23,Group Stage,K,Portugal,Uzbekistan,15,0.551,0.3126,0.1364,home_win
-46,2026-06-23,Group Stage,L,England,Ghana,30,0.657,0.2378,0.1052,home_win
-47,2026-06-23,Group Stage,L,Panama,Croatia,76,0.2884,0.3312,0.3803,away_win
-48,2026-06-23,Group Stage,K,Colombia,DR Congo,1566,0.5634,0.251,0.1856,home_win
-49,2026-06-24,Group Stage,B,Canada,Switzerland,5,0.4537,0.2903,0.256,home_win
-50,2026-06-24,Group Stage,B,Qatar,Bosnia and Herzegovina,8,0.5396,0.3207,0.1397,home_win
-51,2026-06-24,Group Stage,C,Scotland,Brazil,3,0.097,0.3383,0.5647,away_win
-52,2026-06-24,Group Stage,C,Morocco,Haiti,320,0.5583,0.2861,0.1555,home_win
-53,2026-06-24,Group Stage,A,Mexico,Czechia,2240,0.5794,0.3139,0.1067,home_win
-54,2026-06-24,Group Stage,A,South Korea,South Africa,537,0.544,0.3657,0.0903,home_win
-55,2026-06-25,Group Stage,E,Ecuador,Germany,5,0.1931,0.2758,0.5311,away_win
-56,2026-06-25,Group Stage,E,Curacao,Ivory Coast,10,0.1896,0.3104,0.4999,away_win
-57,2026-06-25,Group Stage,F,Tunisia,Netherlands,274,0.1795,0.3076,0.5129,away_win
-58,2026-06-25,Group Stage,F,Japan,Sweden,189,0.5651,0.3223,0.1127,home_win
-59,2026-06-25,Group Stage,D,USA,Turkey,75,0.53,0.2329,0.2371,home_win
-60,2026-06-25,Group Stage,D,Paraguay,Australia,22,0.18,0.2764,0.5436,away_win
-61,2026-06-26,Group Stage,I,Norway,France,30,0.1162,0.3529,0.5309,away_win
-62,2026-06-26,Group Stage,I,Senegal,Iraq,76,0.5591,0.335,0.1059,home_win
-63,2026-06-26,Group Stage,H,Uruguay,Spain,1566,0.093,0.2748,0.6322,away_win
-64,2026-06-26,Group Stage,H,Cape Verde,Saudi Arabia,15,0.2039,0.341,0.4551,away_win
-65,2026-06-26,Group Stage,G,New Zealand,Belgium,5,0.2362,0.2911,0.4726,away_win
-66,2026-06-26,Group Stage,G,Egypt,Iran,8,0.1733,0.3374,0.4892,away_win
-67,2026-06-27,Group Stage,L,Panama,England,5,0.2041,0.3487,0.4472,away_win
-68,2026-06-27,Group Stage,L,Croatia,Ghana,10,0.611,0.2472,0.1418,home_win
-69,2026-06-27,Group Stage,K,Colombia,Portugal,3,0.1901,0.359,0.4509,away_win
-70,2026-06-27,Group Stage,K,Uzbekistan,DR Congo,320,0.5159,0.289,0.1951,home_win
-71,2026-06-27,Group Stage,J,Jordan,Argentina,189,0.1893,0.3788,0.432,away_win
-72,2026-06-27,Group Stage,J,Algeria,Austria,274,0.425,0.3166,0.2584,home_win
+1,2026-06-11,Group Stage,A,Mexico,South Africa,2240,0.6425,0.2711,0.0864,home_win
+2,2026-06-11,Group Stage,A,South Korea,Czechia,1566,0.4918,0.3387,0.1696,home_win
+3,2026-06-12,Group Stage,B,Canada,Bosnia and Herzegovina,76,0.6763,0.2364,0.0873,home_win
+4,2026-06-12,Group Stage,D,USA,Paraguay,75,0.4904,0.3092,0.2004,home_win
+5,2026-06-13,Group Stage,B,Qatar,Switzerland,22,0.2482,0.324,0.4277,away_win
+6,2026-06-13,Group Stage,C,Brazil,Morocco,5,0.4659,0.3337,0.2004,home_win
+7,2026-06-13,Group Stage,C,Haiti,Scotland,30,0.322,0.3164,0.3616,away_win
+8,2026-06-13,Group Stage,D,Australia,Turkey,5,0.4504,0.3114,0.2382,home_win
+9,2026-06-14,Group Stage,E,Germany,Curacao,15,0.6693,0.2072,0.1236,home_win
+10,2026-06-14,Group Stage,F,Netherlands,Japan,189,0.3176,0.3028,0.3796,away_win
+11,2026-06-14,Group Stage,E,Ivory Coast,Ecuador,10,0.3661,0.3144,0.3195,home_win
+12,2026-06-14,Group Stage,F,Tunisia,Sweden,537,0.2752,0.3433,0.3814,away_win
+13,2026-06-15,Group Stage,H,Spain,Cape Verde,320,0.6999,0.2227,0.0774,home_win
+14,2026-06-15,Group Stage,G,Belgium,Egypt,8,0.4392,0.3207,0.2401,home_win
+15,2026-06-15,Group Stage,H,Saudi Arabia,Uruguay,3,0.2903,0.309,0.4007,away_win
+16,2026-06-15,Group Stage,G,Iran,New Zealand,75,0.4795,0.2793,0.2412,home_win
+17,2026-06-16,Group Stage,I,France,Senegal,5,0.3919,0.3418,0.2664,home_win
+18,2026-06-16,Group Stage,I,Norway,Iraq,30,0.3343,0.329,0.3367,away_win
+19,2026-06-16,Group Stage,J,Argentina,Algeria,274,0.6219,0.2247,0.1533,home_win
+20,2026-06-16,Group Stage,J,Austria,Jordan,22,0.2884,0.329,0.3826,away_win
+21,2026-06-17,Group Stage,K,Portugal,DR Congo,15,0.5472,0.2723,0.1806,home_win
+22,2026-06-17,Group Stage,L,England,Croatia,189,0.4306,0.3373,0.2321,home_win
+23,2026-06-17,Group Stage,L,Ghana,Panama,76,0.1647,0.3077,0.5276,away_win
+24,2026-06-17,Group Stage,K,Uzbekistan,Colombia,2240,0.2795,0.337,0.3835,away_win
+25,2026-06-18,Group Stage,A,South Africa,Czechia,320,0.2603,0.3687,0.371,away_win
+26,2026-06-18,Group Stage,B,Switzerland,Bosnia and Herzegovina,75,0.5762,0.2686,0.1552,home_win
+27,2026-06-18,Group Stage,B,Canada,Qatar,5,0.579,0.2884,0.1326,home_win
+28,2026-06-18,Group Stage,A,Mexico,South Korea,1566,0.4153,0.3546,0.2301,home_win
+29,2026-06-19,Group Stage,D,USA,Australia,8,0.3318,0.3606,0.3077,draw
+30,2026-06-19,Group Stage,C,Scotland,Morocco,30,0.1937,0.3318,0.4745,away_win
+31,2026-06-19,Group Stage,C,Brazil,Haiti,10,0.6518,0.2487,0.0994,home_win
+32,2026-06-19,Group Stage,D,Paraguay,Turkey,22,0.2993,0.3627,0.3381,draw
+33,2026-06-20,Group Stage,F,Netherlands,Sweden,15,0.5377,0.2987,0.1636,home_win
+34,2026-06-20,Group Stage,E,Germany,Ivory Coast,76,0.4284,0.3344,0.2371,home_win
+35,2026-06-20,Group Stage,E,Ecuador,Curacao,274,0.5889,0.2334,0.1777,home_win
+36,2026-06-20,Group Stage,F,Tunisia,Japan,537,0.1191,0.245,0.6359,away_win
+37,2026-06-21,Group Stage,H,Spain,Saudi Arabia,320,0.5481,0.266,0.1859,home_win
+38,2026-06-21,Group Stage,G,Belgium,Iran,75,0.2756,0.3095,0.4148,away_win
+39,2026-06-21,Group Stage,H,Uruguay,Cape Verde,3,0.6154,0.2587,0.1259,home_win
+40,2026-06-21,Group Stage,G,New Zealand,Egypt,5,0.3735,0.3719,0.2546,home_win
+41,2026-06-22,Group Stage,J,Argentina,Austria,189,0.6517,0.2277,0.1206,home_win
+42,2026-06-22,Group Stage,I,France,Iraq,10,0.5155,0.289,0.1955,home_win
+43,2026-06-22,Group Stage,I,Norway,Senegal,5,0.219,0.3281,0.4529,away_win
+44,2026-06-22,Group Stage,J,Jordan,Algeria,22,0.3433,0.3325,0.3242,home_win
+45,2026-06-23,Group Stage,K,Portugal,Uzbekistan,15,0.4537,0.3149,0.2313,home_win
+46,2026-06-23,Group Stage,L,England,Ghana,30,0.6052,0.2459,0.1489,home_win
+47,2026-06-23,Group Stage,L,Panama,Croatia,76,0.3253,0.3454,0.3293,draw
+48,2026-06-23,Group Stage,K,Colombia,DR Congo,1566,0.5522,0.2672,0.1807,home_win
+49,2026-06-24,Group Stage,B,Canada,Switzerland,5,0.3953,0.327,0.2777,home_win
+50,2026-06-24,Group Stage,B,Qatar,Bosnia and Herzegovina,8,0.4511,0.3256,0.2233,home_win
+51,2026-06-24,Group Stage,C,Scotland,Brazil,3,0.1046,0.279,0.6164,away_win
+52,2026-06-24,Group Stage,C,Morocco,Haiti,320,0.4895,0.3456,0.1649,home_win
+53,2026-06-24,Group Stage,A,Mexico,Czechia,2240,0.5818,0.3129,0.1053,home_win
+54,2026-06-24,Group Stage,A,South Korea,South Africa,537,0.5595,0.3227,0.1178,home_win
+55,2026-06-25,Group Stage,E,Ecuador,Germany,5,0.2138,0.321,0.4652,away_win
+56,2026-06-25,Group Stage,E,Curacao,Ivory Coast,10,0.1552,0.2711,0.5736,away_win
+57,2026-06-25,Group Stage,F,Tunisia,Netherlands,274,0.1509,0.2614,0.5877,away_win
+58,2026-06-25,Group Stage,F,Japan,Sweden,189,0.5454,0.3291,0.1255,home_win
+59,2026-06-25,Group Stage,D,USA,Turkey,75,0.4659,0.2987,0.2353,home_win
+60,2026-06-25,Group Stage,D,Paraguay,Australia,22,0.2093,0.3212,0.4695,away_win
+61,2026-06-26,Group Stage,I,Norway,France,30,0.1485,0.3286,0.5228,away_win
+62,2026-06-26,Group Stage,I,Senegal,Iraq,76,0.4625,0.3222,0.2153,home_win
+63,2026-06-26,Group Stage,H,Uruguay,Spain,1566,0.1597,0.2839,0.5565,away_win
+64,2026-06-26,Group Stage,H,Cape Verde,Saudi Arabia,15,0.2004,0.3271,0.4725,away_win
+65,2026-06-26,Group Stage,G,New Zealand,Belgium,5,0.292,0.2942,0.4138,away_win
+66,2026-06-26,Group Stage,G,Egypt,Iran,8,0.1583,0.3177,0.524,away_win
+67,2026-06-27,Group Stage,L,Panama,England,5,0.2397,0.2902,0.4701,away_win
+68,2026-06-27,Group Stage,L,Croatia,Ghana,10,0.5709,0.2397,0.1894,home_win
+69,2026-06-27,Group Stage,K,Colombia,Portugal,3,0.2861,0.3654,0.3485,draw
+70,2026-06-27,Group Stage,K,Uzbekistan,DR Congo,320,0.5112,0.2983,0.1905,home_win
+71,2026-06-27,Group Stage,J,Jordan,Argentina,189,0.1717,0.2987,0.5296,away_win
+72,2026-06-27,Group Stage,J,Algeria,Austria,274,0.3659,0.3194,0.3148,home_win

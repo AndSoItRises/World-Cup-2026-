@@ -206,6 +206,47 @@ def chart_scatter(df):
     print(f"✅ Saved: {path}")
 
 
+# ── Chart 4: Model vs Market Divergence (V2) ─────────────────────────────────
+def chart_market_divergence(df=None):
+    """Diverging bar of edge (model − market) per team. Needs market_divergence.csv."""
+    md_path = DATA / "market_divergence.csv"
+    if not md_path.exists():
+        print(f"  (skipping market chart — {md_path.name} not found)")
+        return
+    md = pd.read_csv(md_path)
+    # Show the biggest divergences on each side
+    md = md.sort_values("edge")
+    top = pd.concat([md.head(8), md.tail(8)]).drop_duplicates("team")
+    top = top.sort_values("edge")
+
+    fig, ax = plt.subplots(figsize=(10, 9))
+    fig.patch.set_facecolor("#0d1117")
+
+    colors = [GOLD if e > 0 else SILVER for e in top["edge"]]
+    bars = ax.barh(top["team"], top["edge"] * 100, color=colors, height=0.65, zorder=3)
+
+    for bar, e in zip(bars, top["edge"]):
+        x = e * 100
+        ax.text(x + (0.1 if x >= 0 else -0.1), bar.get_y() + bar.get_height() / 2,
+                f"{x:+.1f}", va="center", ha="left" if x >= 0 else "right",
+                fontsize=8, color="#e6edf3")
+
+    ax.axvline(0, color="#30363d", lw=1, zorder=2)
+    ax.set_xlabel("Model edge vs market (percentage points)", fontsize=10, labelpad=10)
+    ax.set_title("WC 2026 — Model vs Market Divergence\n"
+                 "Gold = model sees more value than market | Grey = model fades",
+                 fontsize=12, fontweight="bold", pad=14, color="#e6edf3")
+    ax.grid(axis="x", zorder=0)
+    ax.spines[["top", "right", "left", "bottom"]].set_visible(False)
+    ax.tick_params(axis="y", labelsize=9)
+
+    plt.tight_layout()
+    path = OUT_DIR / "04_market_divergence.png"
+    plt.savefig(path, dpi=150, bbox_inches="tight", facecolor="#0d1117")
+    plt.close()
+    print(f"✅ Saved: {path}")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 def main():
     print("═" * 60)
@@ -218,6 +259,7 @@ def main():
     chart_win_probability(df)
     chart_stage_heatmap(df)
     chart_scatter(df)
+    chart_market_divergence(df)
 
     print(f"\nAll charts saved to outputs/viz/")
     print(f"Phase 8 complete ✅")
