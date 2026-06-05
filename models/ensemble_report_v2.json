@@ -7,15 +7,15 @@
   "models": [
     {
       "label": "XGBoost",
-      "accuracy": 0.6114,
-      "log_loss": 0.8541,
-      "draw_recall": 0.0059
+      "accuracy": 0.5813,
+      "log_loss": 0.8691,
+      "draw_recall": 0.2455
     },
     {
       "label": "LightGBM",
-      "accuracy": 0.6097,
-      "log_loss": 0.8542,
-      "draw_recall": 0.002
+      "accuracy": 0.5791,
+      "log_loss": 0.8684,
+      "draw_recall": 0.2594
     },
     {
       "label": "Dixon-Coles",
@@ -25,9 +25,9 @@
     },
     {
       "label": "Ensemble",
-      "accuracy": 0.6119,
-      "log_loss": 0.8477,
-      "draw_recall": 0.0059
+      "accuracy": 0.6026,
+      "log_loss": 0.8562,
+      "draw_recall": 0.1624
     }
   ]
 }

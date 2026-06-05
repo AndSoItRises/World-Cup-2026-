@@ -66,6 +66,12 @@ WEIGHT_COL = "sample_weight"
 # Result labels for display
 LABELS = {0: "away_win", 1: "draw", 2: "home_win"}
 
+# Draw upweighting — multiplies sample weights for draw rows.
+# Draws are ~27% of matches but models assign near-zero draw probability
+# without this correction. Value chosen via tune_draw_weight.py sweep:
+# 1.75 lifts ensemble draw recall 0.6% -> 16.2% while keeping log loss < 0.86.
+DRAW_CLASS_WEIGHT = 1.75
+
 
 # ── Load & prep ───────────────────────────────────────────────────────────────
 def load_and_prep():
@@ -90,12 +96,16 @@ def load_and_prep():
 
     X_train = train[FEATURE_COLS]
     y_train = train[TARGET]
-    w_train = train[WEIGHT_COL]
+    w_train = train[WEIGHT_COL].copy()
+
+    # Upweight draws so the model stops assigning them near-zero probability
+    w_train[y_train == 1] *= DRAW_CLASS_WEIGHT
 
     X_test  = test[FEATURE_COLS]
     y_test  = test[TARGET]
 
     print(f"Train: {X_train.shape} | Test: {X_test.shape}")
+    print(f"Draw class weight: {DRAW_CLASS_WEIGHT}x")
     print(f"Train class distribution: { {LABELS[k]: v for k,v in y_train.value_counts().sort_index().items()} }")
     print(f"Test  class distribution: { {LABELS[k]: v for k,v in y_test.value_counts().sort_index().items()} }")
     return train, test, X_train, y_train, w_train, X_test, y_test

@@ -55,6 +55,10 @@ TARGET     = "result"
 WEIGHT_COL = "sample_weight"
 LABELS     = {0: "away_win", 1: "draw", 2: "home_win"}
 
+# Draw upweighting — must match train_xgb.py so the ensemble blends
+# two consistently-calibrated models. See train_xgb.py for rationale.
+DRAW_CLASS_WEIGHT = 1.75
+
 
 def load_and_prep():
     train = pd.read_csv(TRAIN_PATH, parse_dates=["date"])
@@ -71,11 +75,16 @@ def load_and_prep():
 
     X_train = train[FEATURE_COLS]
     y_train = train[TARGET]
-    w_train = train[WEIGHT_COL]
+    w_train = train[WEIGHT_COL].copy()
+
+    # Upweight draws so the model stops assigning them near-zero probability
+    w_train[y_train == 1] *= DRAW_CLASS_WEIGHT
+
     X_test  = test[FEATURE_COLS]
     y_test  = test[TARGET]
 
     print(f"Train: {X_train.shape} | Test: {X_test.shape}")
+    print(f"Draw class weight: {DRAW_CLASS_WEIGHT}x")
     return train, X_train, y_train, w_train, X_test, y_test
 
 

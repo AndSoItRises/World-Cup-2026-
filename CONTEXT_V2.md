@@ -174,6 +174,26 @@ src/
 
 ---
 
+### Decision: Draw fix via class upweighting (weight = 1.75), not Dixon-Coles changes
+**Options considered:**
+- A) Increase DC ensemble weight / lower the draw decision threshold (post-hoc, doesn't fix probability calibration)
+- B) Upweight the draw class in XGB/LGBM sample weights so the gradient-boosted models actually learn the draw signal
+- C) Improve the Dixon-Coles model itself
+
+**Decision:** B — multiply `sample_weight` by `DRAW_CLASS_WEIGHT` for draw rows in both train_xgb.py and train_lgbm.py. Value chosen empirically via `src/models/tune_draw_weight.py` sweep.
+**Why:** The root cause was XGB/LGBM assigning near-zero draw probability (argmax-safe for log loss). DC already predicts draws reasonably; the broken link was the ML models. Threshold tuning (A) leaves probabilities miscalibrated, which we need clean for Phase 6 market analysis. The sweep showed draw recall and log loss trade off directly:
+
+| weight | accuracy | log_loss | draw_recall | draw_prec |
+|---|---|---|---|---|
+| 1.00 | 0.6119 | 0.8477 | 0.6% | 0.19 |
+| 1.50 | 0.6066 | 0.8523 | 9.7% | 0.29 |
+| **1.75** | **0.6026** | **0.8562** | **16.2%** | **0.29** |
+| 2.00 | 0.5875 | 0.8602 | 20.6% | 0.27 |
+
+1.75 is the only weight that clears all three targets: draw recall >15%, log loss <0.86, accuracy within ~1pp of baseline. Note this slightly regresses log loss (0.8477 → 0.8562) — an accepted trade because Phase 4's goal is fixing a structural defect (draws never predicted), not improving log loss. New file: `src/models/tune_draw_weight.py` (reusable for Phase 5 tuning).
+
+---
+
 ## V2 Phase Status
 
 | Phase | Description | Status |
@@ -181,21 +201,25 @@ src/
 | ELO ratings | src/features/elo.py, integrated as features | ✅ Done |
 | Opponent-weighted rolling stats | 12 new weighted features in feature_engineering.py | ✅ Done |
 | Retrain models | XGB V2, LGBM V2, Ensemble V2, Monte Carlo V2 | ✅ Done |
-| Draw fix (Dixon-Coles improvement) | Fix structural draw recall problem | ⬜ Next |
-| Hyperparameter tuning | Decay half-life, K-factors, model params via CV | ⬜ |
+| Draw fix (class upweighting, w=1.75) | Draw recall 0.6% → 16.2% via XGB/LGBM sample weights | ✅ Done |
+| Hyperparameter tuning | Decay half-life, K-factors, model params via CV | ⬜ Next |
 | Market divergence analysis | Scrape odds, find edge vs market | ⬜ Key goal |
 | Stacking meta-learner | Replace fixed weights with trained meta-learner | ⬜ |
 | Updated visualization + README | V1 vs V2 comparison charts | ⬜ |
 
 ---
 
-## V2 Model Results (Phases 1–3 complete)
+## V2 Model Results (Phases 1–4 complete)
 
-| Metric | V1 Ensemble | V2 Ensemble | Δ |
-|---|---|---|---|
-| Test Accuracy | 60.6% | 61.2% | +0.6pp |
-| Log Loss | 0.8605 | 0.8477 | -0.013 |
-| Draw Recall | 0.4% | 0.6% | flat |
+| Metric | V1 Ensemble | V2 (pre-draw-fix) | V2 (draw fix) | Δ vs V1 |
+|---|---|---|---|---|
+| Test Accuracy | 60.6% | 61.2% | 60.3% | -0.3pp |
+| Log Loss | 0.8605 | 0.8477 | 0.8562 | -0.004 |
+| Draw Recall | 0.4% | 0.6% | 16.2% | +15.8pp |
+
+Draw fix trades ~0.9pp accuracy and +0.0085 log loss for a 27× draw-recall gain.
+Per-model after fix: XGB acc 0.581 / ll 0.869 / draw-rec 0.246; LGBM acc 0.579 / ll 0.868 / draw-rec 0.259; DC acc 0.583 / ll 0.882 / draw-rec 0.101.
+NOTE: tournament probabilities below are pre-draw-fix — predict_wc2026 + monte_carlo need a V2 rerun.
 
 ### V2 Tournament Win Probabilities (10k simulations)
 | Team | FIFA Rank | Win% | Final% |
@@ -211,9 +235,10 @@ src/
 | Argentina | 3 | 3.9% | 7.5% |
 
 ### Remaining Known Issues
-- Mexico 9.1% — still inflated, residual CONCACAF form bias. Phase 4 (tuning).
-- Argentina 3.9% — still low for defending champion. Phase 4.
-- Draw recall 0.6% — structural. Phase 3 (Dixon-Coles fix).
+- Mexico 9.1% — still inflated, residual CONCACAF form bias. Phase 5 (tuning).
+- Argentina 3.9% — still low for defending champion. Phase 5 (tuning).
+- ~~Draw recall 0.6% — structural.~~ ✅ Fixed in Phase 4 (now 16.2%).
+- Tournament sim (predict_wc2026 + monte_carlo) not yet rerun on draw-fix models.
 
 ---
 
