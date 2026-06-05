@@ -1,0 +1,106 @@
+{
+  "model": "xgb_v1",
+  "features": [
+    "home_fifa_rank",
+    "away_fifa_rank",
+    "fifa_rank_diff",
+    "home_win_rate_5",
+    "home_avg_goals_5",
+    "home_avg_gd_5",
+    "home_win_rate_10",
+    "home_avg_goals_10",
+    "home_avg_gd_10",
+    "away_win_rate_5",
+    "away_avg_goals_5",
+    "away_avg_gd_5",
+    "away_win_rate_10",
+    "away_avg_goals_10",
+    "away_avg_gd_10",
+    "h2h_home_wins",
+    "h2h_draws",
+    "h2h_away_wins",
+    "h2h_total",
+    "h2h_home_win_rate",
+    "home_days_rest",
+    "away_days_rest",
+    "is_knockout",
+    "altitude_m",
+    "tournament_tier",
+    "neutral"
+  ],
+  "n_features": 26,
+  "test_accuracy": 0.5977,
+  "test_log_loss": 0.8814,
+  "cv_mean_accuracy": 0.5829,
+  "cv_mean_log_loss": 0.9129,
+  "xgb_params": {
+    "objective": "multi:softprob",
+    "num_class": 3,
+    "n_estimators": 500,
+    "learning_rate": 0.05,
+    "max_depth": 4,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 5,
+    "reg_alpha": 0.1,
+    "reg_lambda": 1.0,
+    "random_state": 42,
+    "n_jobs": -1,
+    "eval_metric": "mlogloss"
+  },
+  "classification_report": {
+    "away_win": {
+      "precision": 0.572827417380661,
+      "recall": 0.6545454545454545,
+      "f1-score": 0.6109660574412533,
+      "support": 715.0
+    },
+    "draw": {
+      "precision": 0.14285714285714285,
+      "recall": 0.005940594059405941,
+      "f1-score": 0.011406844106463879,
+      "support": 505.0
+    },
+    "home_win": {
+      "precision": 0.6187455954897816,
+      "recall": 0.8466730954676953,
+      "f1-score": 0.7149837133550488,
+      "support": 1037.0
+    },
+    "accuracy": 0.5976960567124502,
+    "macro avg": {
+      "precision": 0.44481005190919515,
+      "recall": 0.5023863813575186,
+      "f1-score": 0.445785538300922,
+      "support": 2257.0
+    },
+    "weighted avg": {
+      "precision": 0.497719824143967,
+      "recall": 0.5976960567124502,
+      "f1-score": 0.5246075755841586,
+      "support": 2257.0
+    }
+  },
+  "feature_importance_gain": {
+    "fifa_rank_diff": 42.55,
+    "h2h_home_win_rate": 20.04,
+    "h2h_home_wins": 11.26,
+    "home_avg_gd_10": 10.6,
+    "home_avg_gd_5": 10.47,
+    "away_fifa_rank": 10.45,
+    "home_fifa_rank": 9.94,
+    "neutral": 9.8,
+    "away_avg_gd_10": 8.78,
+    "away_avg_goals_10": 8.17,
+    "away_avg_gd_5": 7.86,
+    "home_win_rate_5": 7.81,
+    "home_win_rate_10": 7.78,
+    "home_avg_goals_10": 7.56,
+    "away_avg_goals_5": 7.4,
+    "h2h_away_wins": 7.32,
+    "h2h_draws": 7.21,
+    "h2h_total": 7.2,
+    "home_avg_goals_5": 7.07,
+    "away_win_rate_5": 6.86
+  }
+}

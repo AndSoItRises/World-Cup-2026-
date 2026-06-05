@@ -1,0 +1,45 @@
+{
+  "class_weights": {
+    "0": 1.1323816495851635,
+    "1": 1.565620782726046,
+    "2": 0.6765070340403819
+  },
+  "train_cutoff": "2022-11-20",
+  "decay_half_life_days": 730,
+  "train_rows": 9281,
+  "test_rows": 2257,
+  "feature_columns": [
+    "home_fifa_rank",
+    "away_fifa_rank",
+    "fifa_rank_diff",
+    "home_win_rate_5",
+    "home_avg_goals_5",
+    "home_avg_gd_5",
+    "home_win_rate_10",
+    "home_avg_goals_10",
+    "home_avg_gd_10",
+    "away_win_rate_5",
+    "away_avg_goals_5",
+    "away_avg_gd_5",
+    "away_win_rate_10",
+    "away_avg_goals_10",
+    "away_avg_gd_10",
+    "h2h_home_wins",
+    "h2h_draws",
+    "h2h_away_wins",
+    "h2h_total",
+    "h2h_home_win_rate",
+    "home_days_rest",
+    "away_days_rest",
+    "is_knockout",
+    "altitude_m"
+  ],
+  "train_features_shape": [
+    9281,
+    36
+  ],
+  "test_features_shape": [
+    2257,
+    36
+  ]
+}
