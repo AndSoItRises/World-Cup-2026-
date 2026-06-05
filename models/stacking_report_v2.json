@@ -1,0 +1,36 @@
+{
+  "models": [
+    {
+      "label": "XGBoost",
+      "accuracy": 0.5857,
+      "log_loss": 0.8634,
+      "draw_recall": 0.2594
+    },
+    {
+      "label": "LightGBM",
+      "accuracy": 0.5862,
+      "log_loss": 0.8651,
+      "draw_recall": 0.2693
+    },
+    {
+      "label": "Dixon-Coles",
+      "accuracy": 0.6092,
+      "log_loss": 0.8626,
+      "draw_recall": 0.004
+    },
+    {
+      "label": "Fixed-weight ensemble",
+      "accuracy": 0.6194,
+      "log_loss": 0.8456,
+      "draw_recall": 0.0772
+    },
+    {
+      "label": "Stacked meta-learner",
+      "accuracy": 0.6176,
+      "log_loss": 0.8445,
+      "draw_recall": 0.0
+    }
+  ],
+  "stacked_minus_fixed_logloss": -0.0011,
+  "verdict": "STACKING WINS"
+}

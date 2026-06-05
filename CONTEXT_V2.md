@@ -217,6 +217,13 @@ src/
 
 ---
 
+### Decision: Phase 7 stacking — evaluated, NOT adopted
+**Method:** `src/models/stacking.py` — leakage-safe OOF base predictions on train (5-fold TimeSeriesSplit, all three models incl. DC refit per fold), multinomial LogisticRegression meta-learner over the 9 base probabilities, compared head-to-head with the fixed-weight ensemble on test.
+**Result:** stacked log loss 0.8445 vs fixed 0.8456 — a trivial 0.0011 gain — but the meta-learner reaches it by **never calling draws (draw recall → 0.0%)**, undoing Phase 4, and is slightly *worse* on accuracy (0.6176 vs 0.6194).
+**Decision:** keep the fixed-weight ensemble (0.275/0.275/0.45). The marginal log-loss gain isn't worth zeroing draw recall. Real value: this **validates the hand-set weights as near-optimal** — a trained meta-learner can't meaningfully beat them. Meta-learner saved (`models/stacking_meta.json`) for reference but not wired into predictions.
+
+---
+
 ## V2 Phase Status
 
 | Phase | Description | Status |
@@ -227,8 +234,8 @@ src/
 | Draw fix (class upweighting, w=1.75) | Draw recall 0.6% → 16.2% via XGB/LGBM sample weights | ✅ Done |
 | Hyperparameter tuning | Decay disabled + depth-3 trees → ll 0.8458, acc 62.1% | ✅ Done |
 | Market divergence analysis | No trustworthy edge (divergences = known biases) | ✅ Done |
-| Stacking meta-learner | Replace fixed weights with trained meta-learner | ⬜ Running |
-| Updated visualization + README | V1 vs V2 comparison charts | ⬜ Next |
+| Stacking meta-learner | Evaluated, NOT adopted (fixed weights near-optimal) | ✅ Done |
+| Updated visualization + README | 4 charts (incl. market divergence) + V2 README | ✅ Done |
 
 ---
 
@@ -278,19 +285,29 @@ Tuning (no decay) fixed two V1 biases: Argentina + Brazil rose, Canada fell. Win
 ---
 
 ## ══ END-OF-VERSION REVIEW ══
-*(Filled in when V2 is fully closed)*
+*V2 closed — all 8 phases complete.*
+
+### Final V2 Scorecard
+| Metric | V1 | V2 | Δ |
+|---|---|---|---|
+| Test Accuracy | 60.6% | **62.1%** | +1.5pp |
+| Log Loss | 0.8605 | **0.8458** | -0.015 |
+| Draw Recall | 0.4% | **9.7%** | +9.3pp |
+
+Biases: Argentina 3.9%→7.0% and Brazil →11.9% (fixed), Canada inflation 5.6%→3.5% (improved).
+Still open: Mexico inflation (10.4% vs market 1.1%), Euro powers underrated (France 4.5% vs market 14.8%).
 
 ### Workflow Review
-*What worked, what slowed us down, what to change for V3*
+- **What worked:** Decoupling decay from the feature rebuild (recompute from dates) made Phase 5 tuning cheap. CV-on-train / report-test-once kept tuning honest. Backgrounding the slow runs (DC fits, 10k sims) kept iteration moving. Adversarial honesty on Phase 6/7 (divergences = bias, stacking kills draws) avoided shipping false wins.
+- **What slowed us down:** O(n²) weighted-rolling-stats forces a slow full feature rebuild whenever features change; the per-fold DC refit in stacking was the single longest job. Windows cp1252 console needed PYTHONUTF8=1 for the box-drawing prints.
+- **For V3:** vectorize weighted rolling; cache DC fits; make decay a pure training-time hyperparameter so it never touches the feature pipeline.
 
 ### Decision Review
-*Which decisions held up, which should be revisited*
+- **Held up:** ELO-first (Phase 1); draw upweighting at 1.75 (cleanly reversible knob); disabling time decay (monotonic CV signal, fixed real biases); keeping fixed ensemble weights (stacking validated them).
+- **Revisit:** the 80 rank-sentinel (Iran 4.2% looks high); no-decay may over-reward CONMEBOL recency at the expense of Euro powers — a *partial* decay (e.g. 1460d) might balance bias vs the France/Portugal underrating. K-factors still never tuned.
 
 ### Brainstorm: V3 Priorities
-*From V2 context doc V3 Vision section:*
-- C++/Rust simulation engine (1M sims, sub-second)
-- API layer (accepts match result, updates ELO, reruns sim)
-- Kelly criterion bet sizing
-- Vercel deployment
-
-*Only build V3 if market divergence analysis shows a real edge.*
+- **Fix the residual biases first** — Mexico/CONCACAF inflation and Euro-power underrating are the headline errors. Strength-of-schedule beyond ELO weighting; confederation-strength priors; squad/market-value features.
+- CV-tune ELO K-factors (needs the vectorized feature rebuild above).
+- C++/Rust simulation engine (1M sims, sub-second); API layer (live result → ELO update → re-sim); Vercel deployment.
+- **Kelly bet sizing: DEFERRED.** Phase 6 showed no trustworthy edge — the divergences are model bias, not market inefficiency. Do not build betting features until biases are fixed and a clean out-of-sample edge is demonstrated.
