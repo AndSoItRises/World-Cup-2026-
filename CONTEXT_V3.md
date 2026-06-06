@@ -119,16 +119,63 @@ DEFERRED until a clean out-of-sample edge is demonstrated: Kelly bet sizing, bet
 ---
 
 ## V3 Decision Log
-*(empty — fill as decisions are made)*
+
+### DL-01 — Iran rank sentinel is a data bug, not a model problem
+Iran's FIFA rank is stored as 150 in the model but their actual rank is ~22. This is the sentinel value
+assigned to teams not in the FIFA rankings CSV at training time. Fix: audit `data_cleaning.py` and
+`feature_engineering.py` sentinel assignment; use current FIFA rank (22) for Iran at prediction time.
+Do NOT model around this — just fix the data join. Eliminates the 34x false positive entirely.
+
+### DL-02 — CONCACAF inflation is a training-data volume problem, not a SoS problem
+Quantified via SoS audit: Mexico's avg opponent ELO over last 20 training matches = 1709 vs own ELO
+1861 (gap +152). This is actually the *smallest* gap of any team audited — France +259, England +319,
+Brazil +222. Mexico is not anomalously easy-schedule relative to others. The inflation comes instead
+from the sheer volume of CONCACAF qualifier matches in the rolling window: high win-rate, high goals,
+against weak sides that the ELO-weighting partially but not fully corrects. Fix: add a
+`confederation_match_pct` feature (% of rolling window that was same-confederation) so the model can
+discount intra-confederation form on its own. Do NOT hard-code a CONCACAF penalty — let the model learn it.
+
+### DL-03 — European underrating is a decay problem
+No-decay was correct to fix Argentina/Brazil (over-rewarded CONMEBOL dominance under old decay). But
+it now punishes consistently elite UEFA teams who have steady but unspectacular qualifier records.
+France/England/Portugal all play DOWN (+259/+319 ELO gap vs opponents) — their form numbers look
+mediocre because they rarely face tough opposition in qualifiers. Fix: implement partial decay
+(half-life ~3 years / 1095 days) and sweep via TimeSeriesSplit CV. Do NOT tune decay by hand to
+"make France look right" — only adopt if CV log loss improves.
+
+### DL-04 — Draw recall is a structural ceiling under current Dixon-Coles blend
+DC fits rho≈0 under no-decay → rarely predicts draws → caps ensemble draw recall at ~9.7%.
+Confederation breakdown confirms: draw_pred averages 0.25-0.31 across all confederations while
+draw_actual is 0.20-0.32 — the model is not systematically wrong on draw *rates* overall, but it
+concentrates draws poorly (wrong matches). Fix for V3: evaluate a dedicated draw classifier (binary:
+draw vs. decisive) as a third signal. Only adopt if it improves draw recall without hurting overall LL.
+
+### DL-05 — WC2022 backtest confirms real predictive power
+Model log loss on WC2022 matches (n=348): 0.8313 vs naive baseline 1.0986. Skill score = +24.3% over
+uniform, +22.7% over historical base rates. Accuracy 62.1%. This is the honest out-of-sample
+validation. The model works — the biases above are fixable signal problems, not fundamental failures.
+Confederation LL breakdown: UEFA 0.8121, AFC 0.7768, CONCACAF 0.9245, CONMEBOL 0.9255, CAF 0.9558.
+CAF is the worst-performing confederation — flagged for V3 investigation (likely same training-volume issue as CONCACAF).
+
+### DL-06 — Calibration is acceptable, draw is slightly overforecast
+away_win: mean_pred=0.300 vs actual=0.329 (UNDER by 3pp, cal_err=0.049)
+draw:     mean_pred=0.259 vs actual=0.222 (OVER  by 4pp, cal_err=0.032)
+home_win: mean_pred=0.441 vs actual=0.449 (UNDER by 1pp, cal_err=0.033)
+No Platt scaling or isotonic regression needed at this stage — errors are small and may close with
+bias fixes. Revisit after V3 retraining.
 
 ---
 
 ## V3 Phase Status
-*(to be defined after brainstorm — replace this with the agreed phase plan)*
 
 | Phase | Description | Status |
 |---|---|---|
-| _TBD from brainstorm_ | | ⬜ |
+| P1 | **Data fixes** — Fix Iran FIFA rank sentinel; audit DR Congo name gap in predict_wc2026; verify all 48 WC2026 teams resolve correctly | ⬜ |
+| P2 | **Confederation feature** — Add `home_conf_match_pct` + `away_conf_match_pct` to rolling feature set (% of rolling-10 window that was same-confederation). Retrain → CV LL must improve vs V2 baseline to keep. | ⬜ |
+| P3 | **Decay sweep** — Vectorize weighted rolling stats (unblock O(n²) bottleneck first). Then sweep half-life [365, 730, 1095, 1460, inf] via TimeSeriesSplit CV. Adopt whichever minimizes CV LL — do not pick by bracket feel. | ⬜ |
+| P4 | **Draw classifier** — Train a binary draw-vs-decisive classifier. Blend as fourth signal if draw recall improves without degrading overall LL. | ⬜ |
+| P5 | **Retrain + validate** — Full retrain with P1-P4 changes. Rerun market divergence. Compare V3 vs V2 on: test LL, confederation breakdown LL, WC2022 backtest LL, draw recall. Only accept V3 if it beats V2 on >2 of 4 metrics. | ⬜ |
+| P6 | **Re-run bracket + charts** — Monte Carlo 10k sims with V3 models. Update all 4 charts. Update market divergence. Flag any remaining high-ratio divergences and classify: likely-edge vs likely-bias. | ⬜ |
 
 ---
 

@@ -1,0 +1,205 @@
+{
+  "overall": {
+    "log_loss": 0.8594,
+    "accuracy": 0.6167
+  },
+  "calibration": {
+    "away_win": {
+      "mean_pred": 0.3,
+      "actual_rate": 0.329
+    },
+    "draw": {
+      "mean_pred": 0.259,
+      "actual_rate": 0.222
+    },
+    "home_win": {
+      "mean_pred": 0.441,
+      "actual_rate": 0.449
+    }
+  },
+  "confederation_breakdown": {
+    "UEFA": {
+      "n": 132,
+      "log_loss": 0.7987,
+      "accuracy": 0.6667,
+      "draw_pred": 0.254,
+      "draw_actual": 0.189
+    },
+    "CONMEBOL": {
+      "n": 34,
+      "log_loss": 0.9283,
+      "accuracy": 0.5882,
+      "draw_pred": 0.306,
+      "draw_actual": 0.265
+    },
+    "CONCACAF": {
+      "n": 58,
+      "log_loss": 0.9113,
+      "accuracy": 0.6207,
+      "draw_pred": 0.279,
+      "draw_actual": 0.172
+    },
+    "CAF": {
+      "n": 82,
+      "log_loss": 0.8965,
+      "accuracy": 0.5976,
+      "draw_pred": 0.241,
+      "draw_actual": 0.28
+    },
+    "AFC": {
+      "n": 69,
+      "log_loss": 0.7654,
+      "accuracy": 0.5797,
+      "draw_pred": 0.245,
+      "draw_actual": 0.188
+    }
+  },
+  "feature_group_pct": {},
+  "elo_audit": {
+    "Mexico": {
+      "elo": 1861.0,
+      "fifa_rank": 15,
+      "market_pct": 1.05,
+      "model_pct": 10.44,
+      "edge_pp": 9.39
+    },
+    "France": {
+      "elo": 1983.8,
+      "fifa_rank": 2,
+      "market_pct": 14.8,
+      "model_pct": 4.55,
+      "edge_pp": -10.25
+    },
+    "England": {
+      "elo": 1930.8,
+      "fifa_rank": 4,
+      "market_pct": 10.64,
+      "model_pct": 4.85,
+      "edge_pp": -5.79
+    },
+    "Portugal": {
+      "elo": 1914.5,
+      "fifa_rank": 6,
+      "market_pct": 8.96,
+      "model_pct": 3.13,
+      "edge_pp": -5.83
+    },
+    "Iran": {
+      "elo": 1814.7,
+      "fifa_rank": 150,
+      "market_pct": 0.12,
+      "model_pct": 4.17,
+      "edge_pp": 4.05
+    },
+    "Japan": {
+      "elo": 1865.7,
+      "fifa_rank": 18,
+      "market_pct": 1.29,
+      "model_pct": 6.13,
+      "edge_pp": 4.84
+    },
+    "Korea Republic": {
+      "elo": null,
+      "fifa_rank": 23,
+      "market_pct": 0.21,
+      "model_pct": 2.8,
+      "edge_pp": 2.59
+    },
+    "Brazil": {
+      "elo": 1942.1,
+      "fifa_rank": 3,
+      "market_pct": 8.1,
+      "model_pct": 11.87,
+      "edge_pp": 3.77
+    },
+    "Argentina": {
+      "elo": 2049.5,
+      "fifa_rank": 1,
+      "market_pct": 8.51,
+      "model_pct": 7.02,
+      "edge_pp": -1.49
+    },
+    "United States": {
+      "elo": 1732.8,
+      "fifa_rank": null,
+      "market_pct": NaN,
+      "model_pct": NaN,
+      "edge_pp": NaN
+    },
+    "Canada": {
+      "elo": 1791.2,
+      "fifa_rank": 45,
+      "market_pct": 0.42,
+      "model_pct": 3.54,
+      "edge_pp": 3.12
+    },
+    "Norway": {
+      "elo": 1789.4,
+      "fifa_rank": 42,
+      "market_pct": 2.36,
+      "model_pct": 0.19,
+      "edge_pp": -2.17
+    }
+  },
+  "sos_distortion": {
+    "Mexico": {
+      "own_elo": 1861.0,
+      "avg_opp_elo_last20": 1708.5,
+      "gap": 152.5
+    },
+    "France": {
+      "own_elo": 1983.8,
+      "avg_opp_elo_last20": 1724.5,
+      "gap": 259.3
+    },
+    "England": {
+      "own_elo": 1930.8,
+      "avg_opp_elo_last20": 1611.8,
+      "gap": 319.0
+    },
+    "Brazil": {
+      "own_elo": 1942.1,
+      "avg_opp_elo_last20": 1719.7,
+      "gap": 222.4
+    },
+    "Argentina": {
+      "own_elo": 2049.5,
+      "avg_opp_elo_last20": 1728.3,
+      "gap": 321.2
+    },
+    "Japan": {
+      "own_elo": 1865.7,
+      "avg_opp_elo_last20": 1659.8,
+      "gap": 205.9
+    },
+    "Iran": {
+      "own_elo": 1814.7,
+      "avg_opp_elo_last20": 1585.9,
+      "gap": 228.8
+    },
+    "Canada": {
+      "own_elo": 1791.2,
+      "avg_opp_elo_last20": 1554.4,
+      "gap": 236.9
+    },
+    "Korea Republic": {
+      "own_elo": null,
+      "avg_opp_elo_last20": 1596.8,
+      "gap": null
+    },
+    "Norway": {
+      "own_elo": 1789.4,
+      "avg_opp_elo_last20": 1563.9,
+      "gap": 225.5
+    }
+  },
+  "wc2022_backtest": {
+    "n": 348,
+    "model_ll": 0.8313,
+    "naive_ll": 1.0986,
+    "base_ll": 1.0754,
+    "skill_vs_naive_pct": 24.3,
+    "skill_vs_base_pct": 22.7,
+    "accuracy": 0.6207
+  }
+}
