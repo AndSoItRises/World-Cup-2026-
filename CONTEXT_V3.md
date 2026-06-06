@@ -165,6 +165,15 @@ draw_actual is 0.20-0.32 — the model is not systematically wrong on draw *rate
 concentrates draws poorly (wrong matches). Fix for V3: evaluate a dedicated draw classifier (binary:
 draw vs. decisive) as a third signal. Only adopt if it improves draw recall without hurting overall LL.
 
+**P4 EXECUTED → CUT.** Trained a binary draw-vs-decisive XGB (well-calibrated: mean p_draw 0.211 ≈
+actual 0.224), blended into the ensemble draw component over β∈[0,1]. Every β either keeps recall flat
+or LOWERS it (0.087→0.036→0.008→0.002) — because the calibrated p_draw is at/below base rate, so
+blending pulls draw mass DOWN (improving LL to 0.844 but killing recall). No β clears the bar (recall up
+AND LL not worse). Third independent confirmation (after V2 draw-weight sweep + V2 stacking) that ~9%
+draw recall is the log-loss-optimal CEILING: draws are structurally the lowest-prob outcome per match,
+so a calibrated signal can't make them argmax more often without overforecasting. Kept `draw_classifier.py`
+as the record; not wired in.
+
 ### DL-05 — WC2022 backtest confirms real predictive power
 Model log loss on WC2022 matches (n=348): 0.8313 vs naive baseline 1.0986. Skill score = +24.3% over
 uniform, +22.7% over historical base rates. Accuracy 62.1%. This is the honest out-of-sample
@@ -201,7 +210,7 @@ bias fixes. Revisit after V3 retraining.
 | P1 | **Data fixes** — Iran rank sentinel + corrupt rank column fixed via name standardization + points-rerank; all 48 teams resolve (see DL-07) | ✅ |
 | P2 | **Confederation feature** — Tested conf_match_pct, CUT: near-constant (~0.93) for all teams, CV LL worse (DL-02). Conf-STRENGTH signal flagged for next brainstorm. | ✅ |
 | P3 | **Decay sweep** — Re-swept on P1-corrected features; 1460d (4yr) is CV-min, flipping V2's no-decay (DL-03). Adopted decay=1460, XGB lr→0.05. Vectorization deferred (not needed). | ✅ |
-| P4 | **Draw classifier** — Train a binary draw-vs-decisive classifier. Blend as fourth signal if draw recall improves without degrading overall LL. | ⬜ |
+| P4 | **Draw classifier** — Built + blend-tested; CUT. No β improves draw recall without hurting LL (DL-04). ~9% recall confirmed as log-loss-optimal ceiling. | ✅ |
 | P5 | **Retrain + validate** — Full retrain with P1-P4 changes. Rerun market divergence. Compare V3 vs V2 on: test LL, confederation breakdown LL, WC2022 backtest LL, draw recall. Only accept V3 if it beats V2 on >2 of 4 metrics. | ⬜ |
 | P6 | **Re-run bracket + charts** — Monte Carlo 10k sims with V3 models. Update all 4 charts. Update market divergence. Flag any remaining high-ratio divergences and classify: likely-edge vs likely-bias. | ⬜ |
 
