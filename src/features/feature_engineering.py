@@ -70,6 +70,10 @@ def load_rankings():
           f"{rankings['rank_date'].min().date()} → {rankings['rank_date'].max().date()}")
     return rankings
 
+# Note (V3 P2): a team→confederation map is trivially rebuildable from the
+# training ranking CSVs' `confederation` column if a future confederation-STRENGTH
+# feature is tried. The conf_match_pct feature itself was cut (no signal — DL-02).
+
 
 # ── 3. Merge FIFA ranking onto matches (no leakage via merge_asof) ────────────
 def add_fifa_ranking_diff(matches: pd.DataFrame, rankings: pd.DataFrame) -> pd.DataFrame:
@@ -422,6 +426,9 @@ def main():
     combined = add_fifa_ranking_diff(combined, rankings)
     combined = add_elo(combined)
     combined = add_rolling_form(combined)
+    # V3 P2: conf_match_pct tested here, CUT — no CV improvement (DL-02 result).
+    # ~93% of all qualifying matches are intra-confederation, so the feature is
+    # near-constant (~0.93) for every team and carries no discriminative signal.
     combined = add_h2h(combined)
     combined = add_days_rest(combined)
     combined = add_tournament_stage(combined)

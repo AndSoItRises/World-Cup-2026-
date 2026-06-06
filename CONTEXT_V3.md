@@ -135,6 +135,14 @@ against weak sides that the ELO-weighting partially but not fully corrects. Fix:
 `confederation_match_pct` feature (% of rolling window that was same-confederation) so the model can
 discount intra-confederation form on its own. Do NOT hard-code a CONCACAF penalty — let the model learn it.
 
+**P2 EXECUTED → CUT (no signal).** Built `home/away_conf_match_pct` (% of last-10 vs same-conf), A/B
+CV-tested per the non-negotiable. CV log loss got *worse* (0.8696 → 0.8702, Δ −0.0006). Root cause:
+mean conf_match_pct = **0.929** — ~93% of every team's qualifying matches are intra-confederation, so
+the feature is near-constant for ALL teams and can't discriminate Mexico from France. The hypothesis
+was right that the inflation is intra-conf volume, but *this* feature can't express it (no variance).
+Cut and reverted to 51-col feature set. NEXT IDEA for brainstorm: a confederation-STRENGTH signal
+(opponent's confederation avg ELO, or a confederation fixed-effect) instead of same-conf %.
+
 ### DL-03 — European underrating is a decay problem
 No-decay was correct to fix Argentina/Brazil (over-rewarded CONMEBOL dominance under old decay). But
 it now punishes consistently elite UEFA teams who have steady but unspectacular qualifier records.
@@ -184,7 +192,7 @@ bias fixes. Revisit after V3 retraining.
 | Phase | Description | Status |
 |---|---|---|
 | P1 | **Data fixes** — Iran rank sentinel + corrupt rank column fixed via name standardization + points-rerank; all 48 teams resolve (see DL-07) | ✅ |
-| P2 | **Confederation feature** — Add `home_conf_match_pct` + `away_conf_match_pct` to rolling feature set (% of rolling-10 window that was same-confederation). Retrain → CV LL must improve vs V2 baseline to keep. | ⬜ |
+| P2 | **Confederation feature** — Tested conf_match_pct, CUT: near-constant (~0.93) for all teams, CV LL worse (DL-02). Conf-STRENGTH signal flagged for next brainstorm. | ✅ |
 | P3 | **Decay sweep** — Vectorize weighted rolling stats (unblock O(n²) bottleneck first). Then sweep half-life [365, 730, 1095, 1460, inf] via TimeSeriesSplit CV. Adopt whichever minimizes CV LL — do not pick by bracket feel. | ⬜ |
 | P4 | **Draw classifier** — Train a binary draw-vs-decisive classifier. Blend as fourth signal if draw recall improves without degrading overall LL. | ⬜ |
 | P5 | **Retrain + validate** — Full retrain with P1-P4 changes. Rerun market divergence. Compare V3 vs V2 on: test LL, confederation breakdown LL, WC2022 backtest LL, draw recall. Only accept V3 if it beats V2 on >2 of 4 metrics. | ⬜ |
