@@ -33,9 +33,9 @@ MODELS_DIR = BASE / "models"
 TRAIN_PATH = DATA_PROC / "train_features.csv"
 TEST_PATH  = DATA_PROC / "test_features.csv"
 
-XGB_MODEL_PATH = MODELS_DIR / "xgb_v2.json"
-LGB_MODEL_PATH = MODELS_DIR / "lgbm_v2.txt"
-DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params.json"
+XGB_MODEL_PATH = MODELS_DIR / "xgb_v3.json"
+LGB_MODEL_PATH = MODELS_DIR / "lgbm_v3.txt"
+DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params_v3.json"
 
 # ── Ensemble weights (must sum to 1.0) ────────────────────────────────────────
 WEIGHTS = {
@@ -212,7 +212,7 @@ def print_comparison(results: list[dict]):
 # ── Save outputs ──────────────────────────────────────────────────────────────
 def save_outputs(ensemble_proba: np.ndarray, results: list[dict]):
     # Save raw probabilities for Phase 6 Step 2
-    npy_path = MODELS_DIR / "ensemble_test_proba_v2.npy"
+    npy_path = MODELS_DIR / "ensemble_test_proba_v3.npy"
     np.save(str(npy_path), ensemble_proba)
     print(f"\n✅ Ensemble probabilities saved: {npy_path}")
 
@@ -229,7 +229,7 @@ def save_outputs(ensemble_proba: np.ndarray, results: list[dict]):
             for r in results
         ]
     }
-    report_path = MODELS_DIR / "ensemble_report_v2.json"
+    report_path = MODELS_DIR / "ensemble_report_v3.json"
     with open(report_path, "w") as f:
         json.dump(report_out, f, indent=2)
     print(f"✅ Ensemble report saved:        {report_path}")

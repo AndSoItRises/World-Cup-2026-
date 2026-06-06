@@ -270,7 +270,7 @@ def save_params(teams, attack, defense, home_adv, rho,
         "classification_report": report,
     }
 
-    out_path = MODELS_DIR / "dixon_coles_params.json"
+    out_path = MODELS_DIR / "dixon_coles_params_v3.json"
     with open(out_path, "w") as f:
         json.dump(params_out, f, indent=2)
     print(f"\n✅ Params saved: {out_path}")

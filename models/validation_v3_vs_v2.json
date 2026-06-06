@@ -1,0 +1,16 @@
+{
+  "v2": {
+    "test_ll": 0.8458,
+    "macro_conf_ll": 0.8626,
+    "wc2022_ll": 1.0598,
+    "draw_recall": 0.097
+  },
+  "v3": {
+    "test_ll": 0.8462,
+    "macro_conf_ll": 0.8628,
+    "wc2022_ll": 1.0608,
+    "draw_recall": 0.0871
+  },
+  "v3_wins": 0,
+  "accept_v3": false
+}

@@ -46,7 +46,7 @@ TEST_PATH  = DATA_PROC / "test_features.csv"
 
 TARGET = "result"
 N_SPLITS = 5
-DECAY_HALF_LIFE = 1460   # V3 P3: 4yr partial decay (CV-min on P1-corrected features)
+DECAY_HALF_LIFE = 99999   # no-decay (V3 P5 reverted the 1460 trial — DL-08)
 
 
 def compute_decay(dates, ref, half_life=DECAY_HALF_LIFE):

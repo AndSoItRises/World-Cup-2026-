@@ -2,9 +2,15 @@
 
 A machine learning model that predicts match outcomes and simulates the full WC2026 bracket using an ensemble of XGBoost, LightGBM, and Dixon-Coles — with ELO ratings, opponent-quality-weighted form, and a betting-market comparison.
 
+> **V3 (current)** is a data-correctness release: it fixes silent team-name / FIFA-rank bugs so all 48
+> WC2026 teams resolve correctly, and rigorously tested three modeling ideas (confederation feature,
+> partial time-decay, dedicated draw classifier) — all cut after validation showed no improvement.
+> The finding: V2 was already at the ceiling for this feature set; gains now require *new signal*
+> (squad value, player availability), not reweighting existing features. Metrics are unchanged vs V2.
+
 ---
 
-## Results (V2)
+## Results
 
 | Model | Test Accuracy | Log Loss | Draw Recall |
 |---|---|---|---|
@@ -123,12 +129,15 @@ python -m src.models.stacking
 
 ---
 
-## Known Limitations (V3 Roadmap)
+## Known Limitations (V4 Roadmap)
 
-- **Mexico / CONCACAF inflation** — model gives Mexico 10.4% vs a 1.1% market price; residual strength-of-schedule bias not fully corrected by ELO weighting.
-- **European powers underrated** — France (4.5% vs 14.8% market) and Portugal underrated; no-decay over-rewards recent CONMEBOL dominance.
-- **No demonstrated betting edge** — divergences from market track known model biases, so Kelly bet sizing is deferred until biases are fixed.
-- **ELO K-factors** — still hardcoded (40/30/20), never CV-tuned (blocked on a faster feature rebuild).
+V3 confirmed these biases are NOT fixable by reweighting the current features (decay, confederation %, and a draw classifier were all tested and cut). They are baked into the available signal — V4 needs new information.
+
+- **Mexico / CONCACAF inflation** — model ~11% vs a 1.1% market price. Residual; partial decay made it *worse*, not better (V3 finding).
+- **European powers underrated** — France (~5% vs 14.8% market), Portugal, England. Not a decay problem (V3 refuted that hypothesis).
+- **No demonstrated betting edge** — market divergences track known model biases, not inefficiency. Kelly bet sizing stays deferred.
+- **New signal needed (V4)** — squad market value, key-player availability/injuries, club form of the player pool. New source ⇒ team-name audit first.
+- **ELO K-factors** — still hardcoded (40/30/20), never CV-tuned.
 
 ---
 

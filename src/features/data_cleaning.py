@@ -81,11 +81,11 @@ TRAIN_CUTOFF = pd.Timestamp("2022-11-20")
 
 # ── STEP 4: Exponential decay weighting ───────────────────────────────────────
 
-# V2 tuning disabled decay (no-decay won on the pre-P1 features). V3 P3 re-swept
-# on the P1-corrected features: the curve flipped — 1460d (4yr) now edges out
-# no-decay (CV LL 0.8708 vs 0.8709). Partial decay restores weight to consistent
-# elite UEFA teams (DL-03) without re-breaking the CONMEBOL fix. Adopted by CV-min.
-DECAY_HALF_LIFE_DAYS = 1460
+# V3 P5 (DL-08): decay 1460 was tried (CV-min by 0.0001) but REVERTED — it's a
+# test-LL wash AND the bracket showed it AMPLIFIES the CONCACAF inflation
+# (Mexico 10.4→12.9%) while NOT fixing the Euro underrating (DL-03 refuted).
+# No-decay is V2's validated choice and avoids the bracket regression.
+DECAY_HALF_LIFE_DAYS = 99999
 
 def compute_decay_weights(dates: pd.Series, reference_date: pd.Timestamp) -> pd.Series:
     lam = np.log(2) / DECAY_HALF_LIFE_DAYS

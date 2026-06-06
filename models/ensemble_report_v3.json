@@ -1,0 +1,33 @@
+{
+  "weights": {
+    "xgb": 0.275,
+    "lgb": 0.275,
+    "dc": 0.45
+  },
+  "models": [
+    {
+      "label": "XGBoost",
+      "accuracy": 0.5853,
+      "log_loss": 0.8632,
+      "draw_recall": 0.2594
+    },
+    {
+      "label": "LightGBM",
+      "accuracy": 0.5848,
+      "log_loss": 0.8635,
+      "draw_recall": 0.2812
+    },
+    {
+      "label": "Dixon-Coles",
+      "accuracy": 0.6066,
+      "log_loss": 0.8613,
+      "draw_recall": 0.004
+    },
+    {
+      "label": "Ensemble",
+      "accuracy": 0.6172,
+      "log_loss": 0.8462,
+      "draw_recall": 0.0871
+    }
+  ]
+}

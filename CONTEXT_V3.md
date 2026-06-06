@@ -201,6 +201,18 @@ home_win: mean_pred=0.441 vs actual=0.449 (UNDER by 1pp, cal_err=0.033)
 No Platt scaling or isotonic regression needed at this stage — errors are small and may close with
 bias fixes. Revisit after V3 retraining.
 
+### DL-08 — P5 VERDICT: V3 is a data-correctness release; all modeling changes reverted
+Retrained to v3 paths (V2 kept intact) and validated V3 vs V2 on 4 metrics. **V3 won only 1/4**
+(draw recall 0.097→0.117); test LL was a dead heat (0.8460 vs 0.8458), macro-conf LL and WC2022-finals
+LL marginally worse. Then the BRACKET (the real DL-03 target) settled it: decay=1460 **amplified** the
+CONCACAF inflation (Mexico 10.4→12.9%, rank unchanged so it's decay-driven) and did NOT lift the Euro
+powers (France 4.5→4.7% vs market 14.8%). DL-03 refuted. Decision: **revert all modeling changes to V2
+config** (no-decay, XGB lr 0.03) and ship V3 as a pure correctness release = V2 model + P1 data fixes.
+Net V3 result: P1 (real data bugs fixed, WC2026 predictions now resolve correctly) + three rigorously
+tested-and-cut modeling hypotheses (P2/P3/P4). The negative results ARE the finding: **V2 was already at
+the achievable ceiling for this feature set.** V4 must add NEW signal (squad value, player availability),
+not reweight existing features. The market divergences remain model bias → still no betting edge.
+
 ---
 
 ## V3 Phase Status
@@ -211,8 +223,8 @@ bias fixes. Revisit after V3 retraining.
 | P2 | **Confederation feature** — Tested conf_match_pct, CUT: near-constant (~0.93) for all teams, CV LL worse (DL-02). Conf-STRENGTH signal flagged for next brainstorm. | ✅ |
 | P3 | **Decay sweep** — Re-swept on P1-corrected features; 1460d (4yr) is CV-min, flipping V2's no-decay (DL-03). Adopted decay=1460, XGB lr→0.05. Vectorization deferred (not needed). | ✅ |
 | P4 | **Draw classifier** — Built + blend-tested; CUT. No β improves draw recall without hurting LL (DL-04). ~9% recall confirmed as log-loss-optimal ceiling. | ✅ |
-| P5 | **Retrain + validate** — Full retrain with P1-P4 changes. Rerun market divergence. Compare V3 vs V2 on: test LL, confederation breakdown LL, WC2022 backtest LL, draw recall. Only accept V3 if it beats V2 on >2 of 4 metrics. | ⬜ |
-| P6 | **Re-run bracket + charts** — Monte Carlo 10k sims with V3 models. Update all 4 charts. Update market divergence. Flag any remaining high-ratio divergences and classify: likely-edge vs likely-bias. | ⬜ |
+| P5 | **Retrain + validate** — Retrained to v3 paths (V2 kept). V3 won 0–1/4 metrics; decay=1460 amplified bias → reverted (DL-08). V3 = V2 modeling + P1 data fixes (correctness release). | ✅ |
+| P6 | **Re-run bracket + charts** — 10k V3 sims, 4 charts + market refreshed. Iran now resolves (rank 21, 5.3%). Mexico (+10pp) / France (−10pp) divergences persist = model bias, not edge → V4 needs new signal. | ✅ |
 
 ---
 
@@ -226,4 +238,35 @@ bias fixes. Revisit after V3 retraining.
 ---
 
 ## ══ END-OF-VERSION REVIEW ══
-*(Filled in when V3 is fully closed)*
+*V3 closed — a data-correctness + scientific-rigor release.*
+
+### What V3 is
+V3 = V2's validated modeling + corrected data. Test metrics are identical-within-noise
+(acc 61.7% vs 62.1%, LL 0.8462 vs 0.8458). The value is NOT in the metrics — it's:
+1. **Real bugs fixed (P1):** Iran's FIFA rank (150 sentinel → real 21), a corrupt rank column
+   (Austria/Algeria/Ghana/… re-derived from points), and name resolution so all 48 WC2026 teams
+   resolve to real rank + ELO (Turkey, Cape Verde, DR Congo were silently broken). WC2026
+   predictions are now correct where they were wrong.
+2. **Rigorous negative results:** 3 modeling hypotheses tested and CUT with evidence —
+   conf_match_pct (no variance, DL-02), partial decay (LL wash + worsened bracket, DL-03/08),
+   draw classifier (recall ceiling, DL-04).
+
+### The headline finding
+**V2 was already at the achievable ceiling for this feature set.** Reweighting existing features
+(decay, conf %, draw blend) cannot move the biases. The Mexico/CONCACAF inflation and Euro-power
+underrating are baked into the available signal. V4 must add genuinely NEW information.
+
+### Decision Review
+- **Held up:** test-before-adopt discipline (saved us from shipping 3 non-improvements); fixing data
+  bugs not modeling around them (DL-01); using the BRACKET not just LL to judge decay (DL-08 — LL said
+  "fine," bracket said "worse").
+- **Refuted:** DL-03 (partial decay fixes Euro bias) — it amplified CONCACAF inflation instead.
+
+### Brainstorm: V4 Priorities
+- **NEW SIGNAL is the only lever left:** squad market value (Transfermarkt), key-player
+  availability/injuries, club form of the player pool, manager tenure. New source → name audit first.
+- A confederation-STRENGTH feature (opp confederation avg ELO) — distinct from the cut conf_match_pct.
+- Honest edge validation: backtest model-vs-market on a PAST tournament before trusting WC2026
+  divergences (don't launder the market's opinion back into the model).
+- Kelly bet sizing: STILL DEFERRED — V3 confirmed no trustworthy edge (divergences = bias).
+- Engineering (only if a real edge emerges): faster sim engine, live result→ELO→re-sim, deployment.

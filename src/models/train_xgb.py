@@ -128,13 +128,13 @@ def print_baseline(y_train, y_test):
 
 
 # ── XGBoost params ────────────────────────────────────────────────────────────
-# Tuned via tune_hyperparams.py: depth 3 beat 4/5 (V2). V3 P3 re-swept on
-# P1-corrected features → lr 0.05 marginally best (CV LL 0.8703).
+# Tuned via tune_hyperparams.py: depth 3 beat 4/5. lr 0.03 (V2 config; the V3
+# decay+lr0.05 re-tune was reverted with the decay change — see DL-08).
 XGB_PARAMS = {
     "objective":        "multi:softprob",
     "num_class":        3,
     "n_estimators":     600,
-    "learning_rate":    0.05,
+    "learning_rate":    0.03,
     "max_depth":        3,
     "subsample":        0.8,
     "colsample_bytree": 0.8,
@@ -249,7 +249,7 @@ def print_feature_importance(model, top_n=15):
 
 # ── Save ──────────────────────────────────────────────────────────────────────
 def save_artifacts(model, importance, acc, ll, cv_acc, cv_ll, report):
-    model_path = MODELS_DIR / "xgb_v2.json"
+    model_path = MODELS_DIR / "xgb_v3.json"
     model.save_model(str(model_path))
     print(f"\n✅ Model saved: {model_path}")
 
@@ -267,7 +267,7 @@ def save_artifacts(model, importance, acc, ll, cv_acc, cv_ll, report):
         "feature_importance_gain": {k: round(v, 2) for k, v in list(importance.items())[:20]},
     }
 
-    report_path = MODELS_DIR / "training_report_v2.json"
+    report_path = MODELS_DIR / "training_report_v3.json"
     with open(report_path, "w") as f:
         json.dump(training_report, f, indent=2)
     print(f"✅ Training report saved: {report_path}")

@@ -1,70 +1,72 @@
 {
   "market_overround": 1.1752,
-  "matched_teams": 48,
-  "unmatched_market": [],
-  "model_market_corr": 0.6824,
-  "mean_abs_divergence_pp": 1.571,
+  "matched_teams": 47,
+  "unmatched_market": [
+    "Congo DR"
+  ],
+  "model_market_corr": 0.6652,
+  "mean_abs_divergence_pp": 1.636,
   "top_value_picks": [
     {
       "team": "Mexico",
-      "edge_pp": 9.39,
-      "model_pct": 10.44,
+      "edge_pp": 9.99,
+      "model_pct": 11.04,
       "market_pct": 1.05
     },
     {
-      "team": "Japan",
-      "edge_pp": 4.84,
-      "model_pct": 6.13,
-      "market_pct": 1.29
-    },
-    {
       "team": "Iran",
-      "edge_pp": 4.05,
-      "model_pct": 4.17,
+      "edge_pp": 5.19,
+      "model_pct": 5.31,
       "market_pct": 0.12
     },
     {
+      "team": "Japan",
+      "edge_pp": 4.73,
+      "model_pct": 6.02,
+      "market_pct": 1.29
+    },
+    {
       "team": "Brazil",
-      "edge_pp": 3.77,
-      "model_pct": 11.87,
+      "edge_pp": 3.46,
+      "model_pct": 11.56,
       "market_pct": 8.1
     },
     {
       "team": "Canada",
-      "edge_pp": 3.12,
-      "model_pct": 3.54,
+      "edge_pp": 3.39,
+      "model_pct": 3.81,
       "market_pct": 0.42
     }
   ],
   "top_fades": [
     {
       "team": "France",
-      "edge_pp": -10.25,
-      "model_pct": 4.55,
+      "edge_pp": -9.98,
+      "model_pct": 4.82,
       "market_pct": 14.8
     },
     {
-      "team": "Portugal",
-      "edge_pp": -5.83,
-      "model_pct": 3.13,
-      "market_pct": 8.96
-    },
-    {
       "team": "England",
-      "edge_pp": -5.79,
-      "model_pct": 4.85,
+      "edge_pp": -6.07,
+      "model_pct": 4.57,
       "market_pct": 10.64
     },
     {
+      "team": "Portugal",
+      "edge_pp": -5.55,
+      "model_pct": 3.41,
+      "market_pct": 8.96
+    },
+    {
       "team": "Germany",
-      "edge_pp": -2.68,
-      "model_pct": 2.99,
+      "edge_pp": -2.79,
+      "model_pct": 2.88,
       "market_pct": 5.67
     },
     {
       "team": "Norway",
-      "edge_pp": -2.17,
-      "model_pct": 0.19,
+      "edge_pp": -2.25,
+      "model_pct": 0.11,
       "market_pct": 2.36
     }
   ]

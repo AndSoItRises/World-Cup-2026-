@@ -157,8 +157,8 @@ def print_feature_importance(model, top_n=15):
 
 
 def save_artifacts(model, importance, acc, ll, report):
-    model.booster_.save_model(str(MODELS_DIR / "lgbm_v2.txt"))
-    print(f"\n✅ Model saved: models/lgbm_v2.txt")
+    model.booster_.save_model(str(MODELS_DIR / "lgbm_v3.txt"))
+    print(f"\n✅ Model saved: models/lgbm_v3.txt")
 
     out = {
         "model": "lgbm_v1",
@@ -169,9 +169,9 @@ def save_artifacts(model, importance, acc, ll, report):
         "classification_report": report,
         "feature_importance": {k: round(float(v), 2) for k, v in list(importance.items())[:20]},
     }
-    with open(MODELS_DIR / "lgbm_report.json", "w") as f:
+    with open(MODELS_DIR / "lgbm_report_v3.json", "w") as f:
         json.dump(out, f, indent=2)
-    print(f"✅ Report saved: models/lgbm_report_v2.json")
+    print(f"✅ Report saved: models/lgbm_report_v3.json")
 
 
 def main():
@@ -185,7 +185,7 @@ def main():
     save_artifacts(model, importance, acc, ll, report)
 
     # Side-by-side vs XGBoost
-    xgb_report_path = MODELS_DIR / "training_report_v2.json"
+    xgb_report_path = MODELS_DIR / "training_report_v3.json"
     if xgb_report_path.exists():
         with open(xgb_report_path) as f:
             xgb = json.load(f)
