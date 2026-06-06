@@ -128,13 +128,13 @@ def print_baseline(y_train, y_test):
 
 
 # ── XGBoost params ────────────────────────────────────────────────────────────
-# max_depth / learning_rate tuned in Phase 5 (tune_hyperparams.py): shallower
-# trees + lower LR reduced CV log loss (depth 3 beat 4/5 consistently).
+# Tuned via tune_hyperparams.py: depth 3 beat 4/5 (V2). V3 P3 re-swept on
+# P1-corrected features → lr 0.05 marginally best (CV LL 0.8703).
 XGB_PARAMS = {
     "objective":        "multi:softprob",
     "num_class":        3,
     "n_estimators":     600,
-    "learning_rate":    0.03,
+    "learning_rate":    0.05,
     "max_depth":        3,
     "subsample":        0.8,
     "colsample_bytree": 0.8,

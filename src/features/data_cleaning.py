@@ -81,11 +81,11 @@ TRAIN_CUTOFF = pd.Timestamp("2022-11-20")
 
 # ── STEP 4: Exponential decay weighting ───────────────────────────────────────
 
-# Tuned in Phase 5 (tune_hyperparams.py): CV log loss improved monotonically as
-# half-life lengthened (365→0.8806 ... 1460→0.8717 ... none→0.8703). Time decay
-# was discarding useful signal — international team strength is stable. Effectively
-# disabled (very long half-life ≈ uniform weights).
-DECAY_HALF_LIFE_DAYS = 99999
+# V2 tuning disabled decay (no-decay won on the pre-P1 features). V3 P3 re-swept
+# on the P1-corrected features: the curve flipped — 1460d (4yr) now edges out
+# no-decay (CV LL 0.8708 vs 0.8709). Partial decay restores weight to consistent
+# elite UEFA teams (DL-03) without re-breaking the CONMEBOL fix. Adopted by CV-min.
+DECAY_HALF_LIFE_DAYS = 1460
 
 def compute_decay_weights(dates: pd.Series, reference_date: pd.Timestamp) -> pd.Series:
     lam = np.log(2) / DECAY_HALF_LIFE_DAYS

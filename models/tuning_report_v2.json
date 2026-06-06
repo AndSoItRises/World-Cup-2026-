@@ -1,24 +1,24 @@
 {
-  "best_half_life": 99999,
+  "best_half_life": 1460,
   "decay_cv_logloss": {
-    "365": 0.8806,
-    "730": 0.8748,
-    "1095": 0.873,
-    "1460": 0.8717,
-    "99999": 0.8703
+    "365": 0.8798,
+    "730": 0.8741,
+    "1095": 0.8716,
+    "1460": 0.8708,
+    "99999": 0.8709
   },
   "best_xgb_params": {
     "max_depth": 3,
-    "learning_rate": 0.03,
+    "learning_rate": 0.05,
     "min_child_weight": 5
   },
-  "best_xgb_cv_logloss": 0.8696,
+  "best_xgb_cv_logloss": 0.8703,
   "best_lgb_params": {
     "max_depth": 3,
     "learning_rate": 0.05,
     "num_leaves": 15
   },
-  "best_lgb_cv_logloss": 0.872,
+  "best_lgb_cv_logloss": 0.8729,
   "draw_class_weight": 1.75,
   "baseline": {
     "xgb_ll": 0.8691,

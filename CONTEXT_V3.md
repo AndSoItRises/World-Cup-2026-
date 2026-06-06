@@ -151,6 +151,13 @@ mediocre because they rarely face tough opposition in qualifiers. Fix: implement
 (half-life ~3 years / 1095 days) and sweep via TimeSeriesSplit CV. Do NOT tune decay by hand to
 "make France look right" — only adopt if CV log loss improves.
 
+**P3 EXECUTED → ADOPT 1460d.** Re-swept decay on the P1-corrected features. The curve FLIPPED vs V2:
+365→0.8798, 730→0.8741, 1095→0.8716, **1460→0.8708 (min)**, none→0.8709. In V2 (pre-P1) no-decay won;
+with clean data a 4-year partial decay now edges it (Δ 0.0001 — tiny but it's the CV-min AND the
+partial-decay DL-03 predicted). Set `DECAY_HALF_LIFE_DAYS=1460`. XGB lr also re-tuned 0.03→0.05
+(CV 0.8703). Canonical retrain deferred to P5. Whether this actually lifts France/Portugal is a P5/P6
+validation check — adopted on CV-min, not bracket feel.
+
 ### DL-04 — Draw recall is a structural ceiling under current Dixon-Coles blend
 DC fits rho≈0 under no-decay → rarely predicts draws → caps ensemble draw recall at ~9.7%.
 Confederation breakdown confirms: draw_pred averages 0.25-0.31 across all confederations while
@@ -193,7 +200,7 @@ bias fixes. Revisit after V3 retraining.
 |---|---|---|
 | P1 | **Data fixes** — Iran rank sentinel + corrupt rank column fixed via name standardization + points-rerank; all 48 teams resolve (see DL-07) | ✅ |
 | P2 | **Confederation feature** — Tested conf_match_pct, CUT: near-constant (~0.93) for all teams, CV LL worse (DL-02). Conf-STRENGTH signal flagged for next brainstorm. | ✅ |
-| P3 | **Decay sweep** — Vectorize weighted rolling stats (unblock O(n²) bottleneck first). Then sweep half-life [365, 730, 1095, 1460, inf] via TimeSeriesSplit CV. Adopt whichever minimizes CV LL — do not pick by bracket feel. | ⬜ |
+| P3 | **Decay sweep** — Re-swept on P1-corrected features; 1460d (4yr) is CV-min, flipping V2's no-decay (DL-03). Adopted decay=1460, XGB lr→0.05. Vectorization deferred (not needed). | ✅ |
 | P4 | **Draw classifier** — Train a binary draw-vs-decisive classifier. Blend as fourth signal if draw recall improves without degrading overall LL. | ⬜ |
 | P5 | **Retrain + validate** — Full retrain with P1-P4 changes. Rerun market divergence. Compare V3 vs V2 on: test LL, confederation breakdown LL, WC2022 backtest LL, draw recall. Only accept V3 if it beats V2 on >2 of 4 metrics. | ⬜ |
 | P6 | **Re-run bracket + charts** — Monte Carlo 10k sims with V3 models. Update all 4 charts. Update market divergence. Flag any remaining high-ratio divergences and classify: likely-edge vs likely-bias. | ⬜ |
