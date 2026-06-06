@@ -22,6 +22,8 @@ from scipy.stats import poisson
 import xgboost as xgb
 import lightgbm as lgb
 
+from src.features.data_cleaning import standardize_name
+
 warnings.filterwarnings("ignore")
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
@@ -69,6 +71,7 @@ NAME_MAP = {
     "Cape Verde":              "Cape Verde Islands",
     "Curacao":                 "Curaçao",
     "United States":           "USA",
+    "DR Congo":                "Congo DR",   # V3 P1: was falling back to default form
 }
 
 
@@ -92,8 +95,15 @@ def load_all():
 
 # ── Build FIFA rank lookup ────────────────────────────────────────────────────
 def build_rank_lookup(rankings: pd.DataFrame) -> dict:
-    """Map team_name → rank."""
-    return {row["team_name"]: int(row["rank"]) for _, row in rankings.iterrows()}
+    """Map standardized team_name → rank.
+    - Keys standardized ('IR Iran'→'Iran') to match normalize() output.
+    - Rank re-derived from points: the current rankings CSV has a corrupted
+      rank column for some teams (Austria '231', Algeria '291', Cabo Verde '681');
+      points are clean and FIFA rank is points-descending, so we re-rank."""
+    r = rankings.copy()
+    r["rank"] = r["points"].rank(ascending=False, method="min").astype(int)
+    return {standardize_name(row["team_name"]): int(row["rank"])
+            for _, row in r.iterrows()}
 
 
 # ── Build rolling form lookup (V2: includes ELO + quality-weighted form) ──────

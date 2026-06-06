@@ -66,6 +66,10 @@ TEAM_NAME_MAP = {
     "Saint Kitts and Nevis":            "St. Kitts and Nevis",
     "Saint Lucia":                      "St. Lucia",
     "Saint Vincent and the Grenadines": "St. Vincent and the Grenadines",
+    # V3 P1: current-rankings spellings that missed the WC2026 lookup
+    "Türkiye":                          "Turkey",
+    "Turkiye":                          "Turkey",
+    "Cabo Verde":                       "Cape Verde Islands",
 }
 
 def standardize_name(name: str) -> str:

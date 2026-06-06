@@ -157,6 +157,19 @@ validation. The model works — the biases above are fixable signal problems, no
 Confederation LL breakdown: UEFA 0.8121, AFC 0.7768, CONCACAF 0.9245, CONMEBOL 0.9255, CAF 0.9558.
 CAF is the worst-performing confederation — flagged for V3 investigation (likely same training-volume issue as CONCACAF).
 
+### DL-07 — P1 EXECUTED: name standardization + a second data bug (corrupt rank column)
+Root cause of Iran=150 confirmed: `feature_engineering.load_rankings()` never standardized
+ranking-table names, so "IR Iran" (rankings) never matched "Iran" (matches) → 150 sentinel.
+Fix: apply `standardize_name` to the rankings table + to prediction rank-lookup keys; added
+`DR Congo→Congo DR`, `Türkiye→Turkey`, `Cabo Verde→Cape Verde Islands` to the maps.
+**Second bug found:** `current_fifa_rankings.csv` has a CORRUPTED rank column for ~8 teams
+(Austria "231"/1597pts, Algeria "291", Cabo Verde "681", Ghana "731", Haiti "821"). Points are
+clean and FIFA rank = points-descending, so `build_rank_lookup` now re-derives rank from points.
+Result: all 48 WC2026 teams resolve to real rank + ELO (Iran 21, Algeria 29, Turkey 22, …).
+Training FIFA-rank coverage improved (missing 8.5% → 4.4%). New: `src/features/verify_teams.py`.
+Vectorization of weighted rolling (planned P3 prereq) DEFERRED — the decay sweep recomputes
+weights from dates (no feature rebuild), so it isn't needed; revisit only if K-factor tuning happens.
+
 ### DL-06 — Calibration is acceptable, draw is slightly overforecast
 away_win: mean_pred=0.300 vs actual=0.329 (UNDER by 3pp, cal_err=0.049)
 draw:     mean_pred=0.259 vs actual=0.222 (OVER  by 4pp, cal_err=0.032)
@@ -170,7 +183,7 @@ bias fixes. Revisit after V3 retraining.
 
 | Phase | Description | Status |
 |---|---|---|
-| P1 | **Data fixes** — Fix Iran FIFA rank sentinel; audit DR Congo name gap in predict_wc2026; verify all 48 WC2026 teams resolve correctly | ⬜ |
+| P1 | **Data fixes** — Iran rank sentinel + corrupt rank column fixed via name standardization + points-rerank; all 48 teams resolve (see DL-07) | ✅ |
 | P2 | **Confederation feature** — Add `home_conf_match_pct` + `away_conf_match_pct` to rolling feature set (% of rolling-10 window that was same-confederation). Retrain → CV LL must improve vs V2 baseline to keep. | ⬜ |
 | P3 | **Decay sweep** — Vectorize weighted rolling stats (unblock O(n²) bottleneck first). Then sweep half-life [365, 730, 1095, 1460, inf] via TimeSeriesSplit CV. Adopt whichever minimizes CV LL — do not pick by bracket feel. | ⬜ |
 | P4 | **Draw classifier** — Train a binary draw-vs-decisive classifier. Blend as fourth signal if draw recall improves without degrading overall LL. | ⬜ |

@@ -28,6 +28,8 @@ import xgboost as xgb
 import lightgbm as lgb
 from itertools import combinations
 
+from src.features.data_cleaning import standardize_name
+
 warnings.filterwarnings("ignore")
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
@@ -73,6 +75,7 @@ NAME_MAP = {
     "Cape Verde":             "Cape Verde Islands",
     "Curacao":                "Curaçao",
     "United States":          "USA",
+    "DR Congo":               "Congo DR",   # V3 P1: was hitting 80 sentinel + default form
 }
 
 # Round of 32 bracket: match_id → (home_slot, away_slot)
@@ -136,7 +139,12 @@ def load_all():
 
 
 def build_rank_lookup(rankings):
-    return {row["team_name"]: int(row["rank"]) for _, row in rankings.iterrows()}
+    # V3 P1: standardize keys ('IR Iran'→'Iran'); re-derive rank from points
+    # (current rankings CSV has a corrupted rank column for some teams).
+    r = rankings.copy()
+    r["rank"] = r["points"].rank(ascending=False, method="min").astype(int)
+    return {standardize_name(row["team_name"]): int(row["rank"])
+            for _, row in r.iterrows()}
 
 
 def build_form_lookup(all_data):

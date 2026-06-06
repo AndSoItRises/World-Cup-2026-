@@ -16,6 +16,8 @@ import json
 import os
 from pathlib import Path
 
+from src.features.data_cleaning import standardize_name
+
 # ── Paths ────────────────────────────────────────────────────────────────────
 BASE = Path(__file__).resolve().parents[2]
 DATA_RAW = BASE / "data" / "raw"
@@ -58,6 +60,11 @@ def load_rankings():
     frames.append(curr)
 
     rankings = pd.concat(frames, ignore_index=True)
+    # V3 P1 (DL-01): standardize ranking team names to model names BEFORE merge.
+    # Rankings data uses raw names ("IR Iran", "Czech Republic"); matches use
+    # standardized names ("Iran", "Czechia"). Without this, the asof-merge misses
+    # and ranks fall back to the 150 sentinel (Iran's bug — stored 150, actual ~22).
+    rankings["team"] = rankings["team"].apply(standardize_name)
     rankings = rankings.sort_values("rank_date").reset_index(drop=True)
     print(f"Rankings table: {len(rankings):,} rows covering "
           f"{rankings['rank_date'].min().date()} → {rankings['rank_date'].max().date()}")
