@@ -127,16 +127,39 @@ DEFERRED until a clean out-of-sample edge is demonstrated: Kelly bet sizing, bet
 ---
 
 ## V4 Decision Log
-*(empty — fill as decisions are made)*
+
+### DL-01 — Squad value is PROVEN missing signal, but rigorous integration is data-blocked
+Diagnostic (`squad_value_diagnostic.py`, 47/48 WC2026 teams, Transfermarkt values vs market_divergence):
+- corr(log squad value, **market** win%) = **+0.66** vs corr(log value, **model** win%) = **+0.42** — the
+  market tracks talent far more than our model does; the model is partly blind to it.
+- **Incremental R² = +0.178** predicting market prob (model alone 0.443 → +value 0.621), coef +0.014.
+  Squad value carries real information BEYOND ELO/form — NOT redundant.
+- corr(value, edge=model−market) = −0.40 → high-value squads are systematically UNDER-rated (Euro bias
+  = talent-blindness). Over-rated by value gap: Mexico (val rk 27 / model rk 3), Iran, Japan, Korea, Australia.
+**Conclusion:** the V4 premise holds — there is identifiable residual signal (~18% incremental R²) the
+current feature set cannot see. BUT adopting squad value as a validated MODEL feature needs historical
+squad values (2002–2022) aligned to the 11.5k training matches for CV — we don't have that, and the
+non-negotiable forbids unvalidated features. A forward-only hand-weighted bracket adjustment was
+considered and REJECTED: the blend weight would be arbitrary (validating against the market just
+reproduces market odds — circular). So V4's real work is a DATA-ACQUISITION project, not modeling.
+**Answer to "are we at max utility?":** for what we can *rigorously* build with data in hand — yes.
+In absolute terms — no, ~18% more explanatory signal is provably available, but it's gated by historical
+squad-value data, not by model cleverness. Next gain requires acquiring that data, then validate-or-cut.
 
 ---
 
 ## V4 Phase Status
-*(to be defined after brainstorm — replace with the agreed phase plan)*
 
 | Phase | Description | Status |
 |---|---|---|
-| _TBD from brainstorm_ | | ⬜ |
+| P1 | **Squad-value diagnostic** — confirmed squad value is real missing signal (+0.178 incremental R²); explains both biases. See DL-01. | ✅ |
+| P2 | **Acquire historical squad values (2002–2022)** — the blocker. Transfermarkt historical snapshots aligned to match dates. Needs a data source / scrape plan. BLOCKED on data. | ⬜ Next |
+| P3 | **Add squad_value features + validate** — join to features (name audit + verify_teams), retrain, CV-compare to V3. Adopt only if CV LL improves AND bracket moves right (DL-08 of V3). | ⬜ |
+| P4 | **Past-tournament market backtest** — does the model (with value) beat market on WC2018/2022? Gates any betting work. | ⬜ |
+
+**Status note:** P1 done. P2 is the critical path and is DATA-BLOCKED — V4 cannot meaningfully proceed
+without historical squad-value data. Decision for Jake: source that data (enables rigorous V4), or treat
+v3.0 as the practical ceiling for the validated model.
 
 ---
 

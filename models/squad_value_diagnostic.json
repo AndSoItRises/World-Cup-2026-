@@ -1,0 +1,11 @@
+{
+  "n_matched": 47,
+  "corr_logvalue_market": 0.663,
+  "corr_logvalue_model": 0.421,
+  "corr_logvalue_edge": -0.4,
+  "r2_model_only": 0.443,
+  "r2_model_plus_value": 0.621,
+  "incremental_r2": 0.178,
+  "logvalue_coef": 0.014,
+  "verdict": "SIGNAL CONFIRMED"
+}
