@@ -163,6 +163,82 @@ v3.0 as the practical ceiling for the validated model.
 
 ---
 
+## ══ LEARNING PATH: Transitioning into Quantitative Modeling ══
+*Hands-on next steps. Theory lives in `CONTEXT_QUANT_TRANSITION.md`; this is the do-it sequence —
+the fastest way to learn quant is to extend a model you already understand. Each step = a concept,
+why it matters, and a concrete thing to build in THIS repo. Do them in order; each is ~a session.*
+
+**The meta-point:** you've already done real quant work here — proper scoring (log loss), temporal
+cross-validation, de-vigging odds, edge detection, and the validate-or-cut discipline. That discipline
+(*"adopt only if it beats the baseline out-of-sample"*) IS the quant mindset. The steps below deepen it.
+
+### Step 1 — Calibration & proper scoring rules
+**Concept:** A probability of 30% should be right 30% of the time. "Proper" scoring rules (log loss, Brier)
+are minimized only by *honest* probabilities — that's why we never optimized accuracy.
+**Build:** A `calibration.py` that bins your test predictions, plots reliability diagrams per outcome
+(you have one calibration plot already — generalize it), computes the **Brier score**, then tries
+**Platt scaling** and **isotonic regression** to recalibrate. Measure if recalibration improves test log loss.
+**Learn:** sharpness vs calibration, why a well-calibrated 55% beats a miscalibrated 90%.
+
+### Step 2 — The market as benchmark (you compete with a price, not reality)
+**Concept:** V3's big lesson — being "right" is worthless; being *righter than the price* is everything.
+The market already embeds squad value, injuries, everything. Your edge = your probability − the fair price.
+**Build:** Extend `market_divergence.py` into a backtest: for past matches with odds, compute the model's
+**information coefficient** (rank correlation of predicted vs realized outcomes) and compare it to the
+market's IC. If the market's IC ≥ yours, you have no edge — quantify that honestly.
+**Learn:** information coefficient, hit-rate vs edge, market efficiency.
+
+### Step 3 — Backtesting rigor & the overfitting trap
+**Concept:** The #1 way quant models fail is look-ahead bias and tuning-to-the-test. You used a single
+temporal split; real quant uses **walk-forward** (expanding-window) validation.
+**Build:** A `backtest.py` that retrains at each historical season boundary and predicts the next season
+only (walk-forward). Then deliberately *p-hack* — tune hyperparameters on the test set — and watch the
+walk-forward performance get worse. Feel the failure mode in your own data.
+**Learn:** look-ahead bias, multiple-testing / p-hacking, why the non-negotiables exist.
+
+### Step 4 — From probability to decision: Expected Value & Kelly
+**Concept:** A 5% edge means nothing without **sizing**. The Kelly criterion maximizes long-run growth;
+bet too big and variance ruins you, too small and you leave growth on the table.
+**Build:** A `bet_sim.py`: walk historical matches, and whenever model_prob > market_implied (an edge),
+"bet" a **Kelly fraction** of a simulated bankroll; track bankroll, drawdown, and variance over a season.
+Compare full-Kelly vs half-Kelly vs flat-staking. (This is the V3 "deferred until edge exists" work —
+build the machinery now to *learn* it, even though we found no edge yet.)
+**Learn:** EV, Kelly, bankroll growth vs ruin, why variance management is half of quant.
+
+### Step 5 — Bayesian thinking (ELO is already a baby version of this)
+**Concept:** ELO updates a belief about strength after each result — that's Bayesian updating with a fixed
+learning rate. A real Bayesian model gives you a *distribution* over strength (uncertainty), not a point.
+**Build:** A small **hierarchical Poisson** model (PyMC or numpyro) for team attack/defense with priors
+and shrinkage toward the mean — compare its team ratings + *uncertainty bands* to your Dixon-Coles MLE.
+**Learn:** priors, posteriors, shrinkage, uncertainty quantification, why a point estimate hides risk.
+
+### Step 6 — Signal research: orthogonality & incremental information
+**Concept:** V4 P1's `+0.178 incremental R²` is the single most important quant idea you've touched.
+New signal is only worth adding if it's **orthogonal** to what you already have — raw correlation lies.
+**Build:** A reusable `signal_test.py`: given a candidate feature, regress it on the existing feature set,
+take the **residual**, and measure the residual's incremental IC / R² on the target. Run it on squad value
+(once you have history) and on any future feature. This is literally how quant researchers vet alphas.
+**Learn:** feature orthogonality, incremental IC, why "it correlates with winning" isn't enough.
+
+### Step 7 — Where the noise floor is (aleatoric vs epistemic uncertainty)
+**Concept:** Your log loss plateaued at ~0.846. Some of that is *model* error (epistemic, reducible with
+better signal); some is *irreducible match randomness* (aleatoric — a ball off the post). Knowing the split
+tells you whether more modeling can even help.
+**Build:** Bootstrap the training set (resample with replacement, retrain, repeat) and measure the variance
+of predictions across bootstraps = epistemic uncertainty. The gap to perfect log loss that *doesn't* shrink
+with more data ≈ the aleatoric floor.
+**Learn:** the two kinds of uncertainty, when to stop modeling, why football caps near ~62% accuracy.
+
+### Two destinations (same toolkit)
+- **Sports/betting quant:** Steps 2→4→6 are the core loop (find edge, size it, vet new signals).
+- **Quant finance / research:** identical machinery — log loss→Sharpe, edge→alpha, Kelly→portfolio sizing,
+  IC and orthogonality are used verbatim. This project is a legitimate on-ramp to either.
+
+**Suggested order:** 1 → 3 → 2 → 4 → 6 → 5 → 7. (Calibration and backtesting first — they're the
+foundation everything else trusts; Bayesian and noise-floor last — they're the deepest.)
+
+---
+
 ## Notes on the Data (carried from V3)
 - results.csv: "Korea Republic", "Côte d'Ivoire", "Bosnia-Herzegovina", "United States"
 - wc2026_fixtures.csv: "South Korea", "Ivory Coast", "Bosnia and Herzegovina", "DR Congo", "Iran"
