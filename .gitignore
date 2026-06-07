@@ -17,3 +17,6 @@ Thumbs.db
 
 # Logs
 logs/
+
+# Live update timestamped archives
+data/processed/tournament_probs_live_*.csv

@@ -42,9 +42,10 @@ FIXTURES_PATH  = DATA_RAW  / "wc2026_fixtures.csv"
 RANKINGS_PATH  = DATA_RAW  / "current_fifa_rankings.csv"
 TRAIN_PATH     = DATA_PROC / "train_features.csv"
 TEST_PATH      = DATA_PROC / "test_features.csv"
-DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params_v3.json"
-XGB_MODEL_PATH = MODELS_DIR / "xgb_v3.json"
-LGB_MODEL_PATH = MODELS_DIR / "lgbm_v3.txt"
+# Production models (retrain_all.py) — all competitive data, for the live forecast.
+DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params_prod.json"
+XGB_MODEL_PATH = MODELS_DIR / "xgb_prod.json"
+LGB_MODEL_PATH = MODELS_DIR / "lgbm_prod.txt"
 
 N_SIMULATIONS = 10_000
 WEIGHTS = {"xgb": 0.275, "lgb": 0.275, "dc": 0.45}
@@ -475,10 +476,12 @@ def simulate_knockout_match(home, away, prob_cache, rng):
 def simulate_tournament(group_fixtures, dc_params, prob_cache,
                         rank_lookup, rng):
     """
-    Returns dict: team → highest round reached (int)
-    Rounds: 1=group, 2=R32, 3=R16, 4=QF, 5=SF, 6=Final, 7=Winner
+    Returns (results, group_position):
+      results[team]        = highest round reached (1=group..7=Winner)
+      group_position[team] = finishing place in its group (1..4)
     """
     results = {}   # team → round reached
+    group_position = {}  # team → group finish place (1=winner, 2=runner-up, ...)
 
     # ── Group stage ───────────────────────────────────────────────────────────
     group_winners  = {}   # group letter → winner
@@ -488,6 +491,9 @@ def simulate_tournament(group_fixtures, dc_params, prob_cache,
     for group, matches in group_fixtures.items():
         records = simulate_group(matches, dc_params, rng)
         ranked  = rank_group(records, rank_lookup)
+
+        for place, t in enumerate(ranked, 1):
+            group_position[t] = place
 
         group_winners[group] = ranked[0]
         group_runners[group] = ranked[1]
@@ -575,7 +581,7 @@ def simulate_tournament(group_fixtures, dc_params, prob_cache,
         champion = simulate_knockout_match(finalist_a, finalist_b, prob_cache, rng)
         results[champion] = 7
 
-    return results
+    return results, group_position
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -622,15 +628,21 @@ def main():
     print(f"\n── Running {N_SIMULATIONS:,} simulations ──")
     rng = np.random.default_rng(42)
 
-    # Track: team → count of times reaching each round
+    # Track: team → count of times reaching each round, and group finish place
     ROUNDS = {1: "Group", 2: "R32", 3: "R16", 4: "QF", 5: "SF", 6: "Final", 7: "Winner"}
     counts = {team: {r: 0 for r in ROUNDS} for team in wc_teams}
+    pos_counts = {team: {1: 0, 2: 0, 3: 0, 4: 0} for team in wc_teams}
+    team_group = {}  # team → group letter (for the standings table)
+    for g, ms in group_fixtures.items():
+        for h, a in ms:
+            team_group[h] = g
+            team_group[a] = g
 
     for sim in range(N_SIMULATIONS):
         if sim % 1000 == 0:
             print(f"  Simulation {sim:,}/{N_SIMULATIONS:,}...")
 
-        sim_results = simulate_tournament(
+        sim_results, sim_pos = simulate_tournament(
             group_fixtures, dc_params, prob_cache, rank_lookup, rng
         )
 
@@ -639,8 +651,11 @@ def main():
             for r in ROUNDS:
                 if reached >= r:
                     counts[team][r] += 1
+            place = sim_pos.get(team)
+            if place in pos_counts[team]:
+                pos_counts[team][place] += 1
 
-    # Build output DataFrame
+    # Build advancement DataFrame
     rows = []
     for team in wc_teams:
         c = counts[team]
@@ -661,6 +676,24 @@ def main():
     out_path = DATA_PROC / "tournament_probs.csv"
     out_df.to_csv(out_path, index=False)
     print(f"\n✅ Saved: {out_path}")
+
+    # Build group-standings DataFrame (P of finishing 1st / 2nd / 3rd, + advance)
+    g_rows = []
+    for team in wc_teams:
+        pc = pos_counts[team]
+        g_rows.append({
+            "group":        team_group.get(team, "?"),
+            "team":         team,
+            "fifa_rank":    rank_lookup.get(team, 80),
+            "p_win_group":  round(pc[1] / N_SIMULATIONS, 4),
+            "p_2nd":        round(pc[2] / N_SIMULATIONS, 4),
+            "p_3rd":        round(pc[3] / N_SIMULATIONS, 4),
+            "p_advance":    round(counts[team][2] / N_SIMULATIONS, 4),
+        })
+    g_df = pd.DataFrame(g_rows).sort_values(["group", "p_win_group"], ascending=[True, False])
+    g_path = DATA_PROC / "group_standings.csv"
+    g_df.to_csv(g_path, index=False)
+    print(f"✅ Saved: {g_path}")
 
     # Print top 20
     print(f"\n── Top 20 Tournament Win Probabilities ──")

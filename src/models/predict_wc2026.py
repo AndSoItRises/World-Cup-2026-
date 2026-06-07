@@ -36,9 +36,11 @@ FIXTURES_PATH  = DATA_RAW  / "wc2026_fixtures.csv"
 RANKINGS_PATH  = DATA_RAW  / "current_fifa_rankings.csv"
 TRAIN_PATH     = DATA_PROC / "train_features.csv"
 TEST_PATH      = DATA_PROC / "test_features.csv"
-DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params_v3.json"
-XGB_MODEL_PATH = MODELS_DIR / "xgb_v3.json"
-LGB_MODEL_PATH = MODELS_DIR / "lgbm_v3.txt"
+# Production models — trained on ALL competitive data (retrain_all.py) for the
+# live WC2026 forecast. Validated v3 models stay at their own paths.
+DC_PARAMS_PATH = MODELS_DIR / "dixon_coles_params_prod.json"
+XGB_MODEL_PATH = MODELS_DIR / "xgb_prod.json"
+LGB_MODEL_PATH = MODELS_DIR / "lgbm_prod.txt"
 
 WEIGHTS = {"xgb": 0.275, "lgb": 0.275, "dc": 0.45}
 MAX_GOALS = 10
