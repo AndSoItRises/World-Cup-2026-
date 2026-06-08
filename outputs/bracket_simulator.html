@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WC 2026 — Model Bracket Simulation (V4)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1117; color: #e6edf3; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+  .header { padding: 28px 32px 16px; border-bottom: 1px solid #21262d; }
+  .header h1 { font-size: 22px; font-weight: 600; color: #f0f6fc; }
+  .header .sub { color: #8b949e; margin-top: 6px; font-size: 13px; }
+  .header .meta { display: flex; gap: 24px; margin-top: 12px; flex-wrap: wrap; }
+  .header .badge { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 4px 12px; font-size: 12px; color: #8b949e; }
+  .header .badge span { color: #58a6ff; font-weight: 600; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #21262d; padding: 0 32px; }
+  .tab { padding: 12px 18px; cursor: pointer; font-size: 13px; color: #8b949e; border-bottom: 2px solid transparent; transition: all .15s; }
+  .tab:hover { color: #e6edf3; }
+  .tab.active { color: #f0f6fc; border-bottom-color: #f0883e; }
+  .content { padding: 24px 32px; }
+  .hidden { display: none; }
+
+  /* Groups tab */
+  .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .group-card { background: #161b22; border: 1px solid #21262d; border-radius: 8px; overflow: hidden; }
+  .group-header { background: #1c2128; padding: 10px 16px; font-weight: 600; font-size: 13px; color: #f0883e; letter-spacing: .05em; display: flex; justify-content: space-between; }
+  .group-header .gh-cols { color: #8b949e; font-size: 11px; font-weight: 400; display: flex; gap: 20px; }
+  .team-row { display: flex; align-items: center; padding: 8px 16px; border-top: 1px solid #21262d; transition: background .1s; }
+  .team-row:hover { background: #1c2128; }
+  .team-rank { width: 20px; color: #8b949e; font-size: 11px; }
+  .team-name { flex: 1; font-size: 13px; font-weight: 500; }
+  .team-bar-wrap { width: 90px; position: relative; }
+  .team-bar { height: 6px; border-radius: 3px; background: #21262d; overflow: hidden; }
+  .team-bar-fill { height: 100%; border-radius: 3px; }
+  .team-pct { font-size: 12px; text-align: right; width: 44px; color: #8b949e; }
+  .team-row.likely .team-name { color: #58a6ff; }
+  .team-row.strong-likely .team-name { color: #3fb950; }
+
+  /* Progression tab */
+  .prog-table-wrap { overflow-x: auto; }
+  .prog-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  .prog-table th { background: #1c2128; padding: 10px 12px; text-align: center; font-size: 11px; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid #21262d; position: sticky; top: 0; }
+  .prog-table th:first-child { text-align: left; padding-left: 16px; min-width: 160px; }
+  .prog-table td { padding: 7px 12px; text-align: center; border-bottom: 1px solid #21262d; font-size: 13px; }
+  .prog-table td:first-child { text-align: left; padding-left: 16px; font-weight: 500; }
+  .prog-table tbody tr:hover td { background: #1c2128; }
+  .cell-val { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; min-width: 52px; text-align: center; }
+  .conf-badge { font-size: 10px; color: #8b949e; margin-left: 6px; }
+
+  /* Summary tab */
+  .podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 700px; margin: 0 auto 32px; }
+  .podium-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 20px; text-align: center; }
+  .podium-card.gold { border-color: #d29922; }
+  .podium-card.silver { border-color: #6e7681; }
+  .podium-card.bronze { border-color: #7d4e00; }
+  .podium-place { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: #8b949e; margin-bottom: 8px; }
+  .podium-team { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .podium-prob { font-size: 14px; color: #8b949e; }
+  .podium-card.gold .podium-team { color: #d29922; }
+  .podium-card.silver .podium-team { color: #c9d1d9; }
+  .podium-card.bronze .podium-team { color: #7d4e00; }
+  .summary-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
+  .summary-item { background: #161b22; border: 1px solid #21262d; border-radius: 6px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  .summary-rank { font-size: 12px; color: #8b949e; width: 22px; }
+  .summary-name { flex: 1; font-weight: 500; }
+  .summary-bars { flex: 2; }
+  .mini-bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .mini-bar-label { font-size: 10px; color: #8b949e; width: 24px; }
+  .mini-bar { flex: 1; height: 5px; background: #21262d; border-radius: 3px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 3px; }
+  .mini-pct { font-size: 10px; color: #8b949e; width: 36px; text-align: right; }
+  .section-title { font-size: 15px; font-weight: 600; color: #f0f6fc; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #21262d; }
+  .note { color: #8b949e; font-size: 12px; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚽ WC 2026 — Bracket Simulation (V4 Model)</h1>
+  <div class="sub">10,000 Monte Carlo simulations · XGBoost + LightGBM + Dixon-Coles ensemble · June 2026</div>
+  <div class="meta">
+    <div class="badge">Model accuracy <span>62.1%</span></div>
+    <div class="badge">Log loss <span>0.8461</span></div>
+    <div class="badge">Model↔market corr <span>0.838</span></div>
+    <div class="badge">WC2022 backtest LL <span>1.0447</span></div>
+    <div class="badge">48 teams · 12 groups</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('groups')">Group Stage</div>
+  <div class="tab" onclick="showTab('progression')">Stage Progression</div>
+  <div class="tab" onclick="showTab('summary')">Top Contenders</div>
+</div>
+
+<div class="content">
+
+<!-- GROUPS TAB -->
+<div id="tab-groups">
+  <div class="groups-grid" id="groups-grid"></div>
+</div>
+
+<!-- PROGRESSION TAB -->
+<div id="tab-progression" class="hidden">
+  <div class="prog-table-wrap">
+    <table class="prog-table" id="prog-table">
+      <thead>
+        <tr>
+          <th>Team</th>
+          <th>Grp Advance</th>
+          <th>Round of 32</th>
+          <th>Round of 16</th>
+          <th>Quarterfinal</th>
+          <th>Semifinal</th>
+          <th>Final</th>
+          <th>🏆 Win</th>
+        </tr>
+      </thead>
+      <tbody id="prog-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SUMMARY TAB -->
+<div id="tab-summary" class="hidden">
+  <div class="section-title">Tournament Winner Probabilities</div>
+  <div class="podium" id="podium"></div>
+  <div class="section-title">Full Contender Rankings</div>
+  <div class="summary-list" id="summary-list"></div>
+  <p class="note">* Probabilities from 10,000 Monte Carlo bracket simulations. All 48 WC2026 teams modeled; shown are teams with &gt;0.5% win probability.</p>
+</div>
+
+</div>
+
+<script>
+const GROUPS = {"A": [{"team": "Mexico", "p_win_group": 0.6409, "p_2nd": 0.2691, "p_3rd": 0.0736, "p_advance": 0.9701}, {"team": "Korea Republic", "p_win_group": 0.2909, "p_2nd": 0.463, "p_3rd": 0.1796, "p_advance": 0.8806}, {"team": "Czechia", "p_win_group": 0.04, "p_2nd": 0.148, "p_3rd": 0.3969, "p_advance": 0.397}, {"team": "South Africa", "p_win_group": 0.0282, "p_2nd": 0.1199, "p_3rd": 0.3499, "p_advance": 0.3241}], "B": [{"team": "Canada", "p_win_group": 0.6255, "p_2nd": 0.2397, "p_3rd": 0.1035, "p_advance": 0.9523}, {"team": "Qatar", "p_win_group": 0.1914, "p_2nd": 0.3402, "p_3rd": 0.3094, "p_advance": 0.7424}, {"team": "Switzerland", "p_win_group": 0.1517, "p_2nd": 0.3063, "p_3rd": 0.3393, "p_advance": 0.6862}, {"team": "Bosnia-Herzegovina", "p_win_group": 0.0314, "p_2nd": 0.1138, "p_3rd": 0.2478, "p_advance": 0.2811}], "C": [{"team": "Brazil", "p_win_group": 0.5205, "p_2nd": 0.2804, "p_3rd": 0.1434, "p_advance": 0.9162}, {"team": "Morocco", "p_win_group": 0.2657, "p_2nd": 0.331, "p_3rd": 0.2675, "p_advance": 0.7859}, {"team": "Haiti", "p_win_group": 0.1684, "p_2nd": 0.2758, "p_3rd": 0.3366, "p_advance": 0.672}, {"team": "Scotland", "p_win_group": 0.0454, "p_2nd": 0.1128, "p_3rd": 0.2525, "p_advance": 0.3034}], "D": [{"team": "USA", "p_win_group": 0.5316, "p_2nd": 0.3322, "p_3rd": 0.1031, "p_advance": 0.9445}, {"team": "Australia", "p_win_group": 0.3848, "p_2nd": 0.4145, "p_3rd": 0.1522, "p_advance": 0.9155}, {"team": "Turkey", "p_win_group": 0.0558, "p_2nd": 0.1544, "p_3rd": 0.4117, "p_advance": 0.434}, {"team": "Paraguay", "p_win_group": 0.0278, "p_2nd": 0.0989, "p_3rd": 0.333, "p_advance": 0.297}], "E": [{"team": "Germany", "p_win_group": 0.4555, "p_2nd": 0.2654, "p_3rd": 0.1724, "p_advance": 0.8521}, {"team": "Côte d'Ivoire", "p_win_group": 0.2844, "p_2nd": 0.3038, "p_3rd": 0.2373, "p_advance": 0.7596}, {"team": "Curaçao", "p_win_group": 0.1302, "p_2nd": 0.2256, "p_3rd": 0.2926, "p_advance": 0.5503}, {"team": "Ecuador", "p_win_group": 0.1299, "p_2nd": 0.2052, "p_3rd": 0.2977, "p_advance": 0.5258}], "F": [{"team": "Japan", "p_win_group": 0.6153, "p_2nd": 0.2411, "p_3rd": 0.1033, "p_advance": 0.9408}, {"team": "Netherlands", "p_win_group": 0.2107, "p_2nd": 0.3477, "p_3rd": 0.2674, "p_advance": 0.7422}, {"team": "Sweden", "p_win_group": 0.0957, "p_2nd": 0.2202, "p_3rd": 0.3157, "p_advance": 0.5094}, {"team": "Tunisia", "p_win_group": 0.0783, "p_2nd": 0.191, "p_3rd": 0.3136, "p_advance": 0.4598}], "G": [{"team": "Iran", "p_win_group": 0.4308, "p_2nd": 0.2962, "p_3rd": 0.1807, "p_advance": 0.8634}, {"team": "New Zealand", "p_win_group": 0.3507, "p_2nd": 0.3179, "p_3rd": 0.2113, "p_advance": 0.8239}, {"team": "Egypt", "p_win_group": 0.1091, "p_2nd": 0.2005, "p_3rd": 0.3173, "p_advance": 0.515}, {"team": "Belgium", "p_win_group": 0.1094, "p_2nd": 0.1854, "p_3rd": 0.2907, "p_advance": 0.478}], "H": [{"team": "Spain", "p_win_group": 0.5187, "p_2nd": 0.2911, "p_3rd": 0.1445, "p_advance": 0.9262}, {"team": "Saudi Arabia", "p_win_group": 0.3066, "p_2nd": 0.3586, "p_3rd": 0.2449, "p_advance": 0.8478}, {"team": "Uruguay", "p_win_group": 0.1487, "p_2nd": 0.2639, "p_3rd": 0.3812, "p_advance": 0.662}, {"team": "Cape Verde Islands", "p_win_group": 0.026, "p_2nd": 0.0864, "p_3rd": 0.2294, "p_advance": 0.2355}], "I": [{"team": "France", "p_win_group": 0.3582, "p_2nd": 0.2888, "p_3rd": 0.2219, "p_advance": 0.8096}, {"team": "Iraq", "p_win_group": 0.2963, "p_2nd": 0.2841, "p_3rd": 0.244, "p_advance": 0.7609}, {"team": "Senegal", "p_win_group": 0.2623, "p_2nd": 0.2757, "p_3rd": 0.2698, "p_advance": 0.7272}, {"team": "Norway", "p_win_group": 0.0832, "p_2nd": 0.1514, "p_3rd": 0.2643, "p_advance": 0.4071}], "J": [{"team": "Argentina", "p_win_group": 0.401, "p_2nd": 0.2894, "p_3rd": 0.1927, "p_advance": 0.8358}, {"team": "Jordan", "p_win_group": 0.2992, "p_2nd": 0.2906, "p_3rd": 0.2426, "p_advance": 0.7677}, {"team": "Algeria", "p_win_group": 0.1942, "p_2nd": 0.2448, "p_3rd": 0.2882, "p_advance": 0.6421}, {"team": "Austria", "p_win_group": 0.1056, "p_2nd": 0.1752, "p_3rd": 0.2765, "p_advance": 0.4586}], "K": [{"team": "Uzbekistan", "p_win_group": 0.3876, "p_2nd": 0.2954, "p_3rd": 0.2088, "p_advance": 0.8439}, {"team": "Portugal", "p_win_group": 0.3576, "p_2nd": 0.3005, "p_3rd": 0.2112, "p_advance": 0.8143}, {"team": "Colombia", "p_win_group": 0.1719, "p_2nd": 0.2527, "p_3rd": 0.3083, "p_advance": 0.6342}, {"team": "Congo DR", "p_win_group": 0.0829, "p_2nd": 0.1514, "p_3rd": 0.2717, "p_advance": 0.4081}], "L": [{"team": "Panama", "p_win_group": 0.3619, "p_2nd": 0.2823, "p_3rd": 0.2112, "p_advance": 0.8028}, {"team": "England", "p_win_group": 0.3464, "p_2nd": 0.2878, "p_3rd": 0.2185, "p_advance": 0.796}, {"team": "Croatia", "p_win_group": 0.1621, "p_2nd": 0.2229, "p_3rd": 0.282, "p_advance": 0.5743}, {"team": "Ghana", "p_win_group": 0.1296, "p_2nd": 0.207, "p_3rd": 0.2883, "p_advance": 0.5233}]};
+
+const TEAMS = [{"team":"Spain","fifa_rank":2,"p_group_adv":0.9262,"p_r16":0.6795,"p_quarterfinal":0.5047,"p_semifinal":0.3417,"p_final":0.2437,"p_winner":0.1589},{"team":"Mexico","fifa_rank":15,"p_group_adv":0.9701,"p_r16":0.7165,"p_quarterfinal":0.4676,"p_semifinal":0.2903,"p_final":0.1725,"p_winner":0.0985},{"team":"England","fifa_rank":4,"p_group_adv":0.796,"p_r16":0.5605,"p_quarterfinal":0.3355,"p_semifinal":0.2152,"p_final":0.1293,"p_winner":0.0749},{"team":"Argentina","fifa_rank":3,"p_group_adv":0.8358,"p_r16":0.5298,"p_quarterfinal":0.3356,"p_semifinal":0.2095,"p_final":0.1278,"p_winner":0.0726},{"team":"Brazil","fifa_rank":6,"p_group_adv":0.9162,"p_r16":0.5633,"p_quarterfinal":0.3624,"p_semifinal":0.2065,"p_final":0.1155,"p_winner":0.0621},{"team":"Japan","fifa_rank":18,"p_group_adv":0.9408,"p_r16":0.5991,"p_quarterfinal":0.3674,"p_semifinal":0.2073,"p_final":0.1144,"p_winner":0.0614},{"team":"France","fifa_rank":1,"p_group_adv":0.8096,"p_r16":0.5186,"p_quarterfinal":0.2943,"p_semifinal":0.1642,"p_final":0.0888,"p_winner":0.0446},{"team":"Iran","fifa_rank":21,"p_group_adv":0.8634,"p_r16":0.5381,"p_quarterfinal":0.3041,"p_semifinal":0.1617,"p_final":0.0798,"p_winner":0.0394},{"team":"USA","fifa_rank":16,"p_group_adv":0.9445,"p_r16":0.581,"p_quarterfinal":0.3173,"p_semifinal":0.1671,"p_final":0.08,"p_winner":0.0369},{"team":"Netherlands","fifa_rank":7,"p_group_adv":0.7422,"p_r16":0.4331,"p_quarterfinal":0.2572,"p_semifinal":0.137,"p_final":0.0722,"p_winner":0.0349},{"team":"Germany","fifa_rank":10,"p_group_adv":0.8521,"p_r16":0.5281,"p_quarterfinal":0.2931,"p_semifinal":0.1528,"p_final":0.0733,"p_winner":0.0337},{"team":"Portugal","fifa_rank":5,"p_group_adv":0.8143,"p_r16":0.5175,"p_quarterfinal":0.2777,"p_semifinal":0.1433,"p_final":0.0699,"p_winner":0.0316},{"team":"Australia","fifa_rank":27,"p_group_adv":0.9155,"p_r16":0.521,"p_quarterfinal":0.276,"p_semifinal":0.1345,"p_final":0.06,"p_winner":0.0277},{"team":"Canada","fifa_rank":30,"p_group_adv":0.9523,"p_r16":0.536,"p_quarterfinal":0.29,"p_semifinal":0.1416,"p_final":0.0582,"p_winner":0.0271},{"team":"Korea Republic","fifa_rank":25,"p_group_adv":0.8806,"p_r16":0.548,"p_quarterfinal":0.2761,"p_semifinal":0.1326,"p_final":0.063,"p_winner":0.0257},{"team":"Morocco","fifa_rank":8,"p_group_adv":0.7859,"p_r16":0.3962,"p_quarterfinal":0.2226,"p_semifinal":0.1072,"p_final":0.0538,"p_winner":0.0232},{"team":"Senegal","fifa_rank":14,"p_group_adv":0.7272,"p_r16":0.3909,"p_quarterfinal":0.1874,"p_semifinal":0.0896,"p_final":0.0421,"p_winner":0.0195},{"team":"New Zealand","fifa_rank":85,"p_group_adv":0.8239,"p_r16":0.4511,"p_quarterfinal":0.2165,"p_semifinal":0.1027,"p_final":0.0422,"p_winner":0.0173},{"team":"Panama","fifa_rank":33,"p_group_adv":0.8028,"p_r16":0.4194,"p_quarterfinal":0.1819,"p_semifinal":0.08,"p_final":0.0315,"p_winner":0.0127},{"team":"Croatia","fifa_rank":11,"p_group_adv":0.5743,"p_r16":0.2957,"p_quarterfinal":0.1316,"p_semifinal":0.0608,"p_final":0.0271,"p_winner":0.0115},{"team":"Colombia","fifa_rank":13,"p_group_adv":0.6342,"p_r16":0.328,"p_quarterfinal":0.1516,"p_semifinal":0.07,"p_final":0.0289,"p_winner":0.0113},{"team":"Belgium","fifa_rank":9,"p_group_adv":0.478,"p_r16":0.2614,"p_quarterfinal":0.1301,"p_semifinal":0.0589,"p_final":0.0265,"p_winner":0.0109},{"team":"Uruguay","fifa_rank":17,"p_group_adv":0.662,"p_r16":0.2972,"p_quarterfinal":0.1414,"p_semifinal":0.064,"p_final":0.0241,"p_winner":0.0091},{"team":"Switzerland","fifa_rank":19,"p_group_adv":0.6862,"p_r16":0.3388,"p_quarterfinal":0.1495,"p_semifinal":0.062,"p_final":0.023,"p_winner":0.009},{"team":"Uzbekistan","fifa_rank":50,"p_group_adv":0.8439,"p_r16":0.4004,"p_quarterfinal":0.1629,"p_semifinal":0.0606,"p_final":0.0225,"p_winner":0.0069},{"team":"Côte d'Ivoire","fifa_rank":34,"p_group_adv":0.7596,"p_r16":0.3464,"p_quarterfinal":0.135,"p_semifinal":0.0539,"p_final":0.0192,"p_winner":0.0057},{"team":"Norway","fifa_rank":31,"p_group_adv":0.4071,"p_r16":0.2017,"p_quarterfinal":0.0837,"p_semifinal":0.0308,"p_final":0.0128,"p_winner":0.005},{"team":"Ecuador","fifa_rank":24,"p_group_adv":0.5258,"p_r16":0.2355,"p_quarterfinal":0.0975,"p_semifinal":0.0348,"p_final":0.0121,"p_winner":0.0042},{"team":"Algeria","fifa_rank":29,"p_group_adv":0.6421,"p_r16":0.2482,"p_quarterfinal":0.099,"p_semifinal":0.0422,"p_final":0.0143,"p_winner":0.0039},{"team":"Saudi Arabia","fifa_rank":61,"p_group_adv":0.8478,"p_r16":0.3405,"p_quarterfinal":0.1228,"p_semifinal":0.0445,"p_final":0.0133,"p_winner":0.0038},{"team":"Egypt","fifa_rank":28,"p_group_adv":0.515,"p_r16":0.2116,"p_quarterfinal":0.0825,"p_semifinal":0.0305,"p_final":0.0083,"p_winner":0.0026},{"team":"Iraq","fifa_rank":57,"p_group_adv":0.7609,"p_r16":0.2962,"p_quarterfinal":0.0988,"p_semifinal":0.0305,"p_final":0.0092,"p_winner":0.0025}];
+
+function pct(v) { return (v * 100).toFixed(1) + '%'; }
+
+function heatColor(v) {
+  // 0 → dark gray, 0.5 → blue, 1.0 → gold
+  if (v < 0.05) return '#21262d';
+  if (v < 0.15) return '#1f3a5f';
+  if (v < 0.30) return '#1a4a8a';
+  if (v < 0.50) return '#1f6feb';
+  if (v < 0.70) return '#3fb950';
+  if (v < 0.90) return '#f0883e';
+  return '#d29922';
+}
+function textColor(v) { return v < 0.15 ? '#8b949e' : '#f0f6fc'; }
+
+function barColor(v) {
+  if (v > 0.85) return '#3fb950';
+  if (v > 0.60) return '#58a6ff';
+  if (v > 0.40) return '#f0883e';
+  return '#8b949e';
+}
+
+// Build groups
+function buildGroups() {
+  const grid = document.getElementById('groups-grid');
+  Object.entries(GROUPS).forEach(([grp, teams]) => {
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    card.innerHTML = `<div class="group-header">Group ${grp}<div class="gh-cols"><span>Advance%</span></div></div>`;
+    teams.forEach((t, i) => {
+      const adv = t.p_advance;
+      const cls = adv > 0.85 ? 'strong-likely' : adv > 0.6 ? 'likely' : '';
+      const row = document.createElement('div');
+      row.className = 'team-row ' + cls;
+      row.innerHTML = `
+        <div class="team-rank">${i+1}</div>
+        <div class="team-name">${t.team}</div>
+        <div class="team-bar-wrap">
+          <div class="team-bar"><div class="team-bar-fill" style="width:${adv*100}%;background:${barColor(adv)}"></div></div>
+        </div>
+        <div class="team-pct">${(adv*100).toFixed(0)}%</div>
+      `;
+      card.appendChild(row);
+    });
+    grid.appendChild(card);
+  });
+}
+
+// Build progression table
+function buildProgression() {
+  const tbody = document.getElementById('prog-tbody');
+  TEAMS.forEach(t => {
+    const cols = [t.p_group_adv, t.p_r16, t.p_quarterfinal, t.p_semifinal, t.p_final, t.p_winner];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.team} <span class="conf-badge">#${t.fifa_rank}</span></td>` +
+      cols.map(v => `<td><span class="cell-val" style="background:${heatColor(v)};color:${textColor(v)}">${(v*100).toFixed(1)}%</span></td>`).join('');
+    tbody.appendChild(tr);
+  });
+}
+
+// Build summary
+function buildSummary() {
+  const sorted = [...TEAMS].sort((a,b) => b.p_winner - a.p_winner);
+  const top3 = sorted.slice(0,3);
+  const classes = ['gold','silver','bronze'];
+  const labels = ['🥇 Champion Favorite','🥈 Runner-Up Favorite','🥉 Third Favorite'];
+  const podium = document.getElementById('podium');
+  top3.forEach((t,i) => {
+    podium.innerHTML += `<div class="podium-card ${classes[i]}">
+      <div class="podium-place">${labels[i]}</div>
+      <div class="podium-team">${t.team}</div>
+      <div class="podium-prob">${(t.p_winner*100).toFixed(1)}% to win</div>
+    </div>`;
+  });
+
+  const list = document.getElementById('summary-list');
+  sorted.filter(t => t.p_winner >= 0.005).forEach((t,i) => {
+    const stages = [
+      {label:'Grp', v: t.p_group_adv},
+      {label:'R32', v: t.p_r16},
+      {label:'QF', v: t.p_quarterfinal},
+      {label:'SF', v: t.p_semifinal},
+      {label:'F', v: t.p_final},
+      {label:'W', v: t.p_winner},
+    ];
+    list.innerHTML += `<div class="summary-item">
+      <div class="summary-rank">${i+1}</div>
+      <div class="summary-name">${t.team}</div>
+      <div class="summary-bars">
+        ${stages.map(s => `<div class="mini-bar-row">
+          <div class="mini-bar-label">${s.label}</div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:${s.v*100}%;background:${barColor(s.v)}"></div></div>
+          <div class="mini-pct">${(s.v*100).toFixed(1)}%</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  });
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  ['groups','progression','summary'].forEach(n => {
+    const el = document.getElementById('tab-' + n);
+    el.classList.toggle('hidden', n !== name);
+  });
+  event.target.classList.add('active');
+}
+
+buildGroups();
+buildProgression();
+buildSummary();
+</script>
+</body>
+</html>
