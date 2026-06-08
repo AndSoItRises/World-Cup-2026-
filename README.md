@@ -6,15 +6,15 @@ A machine learning model that predicts match outcomes and simulates the full WC2
 
 ---
 
-## Model Performance (V4 Final)
+## Model Performance (V5 Final)
 
 | Version | Accuracy | Log Loss | Draw Recall | Key Addition |
 |---|---|---|---|---|
 | V1 — Baseline | 60.6% | 0.8605 | 0.4% | Pipeline, XGB/LGBM, ELO, Monte Carlo |
 | V2 — Intelligent | 62.1% | 0.8458 | 9.7% | ELO, opponent-weighted form, Dixon-Coles |
 | V3 — Ceiling | 61.7% | 0.8462 | 8.7% | Data fixes, residual analysis, ceiling confirmed |
-| **V4 — Final ✓** | **62.0%** | **0.8461** | **9.1%** | **Squad strength + depth (FIFA/EA ratings)** |
-| V5 — Confirmed | — | — | — | All remaining levers tested and exhausted |
+| V4 — Final | 62.0% | 0.8461 | 9.1% | Squad strength + depth (FIFA/EA ratings) |
+| **V5 — 495-Combo Fix ✓** | **62.0%** | **0.8461** | **9.1%** | **3rd-place slot assignment corrected (official FIFA table)** |
 
 **WC2022 backtest log loss: 1.0447** (24.3% better than naive baseline)
 **Model↔market correlation: 0.838** (up from 0.665 in V3)
@@ -25,16 +25,16 @@ A machine learning model that predicts match outcomes and simulates the full WC2
 
 | Team | FIFA Rank | Group Advance % | Win % |
 |---|---|---|---|
-| Spain | 2 | 92.6% | 15.9% |
-| Mexico | 15 | 97.0% | 9.9% |
-| England | 4 | 79.6% | 7.5% |
-| Argentina | 3 | 83.6% | 7.3% |
-| Brazil | 6 | 91.6% | 6.2% |
-| Japan | 18 | 94.1% | 6.1% |
-| France | 1 | 81.0% | 4.5% |
-| Iran | 21 | 86.3% | 3.9% |
-| USA | 16 | 94.5% | 3.7% |
-| Netherlands | 7 | 74.2% | 3.5% |
+| Spain | 2 | 92.6% | 18.4% |
+| England | 4 | 79.6% | 9.1% |
+| France | 1 | 81.0% | 7.3% |
+| Mexico | 15 | 97.0% | 7.1% |
+| Brazil | 6 | 91.6% | 6.5% |
+| Japan | 18 | 94.1% | 5.9% |
+| Argentina | 3 | 83.6% | 5.8% |
+| Germany | 10 | 85.2% | 4.9% |
+| USA | 16 | 94.5% | 4.2% |
+| Netherlands | 7 | 74.2% | 3.9% |
 
 *From `data/processed/tournament_probs_live.csv` — updated by `src/models/live_update.py` after each matchday.*
 
@@ -62,6 +62,12 @@ A machine learning model that predicts match outcomes and simulates the full WC2
 
 ### Bias Resolution: V3 vs V4
 ![Bias Resolution](outputs/key_insights/07_bias_resolution_v3_v4.png)
+
+### Group Winner Probability — All 12 Groups
+![Group Winner Prob](outputs/key_insights/09_group_winner_prob.png)
+
+### Tournament Advancement Ladder — Top 24 Teams
+![Advancement Ladder](outputs/key_insights/10_advancement_ladder.png)
 
 ---
 
@@ -177,6 +183,25 @@ python -m src.visualization.charts
 | 5 | Bayesian / hierarchical model | — | ⬜ |
 | 6 | Signal orthogonality | `src/models/signal_test.py` | ✅ |
 | 7 | Aleatoric vs epistemic uncertainty | — | ⬜ |
+
+---
+
+## Live Update Instructions
+
+After each matchday, add actual results to `data/raw/wc2026_live_results.csv`:
+
+```
+match_id,stage,group,date,home_team,away_team,home_goals,away_goals,decided_by,winner
+1,Group Stage,A,2026-06-11,Mexico,TeamX,2,0,FT,Mexico
+```
+
+Then run:
+
+```bash
+python -m src.models.live_update
+```
+
+Output: `data/processed/tournament_probs_live.csv` — fresh probabilities with actual results locked. Copy the updated values into `outputs/bracket_simulator.html` (`TEAMS` / `GROUPS`) and push to GitHub Pages.
 
 ---
 
