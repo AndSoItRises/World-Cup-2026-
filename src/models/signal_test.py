@@ -35,7 +35,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import log_loss
 
-from src.models.train_xgb import FEATURE_COLS, TARGET
+from src.models.train_xgb import TARGET
+from src.models.train_v4 import FEATURE_COLS_V4
 
 warnings.filterwarnings("ignore")
 
@@ -49,13 +50,13 @@ DEFAULT_CANDIDATES = [
 SENTINEL_STRENGTH = 60.0
 
 
-def load():
+def load(base):
     tr = pd.read_csv(DATA_PROC / "train_features.csv", parse_dates=["date"])
     te = pd.read_csv(DATA_PROC / "test_features.csv", parse_dates=["date"])
     df = pd.concat([tr, te], ignore_index=True).sort_values("date").reset_index(drop=True)
     df["neutral"] = df["neutral"].astype(int)
     # Median-impute base feature NaNs (same convention as train_xgb)
-    for c in FEATURE_COLS:
+    for c in base:
         if df[c].isna().any():
             df[c] = df[c].fillna(df[c].median())
     return df
@@ -74,10 +75,10 @@ def cv_logloss(X, y, n_splits=5):
     return float(np.mean(lls))
 
 
-def report_block(df, candidates, label):
+def report_block(df, candidates, base, label):
     print(f"\n{'═'*64}\n  {label}  (n={len(df)})\n{'═'*64}")
     y = df[TARGET].astype(int).values
-    Xb = df[FEATURE_COLS].values
+    Xb = df[base].values
 
     print(f"\n  ── Orthogonality (raw IC vs incremental IC after removing base) ──")
     print(f"  {'candidate':<24}{'raw IC':>10}{'incr IC':>10}{'redundant?':>13}")
@@ -91,7 +92,7 @@ def report_block(df, candidates, label):
 
     print(f"\n  ── Incremental predictive value (multinomial-logistic temporal CV) ──")
     ll_base = cv_logloss(Xb, y)
-    ll_full = cv_logloss(df[FEATURE_COLS + candidates].values, y)
+    ll_full = cv_logloss(df[base + candidates].values, y)
     print(f"  base features            CV log loss : {ll_base:.4f}")
     print(f"  base + candidates        CV log loss : {ll_full:.4f}")
     print(f"  ΔLL (positive = helps)               : {ll_base - ll_full:+.4f}")
@@ -100,22 +101,25 @@ def report_block(df, candidates, label):
 
 def main():
     candidates = sys.argv[1:] or DEFAULT_CANDIDATES
-    df = load()
+    # Base = the CURRENT model's feature set (v4) minus the candidates, so a new
+    # feature is judged for signal BEYOND everything already in the model.
+    base = [f for f in FEATURE_COLS_V4 if f not in candidates]
+    df = load(base + candidates)
     missing = [c for c in candidates if c not in df.columns]
     if missing:
         raise SystemExit(f"Candidate columns not found: {missing}")
 
     print("═" * 64)
-    print("  V4 signal_test — incremental information of candidate features")
+    print("  signal_test — incremental information of candidate features")
     print("═" * 64)
-    print(f"  Base feature set : {len(FEATURE_COLS)} features")
+    print(f"  Base feature set : {len(base)} features (current model minus candidates)")
     print(f"  Candidates       : {candidates}")
 
-    delta_all = report_block(df, candidates, "ALL MATCHES")
+    delta_all = report_block(df, candidates, base, "ALL MATCHES")
 
     covered = df[(df["home_squad_strength"] != SENTINEL_STRENGTH) &
                  (df["away_squad_strength"] != SENTINEL_STRENGTH)].reset_index(drop=True)
-    delta_cov = report_block(covered, candidates, "COVERED SUBSET (both teams real squad data)")
+    delta_cov = report_block(covered, candidates, base, "COVERED SUBSET (both teams real squad data)")
 
     print(f"\n{'─'*64}")
     verdict = ("PROMISING — carries orthogonal signal" if (delta_cov > 0.001 or delta_all > 0.0005)

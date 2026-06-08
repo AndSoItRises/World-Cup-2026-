@@ -104,17 +104,76 @@ DEFERRED until a clean out-of-sample edge is demonstrated: Kelly bet sizing, bet
 ---
 
 ## V5 Decision Log
-*(empty — write entries immediately as decisions are made)*
+
+### DL-01 — V5 mandate: test the remaining levers to settle "is this the final model?"
+After V4 shipped the squad value+depth gain, the open question was whether more accessible signal
+exists. V5 ran the four candidate levers each under validate-or-cut. The pattern of results is itself
+the answer (see DL-02..05 and the End-of-Version verdict).
+
+### DL-02 — Lever 2 (extend squad coverage 2023–2025): DATA-BLOCKED
+Goal: de-stale the test window (2023–25 currently uses FIFA22 carried forward) + add nations by
+ingesting FIFA23/FC24/FC25 editions. Outcome: those editions are Kaggle-auth-gated or sofifa
+scrape-only — not cleanly/reproducibly fetchable (FIFA22 via abineshta and FC26 via EAFC26-DataHub
+were the only raw-hosted sofifa mirrors found). Did NOT scrape (brittle/ToS-gray for marginal gain on
+an already-validated feature). Structural note: more editions wouldn't fix the ~66% of competitive
+matches that involve non-FIFA minnows — that coverage gap is inherent to FIFA data. Anchors stand at
+2020 (lbenz730) / 2022 (FIFA22) / 2026 (FC26).
+
+### DL-03 — Lever 1 (confederation / schedule-strength feature): CUT (redundant)
+Built `add_confederation_strength` (prior-year confederation average ELO, leakage-safe) as the "how
+strong is the region you farm results in?" prior. `signal_test` (now judging candidates against the
+full v4 base incl. squad): incremental IC ≈ 0 / negative, ΔLL −0.0005 (all) / −0.0023 (covered) — it
+HURTS slightly. **Why:** squad value already measures true quality independent of schedule, so it
+subsumes the regional proxy. Cut from the pipeline (function retained for reference, like conf_match_pct).
+
+### DL-04 — Lever 3 (ensemble reweight): KEEP fixed weights
+`reweight_v5.py` — honest two-fold held-out search (tune weights on one test half, score the other).
+Tuned weights were unstable across folds (one fold zeroed LGBM — overfitting) and the mean held-out
+gain was +0.0010, below the adopt threshold. Kept the fixed 0.275/0.275/0.45 blend — consistent with
+V3's stacking finding that the fixed blend is near-optimal.
+
+### DL-05 — Lever 4 (historical-odds edge backtest, P4): DATA-GATED
+Goal: backtest model-vs-market IC on past matches/tournaments (WC2018/2022) — the gate for any betting
+work. Outcome: free historical odds sources are domestic-club-only (football-data.co.uk, xgabora) or
+results-only (openfootball, jfjelstul); historical INTERNATIONAL 1x2 odds are effectively paid/scrape.
+`market_backtest.py` provides the IC harness + WC2026 cross-section now; the match-level backtest drops
+in the moment international historical odds are obtained. Honest, not closed.
 
 ---
 
 ## V5 Phase Status
 
-| Phase | Description | Status |
+| Lever | Description | Status |
 |---|---|---|
-| — | brainstorm / pick the V5 lever | ⬜ Next |
+| L2 | Extend squad coverage (FIFA23/FC24/FC25) | ⬛ data-blocked (DL-02) |
+| L1 | Confederation/schedule-strength feature | ✂️ CUT — redundant (DL-03) |
+| L3 | Ensemble reweight | ➖ kept fixed (DL-04) |
+| L4 | Historical-odds edge backtest | ⬛ data-gated (DL-05) |
+
+**The model did not change in V5** — every accessible lever came back CUT / flat / data-blocked.
+That convergence is the evidence the model is at its practical ceiling (see verdict).
 
 ---
 
 ## ══ END-OF-VERSION REVIEW ══
-*(Filled in when V5 is fully closed)*
+
+**Verdict: v4 is the final VALIDATED model for what's rigorously achievable with accessible data.**
+
+The case (every accessible lever, tested under validate-or-cut, came back negative):
+- The obvious next feature (confederation-strength) is **redundant** — squad value already subsumes it.
+- Reweighting the ensemble does **not** robustly help (overfits).
+- Extending squad coverage is **data-blocked**, and wouldn't fix the structural minnow gap anyway.
+- The model now **largely agrees with the market** (model↔market corr 0.838) — limited "free" edge left.
+- Proving/refuting a real edge needs **historical international odds** (paid) — a data problem, not a
+  modelling one. Same shape as V4's squad-history block; if that data arrives, `market_backtest.py` +
+  a `bet_sim.py` (Kelly) close it out.
+
+So further gains require new *data* (full-universe historical squad values; historical odds), not new
+model cleverness. Within accessible data, the lever set is exhausted. **This is the practical ceiling.**
+
+What V5 leaves behind: a sharper `signal_test` (judges new features against the live model), a
+reusable honest reweight harness, a documented redundant feature (so it's not re-tried), and a clear
+data shopping list for any future unlock. Model artifacts unchanged from v4 (prod = v4).
+
+Future-unlock candidates (all data-gated, not cleverness-gated): historical international odds → edge
+test + Kelly; full-universe historical squad/market values → lift squad coverage past ~34%.

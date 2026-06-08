@@ -231,6 +231,51 @@ def add_squad_strength(matches: pd.DataFrame) -> pd.DataFrame:
     return matches
 
 
+# ── 4c. Confederation / schedule strength (V5 candidate) ─────────────────────
+def _build_conf_map() -> dict:
+    """team → confederation, from the training ranking CSVs' `confederation` column."""
+    frames = []
+    for f in sorted(RANKINGS_DIR.glob("*.csv")):
+        df = pd.read_csv(f)
+        if {"country_full", "confederation"}.issubset(df.columns):
+            frames.append(df[["country_full", "confederation"]])
+    allc = pd.concat(frames, ignore_index=True).dropna()
+    allc["country_full"] = allc["country_full"].apply(standardize_name)
+    return allc.groupby("country_full")["confederation"].agg(lambda s: s.mode().iloc[0]).to_dict()
+
+
+def add_confederation_strength(matches: pd.DataFrame) -> pd.DataFrame:
+    """
+    V5 candidate: each team's CONFEDERATION average ELO (prior year) — a
+    schedule-quality prior ("how strong is the region you farm results in?").
+    Tests whether regional strength adds signal beyond a team's own ELO + squad
+    value. Leakage-safe: uses the PRIOR-year confederation aggregate (an average
+    over other teams, computed before the match year). Must run after add_elo.
+    """
+    matches = matches.copy()
+    conf_map = _build_conf_map()
+    yr = matches["date"].dt.year
+
+    hv = pd.DataFrame({"team": matches["home_team"], "year": yr, "elo": matches["home_elo"]})
+    av = pd.DataFrame({"team": matches["away_team"], "year": yr, "elo": matches["away_elo"]})
+    long = pd.concat([hv, av], ignore_index=True)
+    long["conf"] = long["team"].map(conf_map)
+    long = long.dropna(subset=["conf"])
+    conf_year = long.groupby(["conf", "year"])["elo"].mean().to_dict()
+    global_mean = float(long["elo"].mean())
+
+    def lookup(conf, year):
+        return conf_year.get((conf, year - 1), conf_year.get((conf, year), global_mean))
+
+    home_conf = matches["home_team"].map(conf_map)
+    away_conf = matches["away_team"].map(conf_map)
+    matches["home_conf_strength"] = [lookup(c, y) for c, y in zip(home_conf, yr)]
+    matches["away_conf_strength"] = [lookup(c, y) for c, y in zip(away_conf, yr)]
+    matches["conf_strength_diff"] = matches["home_conf_strength"] - matches["away_conf_strength"]
+    print("Confederation-strength features added (prior-year conf avg ELO, leakage-safe)")
+    return matches
+
+
 # ── 6. Rolling form features ──────────────────────────────────────────────────
 def add_rolling_form(matches: pd.DataFrame) -> pd.DataFrame:
     """
@@ -492,6 +537,10 @@ def main():
     combined = add_fifa_ranking_diff(combined, rankings)
     combined = add_elo(combined)
     combined = add_squad_strength(combined)   # V4: squad strength + depth
+    # V5 (DL-03): confederation-strength tested via signal_test and CUT — redundant
+    # (incr IC ≈ 0/neg, ΔLL −0.0005). Squad value already captures "true quality vs
+    # schedule-inflated form", subsuming the regional proxy. add_confederation_strength
+    # retained for reference but not in the pipeline.
     combined = add_rolling_form(combined)
     # V3 P2: conf_match_pct tested here, CUT — no CV improvement (DL-02 result).
     # ~93% of all qualifying matches are intra-confederation, so the feature is
