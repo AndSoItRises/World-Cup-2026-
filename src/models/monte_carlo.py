@@ -29,6 +29,7 @@ import lightgbm as lgb
 from itertools import combinations
 
 from src.features.data_cleaning import standardize_name
+from src.features.build_squad_strength import SQUAD_MODEL_FEATURES, squad_fields
 
 warnings.filterwarnings("ignore")
 
@@ -68,6 +69,7 @@ FEATURE_COLS = [
     "is_knockout", "altitude_m",
     "tournament_tier", "neutral",
 ]
+FEATURE_COLS = FEATURE_COLS + SQUAD_MODEL_FEATURES  # V4: squad strength + depth
 
 NAME_MAP = {
     "Ivory Coast":            "Côte d'Ivoire",
@@ -295,6 +297,7 @@ def get_matchup_prob(home, away, is_knockout,
         "home_days_rest": hf["days_rest"], "away_days_rest": af["days_rest"],
         "is_knockout": int(is_knockout), "altitude_m": 0,
         "tournament_tier": 1, "neutral": 1,
+        **squad_fields(home, away),   # V4: squad strength + depth (latest edition)
     }
 
     X = pd.DataFrame([feat], columns=FEATURE_COLS)

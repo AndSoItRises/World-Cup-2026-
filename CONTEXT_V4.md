@@ -146,6 +146,43 @@ reproduces market odds — circular). So V4's real work is a DATA-ACQUISITION pr
 In absolute terms — no, ~18% more explanatory signal is provably available, but it's gated by historical
 squad-value data, not by model cleverness. Next gain requires acquiring that data, then validate-or-cut.
 
+### DL-02 — Historical squad data ACQUIRED (FIFA ratings) and squad value+depth ADOPTED into V4
+The DL-01 blocker ("we don't have historical squad values") is resolved. FIFA/EA video-game player
+ratings are a leakage-safe, by-edition, broad-coverage proxy for squad quality AND depth:
+- Source: lbenz730/fifa_model (FIFA 2005–2020, fifaindex) + abineshta FIFA22 + EAFC26-DataHub FC26.
+  FIFA `overall` is one 0–99 scale across sources. `build_squad_strength.py` aggregates per nation-year:
+  `squad_strength` (top-23 mean), `squad_top11`, `squad_depth` (12th–23rd mean = bench quality),
+  `squad_n_quality` (#players ≥75). Cached raw under data/raw/fifa_ratings (gitignored, re-downloadable);
+  derived table at data/processed/squad_strength_by_year.csv.
+- Leakage safety: each edition stamped availability = (Y-1)-10-01 (games ship ~Sept); merged onto matches
+  with `merge_asof` BACKWARD. Prediction uses the latest edition (FC26, ships 2025 → pre-WC2026, no leak).
+- Name audit (non-negotiable): 46/48 WC2026 teams covered; Jordan & Uzbekistan have <11 rated players
+  (thin FIFA coverage) → low sentinel (≈60, the "not in FIFA"≈weakest-nation convention, like rank-150).
+- **signal_test.py (new; = Learning Step 6):** squad strength/depth is REDUNDANT on the full match set
+  (ΔLL≈0 — 65% of competitive matches involve non-FIFA minnows → sentinel-diluted) but carries strong
+  ORTHOGONAL signal on the COVERED subset (both teams real): incremental IC +0.125 (strength) / +0.100
+  (depth), ΔLL +0.0062. Fix: a `squad_both_covered` flag lets the trees gate on real-vs-sentinel.
+  `squad_top11` (collinear w/ strength) and `squad_n_quality` (noisy, IC sign-flips) were CUT.
+- **Validation (validate-or-cut, DL-08 rule):** v4 = v3 + 7 squad features (strength/depth per-side + diffs
+  + coverage flag). XGB CV log loss 0.8701→0.8668 (**+0.0033**). Ensemble vs v3 on the 4 metrics: wins 3/4
+  — test_ll 0.8462→0.8461, **WC2022 finals LL 1.0608→1.0447 (−0.016)**, draw recall 0.087→0.091; loses
+  macro_conf_ll 0.8628→0.8653 (the one regression). Squad features land at XGB importance rank 3
+  (squad_strength_diff, gain 16.3) and rank 5 (squad_depth_diff) — the model leans on them.
+- **Bracket (the binding DL-08 test) moves the RIGHT way** (`bracket_v4.py`): mean single-match P(win)
+  CONCACAF −1.28pp (Panama −4.6, Canada −2.3, Mexico −0.5) and Euro +2.36pp (**France +4.3**, Belgium +5.7,
+  Portugal +3.9, Netherlands +3.2, Spain +2.8). Defensible exceptions: USA ↑ (genuinely high squad value),
+  Croatia ↓ (aging, low market value). This directly attacks both persistent biases.
+- **Tradeoff (honest):** the gain is concentrated in matches between real footballing nations (incl. ALL
+  WC2026 ties); on the full minnow-heavy test set the overall LL barely moves and macro_conf_ll dips
+  slightly. Net: adopted — CV + WC2022 + bracket + importance all positive, one minor metric regresses.
+- Production: `retrain_all`, `predict_wc2026`, `monte_carlo` now use the 48-feature v4 set (squad_fields
+  helper, leakage-safe). Prior models preserved: v1/v2/v3 untouched; old prod backed up to *_prod_v3.*.
+- **Production forecast impact (the proof):** model↔market correlation **0.665 → 0.838**. The two flagship
+  biases shrank — Mexico edge +10.0pp→**+6.1pp** (model win% 11.0→7.1), France −10.0pp→**−7.7pp**
+  (4.8→7.1), England now near-aligned (−1.7pp). Not fully closed (ELO still dominant; squad coverage is
+  ~34% of all matches) but the largest single bias-correction since V2. WC2026 top: Spain 18.5%, England
+  8.9%, Mexico 7.1%, France 7.1%, Brazil 6.3%.
+
 ---
 
 ## V4 Phase Status
@@ -153,13 +190,14 @@ squad-value data, not by model cleverness. Next gain requires acquiring that dat
 | Phase | Description | Status |
 |---|---|---|
 | P1 | **Squad-value diagnostic** — confirmed squad value is real missing signal (+0.178 incremental R²); explains both biases. See DL-01. | ✅ |
-| P2 | **Acquire historical squad values (2002–2022)** — the blocker. Transfermarkt historical snapshots aligned to match dates. Needs a data source / scrape plan. BLOCKED on data. | ⬜ Next |
-| P3 | **Add squad_value features + validate** — join to features (name audit + verify_teams), retrain, CV-compare to V3. Adopt only if CV LL improves AND bracket moves right (DL-08 of V3). | ⬜ |
-| P4 | **Past-tournament market backtest** — does the model (with value) beat market on WC2018/2022? Gates any betting work. | ⬜ |
+| P2 | **Acquire historical squad values** — RESOLVED via FIFA/EA video-game ratings (leakage-safe, by-edition, broad coverage) instead of Transfermarkt history. `build_squad_strength.py`; 46/48 WC teams. See DL-02. | ✅ |
+| P3 | **Add squad value+depth features + validate** — `signal_test.py` (orthogonality), coverage-flag fix, retrain v4, CV +0.0033, 3/4 metrics, bracket corrects CONCACAF↓/Euro↑. ADOPTED. See DL-02. | ✅ |
+| P4 | **Past-tournament market backtest** — `market_backtest.py` computes model IC (v4 0.595 > v3 0.593) + market-as-benchmark on WC2026. FULL past-tournament odds backtest still needs historical bookmaker lines. | ◑ partial |
 
-**Status note:** P1 done. P2 is the critical path and is DATA-BLOCKED — V4 cannot meaningfully proceed
-without historical squad-value data. Decision for Jake: source that data (enables rigorous V4), or treat
-v3.0 as the practical ceiling for the validated model.
+**Status note:** P1–P3 done — V4 delivered a genuine, validated model improvement (squad value + depth),
+the first gain since V2. P4 is partially built (IC machinery exists); a true edge test still needs
+historical odds. The hands-on quant **Learning Path** scripts are now built and runnable (see below):
+`signal_test.py` (Step 6), `calibration.py` (Step 1), `backtest.py` (Step 3), `market_backtest.py` (Step 2).
 
 ---
 
@@ -172,7 +210,7 @@ why it matters, and a concrete thing to build in THIS repo. Do them in order; ea
 cross-validation, de-vigging odds, edge detection, and the validate-or-cut discipline. That discipline
 (*"adopt only if it beats the baseline out-of-sample"*) IS the quant mindset. The steps below deepen it.
 
-### Step 1 — Calibration & proper scoring rules
+### Step 1 — Calibration & proper scoring rules  ✅ BUILT: `src/models/calibration.py`
 **Concept:** A probability of 30% should be right 30% of the time. "Proper" scoring rules (log loss, Brier)
 are minimized only by *honest* probabilities — that's why we never optimized accuracy.
 **Build:** A `calibration.py` that bins your test predictions, plots reliability diagrams per outcome
@@ -180,7 +218,7 @@ are minimized only by *honest* probabilities — that's why we never optimized a
 **Platt scaling** and **isotonic regression** to recalibrate. Measure if recalibration improves test log loss.
 **Learn:** sharpness vs calibration, why a well-calibrated 55% beats a miscalibrated 90%.
 
-### Step 2 — The market as benchmark (you compete with a price, not reality)
+### Step 2 — The market as benchmark (you compete with a price, not reality)  ✅ BUILT: `src/models/market_backtest.py`
 **Concept:** V3's big lesson — being "right" is worthless; being *righter than the price* is everything.
 The market already embeds squad value, injuries, everything. Your edge = your probability − the fair price.
 **Build:** Extend `market_divergence.py` into a backtest: for past matches with odds, compute the model's
@@ -188,7 +226,7 @@ The market already embeds squad value, injuries, everything. Your edge = your pr
 market's IC. If the market's IC ≥ yours, you have no edge — quantify that honestly.
 **Learn:** information coefficient, hit-rate vs edge, market efficiency.
 
-### Step 3 — Backtesting rigor & the overfitting trap
+### Step 3 — Backtesting rigor & the overfitting trap  ✅ BUILT: `src/models/backtest.py`
 **Concept:** The #1 way quant models fail is look-ahead bias and tuning-to-the-test. You used a single
 temporal split; real quant uses **walk-forward** (expanding-window) validation.
 **Build:** A `backtest.py` that retrains at each historical season boundary and predicts the next season
@@ -212,7 +250,7 @@ learning rate. A real Bayesian model gives you a *distribution* over strength (u
 and shrinkage toward the mean — compare its team ratings + *uncertainty bands* to your Dixon-Coles MLE.
 **Learn:** priors, posteriors, shrinkage, uncertainty quantification, why a point estimate hides risk.
 
-### Step 6 — Signal research: orthogonality & incremental information
+### Step 6 — Signal research: orthogonality & incremental information  ✅ BUILT: `src/models/signal_test.py`
 **Concept:** V4 P1's `+0.178 incremental R²` is the single most important quant idea you've touched.
 New signal is only worth adding if it's **orthogonal** to what you already have — raw correlation lies.
 **Build:** A reusable `signal_test.py`: given a candidate feature, regress it on the existing feature set,
@@ -252,4 +290,27 @@ foundation everything else trusts; Bayesian and noise-floor last — they're the
 ---
 
 ## ══ END-OF-VERSION REVIEW ══
-*(Filled in when V4 is fully closed)*
+
+**V4 shipped the first model gain since V2 — squad value + DEPTH, rigorously validated.**
+
+What landed:
+- **New signal acquired & validated.** Squad strength + depth from FIFA/EA ratings (2005→FC26), leakage-safe
+  asof merge, name-audited (46/48 WC teams). The DL-01 "data-blocked" verdict is overturned — FIFA ratings
+  were the accessible historical proxy Transfermarkt history wasn't.
+- **Disciplined validate-or-cut.** `signal_test.py` exposed that the signal is real only on covered matches
+  (incr IC +0.125/+0.10); a `squad_both_covered` flag recovered it; collinear/noisy squad cols were cut.
+  XGB CV +0.0033, ensemble 3/4 metrics, WC2022 finals −0.016, squad features at importance rank 3 & 5.
+- **Both target biases reduced** in the live forecast: model↔market corr 0.665→0.838; Mexico/CONCACAF
+  deflated, France/Euro lifted (with self-consistent exceptions USA↑, Croatia↓).
+- **Quant learning stack built & runnable** (for cowork): calibration (Step 1), market-IC (Step 2),
+  walk-forward backtest (Step 3), signal_test/orthogonality (Step 6).
+
+Honest limitations / carried to V5:
+- Squad coverage is ~34% of all competitive matches (FIFA omits minnows) → gain is concentrated in
+  real-nation matches (incl. all WC ties); overall test LL barely moves and macro_conf_ll dipped slightly.
+  Filling 2021–2025 editions (FIFA23/FC24/FC25) and minnow nations would lift coverage.
+- Biases reduced, not closed — ELO still dominates; squad value is a complementary prior.
+- P4 (true past-tournament odds backtest) still needs historical bookmaker lines.
+- **Next obvious feature:** confederation/schedule-strength — now a one-step `signal_test.py` vet.
+
+Models: v1/v2/v3 intact; v4 at xgb_v4/lgbm_v4/ensemble_test_proba_v4; prod = v4 (old prod → *_prod_v3).

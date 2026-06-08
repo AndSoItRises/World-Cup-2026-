@@ -15,6 +15,19 @@
     "home_elo",
     "away_elo",
     "elo_diff",
+    "home_squad_strength",
+    "home_squad_top11",
+    "home_squad_depth",
+    "home_squad_n_quality",
+    "away_squad_strength",
+    "away_squad_top11",
+    "away_squad_depth",
+    "away_squad_n_quality",
+    "squad_both_covered",
+    "squad_strength_diff",
+    "squad_top11_diff",
+    "squad_depth_diff",
+    "squad_n_quality_diff",
     "home_win_rate_5",
     "home_avg_goals_5",
     "home_avg_gd_5",
@@ -51,10 +64,10 @@
   ],
   "train_features_shape": [
     9281,
-    51
+    64
   ],
   "test_features_shape": [
     2257,
-    51
+    64
   ]
 }

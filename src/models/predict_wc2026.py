@@ -23,6 +23,7 @@ import xgboost as xgb
 import lightgbm as lgb
 
 from src.features.data_cleaning import standardize_name
+from src.features.build_squad_strength import SQUAD_MODEL_FEATURES, squad_fields
 
 warnings.filterwarnings("ignore")
 
@@ -63,6 +64,7 @@ FEATURE_COLS = [
     "is_knockout", "altitude_m",
     "tournament_tier", "neutral",
 ]
+FEATURE_COLS = FEATURE_COLS + SQUAD_MODEL_FEATURES  # V4: squad strength + depth
 
 # ── Name mapping: fixture names → training data names ─────────────────────────
 # Fixtures file uses different spellings for some teams.
@@ -282,6 +284,7 @@ def build_feature_row(row, rank_lookup, form_lookup, h2h_lookup, defaults):
         "altitude_m":        row.get("altitude_m", 0) or 0,
         "tournament_tier":   1,   # WC = tier 1
         "neutral":           1,   # all WC2026 matches neutral
+        **squad_fields(home, away),   # V4: squad strength + depth (latest edition)
     }
 
 

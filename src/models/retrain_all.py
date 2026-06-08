@@ -20,9 +20,10 @@ from pathlib import Path
 import xgboost as xgb
 import lightgbm as lgb
 
-from src.models.train_xgb import FEATURE_COLS, XGB_PARAMS, DRAW_CLASS_WEIGHT
+from src.models.train_xgb import FEATURE_COLS as FEATURE_COLS_V3, XGB_PARAMS, DRAW_CLASS_WEIGHT
 from src.models.train_lgbm import LGBM_PARAMS
 from src.models.dixon_coles import fit_dixon_coles
+from src.features.build_squad_strength import SQUAD_MODEL_FEATURES
 
 warnings.filterwarnings("ignore")
 
@@ -30,6 +31,10 @@ BASE = Path(__file__).resolve().parents[2]
 DATA_PROC = BASE / "data" / "processed"
 MODELS = BASE / "models"
 TARGET = "result"
+
+# V4: production models now include the squad strength/depth features (adopted —
+# CV +0.0033, WC2022 finals −0.016, bracket corrects CONCACAF↓/Euro↑; see DL-02).
+FEATURE_COLS = FEATURE_COLS_V3 + SQUAD_MODEL_FEATURES
 
 
 def main():

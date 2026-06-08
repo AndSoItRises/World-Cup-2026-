@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 
 from src.features.data_cleaning import standardize_name
+from src.features.build_squad_strength import SQUAD_SENTINEL
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 BASE = Path(__file__).resolve().parents[2]
@@ -163,6 +164,70 @@ def add_elo(matches: pd.DataFrame) -> pd.DataFrame:
 
     missing = home_elo["home_elo"].isna().sum()
     print(f"ELO features added | {missing:,} matches fell back to default 1500")
+    return matches
+
+
+# ── 4b. Squad strength + depth (V4) ──────────────────────────────────────────
+SQUAD_PATH = DATA_PROC / "squad_strength_by_year.csv"
+# "Not in FIFA" ≈ weaker than the weakest rated nation (1st pct strength ≈ 62).
+# Same idea as the FIFA-rank-150 sentinel: a defensible low value, not a NaN.
+SQUAD_COLS = ["squad_strength", "squad_top11", "squad_depth", "squad_n_quality"]
+# SQUAD_SENTINEL imported from build_squad_strength (single source of truth).
+
+
+def add_squad_strength(matches: pd.DataFrame) -> pd.DataFrame:
+    """
+    Merge pre-match national-team squad strength + depth (FIFA video-game ratings,
+    built by build_squad_strength.py) onto each match.
+
+    Leakage-safe: merge_asof BACKWARD on each edition's availability_date, so a
+    match only ever sees the most recent FIFA edition released BEFORE it. Teams
+    with no rated squad (minnows / thin FIFA coverage) get a low sentinel — the
+    same convention as the FIFA-rank-150 fill.
+    """
+    matches = matches.copy()
+    if not SQUAD_PATH.exists():
+        print(f"  ⚠ {SQUAD_PATH.name} missing — run build_squad_strength; filling sentinel")
+        for side in ["home", "away"]:
+            for k in SQUAD_COLS:
+                matches[f"{side}_{k}"] = SQUAD_SENTINEL[k]
+        matches["squad_both_covered"] = 0
+    else:
+        sq = pd.read_csv(SQUAD_PATH, parse_dates=["availability_date"]).sort_values("availability_date")
+
+        def lookup(team_col: str, side: str):
+            out = pd.DataFrame(index=matches.index, columns=SQUAD_COLS, dtype=float)
+            for team, group in matches.groupby(team_col):
+                ts = sq[sq["team"] == team]
+                if ts.empty:
+                    continue
+                merged = pd.merge_asof(
+                    group[["date"]].sort_values("date").reset_index(),
+                    ts[["availability_date"] + SQUAD_COLS].rename(columns={"availability_date": "date"}),
+                    on="date", direction="backward",
+                ).set_index("index")
+                out.loc[merged.index, SQUAD_COLS] = merged[SQUAD_COLS].values
+            for k in SQUAD_COLS:
+                matches[f"{side}_{k}"] = out[k]
+
+        lookup("home_team", "home")
+        lookup("away_team", "away")
+
+        # Coverage flag BEFORE imputation: a squad diff is only meaningful when
+        # BOTH teams have real data. signal_test showed the orthogonal signal
+        # lives entirely in the covered subset, so this flag lets the trees gate
+        # on it instead of being polluted by sentinel rows.
+        both_covered = (matches["home_squad_strength"].notna() &
+                        matches["away_squad_strength"].notna())
+        matches["squad_both_covered"] = both_covered.astype(int)
+        for side in ["home", "away"]:
+            for k in SQUAD_COLS:
+                matches[f"{side}_{k}"] = matches[f"{side}_{k}"].fillna(SQUAD_SENTINEL[k])
+        print(f"Squad strength/depth added (leakage-safe asof) | both-covered: {both_covered.mean()*100:.1f}%")
+
+    # Diffs (home − away): positive ⇒ home has the stronger / deeper squad
+    for k in SQUAD_COLS:
+        matches[f"{k}_diff"] = matches[f"home_{k}"] - matches[f"away_{k}"]
     return matches
 
 
@@ -406,6 +471,7 @@ def build_features(df: pd.DataFrame, rankings: pd.DataFrame, label: str) -> pd.D
     print(f"\n── Building features for {label} ({len(df):,} rows) ──")
     df = add_fifa_ranking_diff(df, rankings)
     df = add_elo(df)
+    df = add_squad_strength(df)
     df = add_rolling_form(df)
     df = add_h2h(df)
     df = add_days_rest(df)
@@ -425,6 +491,7 @@ def main():
 
     combined = add_fifa_ranking_diff(combined, rankings)
     combined = add_elo(combined)
+    combined = add_squad_strength(combined)   # V4: squad strength + depth
     combined = add_rolling_form(combined)
     # V3 P2: conf_match_pct tested here, CUT — no CV improvement (DL-02 result).
     # ~93% of all qualifying matches are intra-confederation, so the feature is
