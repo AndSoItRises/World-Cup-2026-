@@ -37,6 +37,8 @@ DONE
   2. bet_sim.py — edge / EV / Kelly (1/4, 5% cap), futures + matches
   +  fetch_live_odds.py — ESPN/DraftKings 3-way lines (open + current), 72/72 matched
   +  market_monitor.py — line movement vs model, cross-book arb scanner
+  +  desk_call.py — BET/LEAN/PASS verdicts w/ evidence chains, bias haircuts,
+     25% portfolio exposure cap (the DESK tab)
   3. quant_dashboard.html — this file
 
 NEXT STEPS (in order)
@@ -86,6 +88,7 @@ def build_payload() -> dict:
             "devig": "Shin",
         },
         "nextSteps": NEXT_STEPS,
+        "desk": load("desk_calls.csv").fillna("").to_dict("records"),
         "futures": load("value_bets_futures.csv").to_dict("records"),
         "bets": load("value_bets.csv").to_dict("records"),
         "implied": load("market_implied_probs.csv").to_dict("records"),
@@ -113,7 +116,7 @@ gap:16px;align-items:baseline;flex-wrap:wrap}
 header h1{font-size:16px;color:#fff}header .sub{color:var(--dim);font-size:11px}
 #ticker-wrap{background:#070a10;border-bottom:1px solid var(--line);overflow:hidden;
 white-space:nowrap;padding:6px 0;position:relative}
-#ticker{display:inline-block;padding-left:100%;animation:tick 90s linear infinite}
+#ticker{display:inline-block;padding-left:100%;animation:tick 240s linear infinite}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
 #ticker span{margin-right:34px}
 .up{color:var(--grn)}.dn{color:var(--red)}.fl{color:var(--dim)}
@@ -152,6 +155,19 @@ h2{font-size:14px;color:#fff;margin-bottom:8px}h3{font-size:12px;color:var(--cyn
 .kpi{display:inline-block;margin-right:22px}.kpi b{color:#fff;font-size:15px}
 .kpi span{color:var(--dim);font-size:10px;display:block}
 #live-status{font-size:11px;color:var(--dim);margin-left:10px}
+.vb{font-weight:bold;font-size:11px;padding:2px 8px;border-radius:2px}
+.vb.bet{background:#0c2e1c;color:var(--grn);border:1px solid var(--grn)}
+.vb.lean{background:#0c2330;color:var(--cyn);border:1px solid var(--cyn)}
+.deskcard{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--grn);
+padding:12px 14px;margin-bottom:10px}
+.deskcard.lean{border-left-color:var(--cyn)}
+.deskcard .head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.deskcard .sel{color:#fff;font-size:14px;font-weight:bold}
+.deskcard .stake{margin-left:auto;color:var(--grn);font-size:15px;font-weight:bold}
+.deskcard ul{list-style:none;margin-top:4px}
+.deskcard li{font-size:11.5px;line-height:1.55;color:#aab4c8}
+.deskcard li.plus:before{content:"+ ";color:var(--grn)}
+.deskcard li.minus:before{content:"! ";color:var(--amb)}
 </style></head><body>
 <header>
   <h1>WC2026 QUANT DESK</h1>
@@ -162,6 +178,18 @@ h2{font-size:14px;color:#fff;margin-bottom:8px}h3{font-size:12px;color:var(--cyn
 <div id="ticker-wrap"><div id="ticker"></div></div>
 <nav id="nav"></nav>
 <main>
+
+<div class="tab" id="tab-desk">
+  <h2>Desk Calls — what we'd actually bet, and why</h2>
+  <div class="note">Rule-based verdicts from the data in the other tabs. Every bet shows its
+  evidence chain (+) and its risk haircuts (!). Stakes are ¼-Kelly, capped 5% per bet and 25%
+  total book exposure. PASS reasons are documented model biases — not vibes.</div>
+  <div id="desk-kpis" style="margin:10px 0"></div>
+  <div id="desk-cards"></div>
+  <div class="card"><h3 id="desk-pass-head"></h3><div class="note" id="desk-pass-note"></div></div>
+  <div class="cav">62% model · edge vs market UNPROVEN out-of-sample (V5 DL-05). These are
+  research conclusions, not betting advice.</div>
+</div>
 
 <div class="tab" id="tab-scanner">
   <h2>Value Bet Scanner — match 1X2</h2>
@@ -263,7 +291,7 @@ const fmtPP = x => (x>=0?'+':'')+(100*x).toFixed(1)+'pp';
 const cls = x => x>0.0001?'pos':(x<-0.0001?'neg':'fl');
 
 /* ── nav ── */
-const TABS = [['scanner','SCANNER'],['matches','MATCHES'],['groups','GROUPS'],
+const TABS = [['desk','DESK CALLS'],['scanner','SCANNER'],['matches','MATCHES'],['groups','GROUPS'],
  ['bracket','BRACKET'],['scatter','DIVERGENCE'],['bankroll','BANKROLL'],
  ['monitor','MOVEMENT+ARB'],['uncertainty','UNCERTAINTY'],['notes','NOTES']];
 const nav = document.getElementById('nav');
@@ -276,6 +304,44 @@ TABS.forEach(([id,label],i)=>{
 document.getElementById('meta-sub').textContent =
   `${D.meta.model} · ${D.meta.accuracy} · de-vig: ${D.meta.devig} · built ${D.meta.built_at}`;
 document.getElementById('notes-pre').textContent = D.nextSteps;
+
+/* ── desk calls ── */
+(function(){
+  const picks=D.desk.filter(r=>r.verdict!=='PASS')
+    .sort((a,b)=>(a.verdict.localeCompare(b.verdict))||(b.score-a.score));
+  const passes=D.desk.filter(r=>r.verdict==='PASS');
+  const nBet=picks.filter(r=>r.verdict==='BET').length;
+  const total=picks.reduce((s,r)=>s+(+r.stake_usd||0),0);
+  document.getElementById('desk-kpis').innerHTML=
+    `<span class="kpi"><b class="pos">${nBet}</b><span>BET</span></span>`+
+    `<span class="kpi"><b style="color:var(--cyn)">${picks.length-nBet}</b><span>LEAN</span></span>`+
+    `<span class="kpi"><b>${passes.length}</b><span>PASS</span></span>`+
+    `<span class="kpi"><b>$${total.toFixed(0)}</b><span>total book (of $1,000)</span></span>`;
+  const el=document.getElementById('desk-cards');
+  picks.forEach(r=>{
+    const c=document.createElement('div');
+    c.className='deskcard'+(r.verdict==='LEAN'?' lean':'');
+    const why=String(r.why).split(' | ').filter(Boolean)
+      .map(w=>`<li class="plus">${w}</li>`).join('');
+    const cau=String(r.cautions).split(' | ').filter(Boolean)
+      .map(w=>`<li class="minus">${w}</li>`).join('');
+    c.innerHTML=`<div class="head"><span class="vb ${r.verdict.toLowerCase()}">${r.verdict}</span>
+      <span class="sel">${r.selection}</span>
+      <span style="color:var(--dim)">${r.label}${r.date?' · '+r.date:''}
+      · ${(+r.decimal_odds).toFixed(2)}</span>
+      <span class="stake">$${(+r.stake_usd).toFixed(0)}</span></div>
+      <ul>${why}${cau}</ul>`;
+    el.appendChild(c);});
+  const reasons={};
+  passes.forEach(r=>{const k=String(r.why||r.cautions).split(' | ')[0].split(' — ')[1]||
+    String(r.why).split(' — ')[0];reasons[k]=(reasons[k]||0)+1;});
+  document.getElementById('desk-pass-head').textContent=
+    `${passes.length} PASSED — why nothing else made the cut`;
+  document.getElementById('desk-pass-note').innerHTML=Object.entries(reasons)
+    .sort((a,b)=>b[1]-a[1]).slice(0,6)
+    .map(([k,v])=>`${v}× ${k}`).join('<br>')+
+    '<br><br>Full detail per bet: SCANNER tab (uncheck the filters to see everything).';
+})();
 
 /* ── sortable tables ── */
 function renderTable(el, cols, rows){

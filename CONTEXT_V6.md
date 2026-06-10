@@ -150,6 +150,16 @@ Handled honestly: bet_sim prints the outcome breakdown + warning; the dashboard 
 to "hide draw bets"; the bankroll simulator offers truth = model / 50-50 blend / market-fair so
 the optimistic-vs-pessimistic bounds are explicit.
 
+### DL-08 — Desk Call layer: recommendations, not just information (Jake feedback)
+Jake's read on the first dashboard: lots of data, no thesis. Added `desk_call.py` — a
+rule-based verdict engine (BET ≥ 6 / LEAN ≥ 3 / PASS) where every input is a documented
+finding: edge size, favorite-side trust, line movement toward/against the model, draw-bias
+auto-pass, longshot + CONCACAF haircuts, coin-flip (entropy > 1.5 bits) half-stake, and a 25%
+portfolio exposure cap on the whole book (raw Kelly wanted 51%). The DESK tab is now the
+dashboard landing page: each pick shows stake + evidence chain (+) and risk haircuts (!), and
+the PASS pile explains itself. First run: 8 BET / 16 LEAN / 240 PASS, $250 total book.
+Ticker slowed 90s → 240s per loop (Jake request).
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit
