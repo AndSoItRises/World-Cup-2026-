@@ -1,0 +1,26 @@
+{
+  "method": "log_pool+draw_shrink",
+  "pool": "log",
+  "calibrator": "draw_shrink",
+  "params": [
+    0.8274
+  ],
+  "component_weights": [
+    0.275,
+    0.275,
+    0.45
+  ],
+  "held_out_mean_gain": 0.0049,
+  "fold_gains": [
+    0.0040422255221135295,
+    0.0007785018128738663
+  ],
+  "test_ll_before": 0.8461,
+  "test_ll_after": 0.8405,
+  "test_acc_before": 0.6163,
+  "test_acc_after": 0.6176,
+  "draw_recall_before": 0.0911,
+  "draw_recall_after": 0.0119,
+  "mean_p_draw_after": 0.2237,
+  "note": "applies on top of untouched v4 components at inference"
+}

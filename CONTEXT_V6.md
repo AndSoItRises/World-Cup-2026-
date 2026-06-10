@@ -160,6 +160,33 @@ dashboard landing page: each pick shows stake + evidence chain (+) and risk hair
 the PASS pile explains itself. First run: 8 BET / 16 LEAN / 240 PASS, $250 total book.
 Ticker slowed 90s → 240s per loop (Jake request).
 
+### DL-09 — ADOPTED: log-pool + draw-shrink calibrator (first model improvement since V4)
+Jake challenged the V5 ceiling. The ceiling verdict covered FEATURE/architecture levers;
+probability-level post-processing was never tested. `calibrate_v6.py` ran six candidates under
+the honest two-fold held-out protocol (fit one chronological half of test, score the other,
+swap; adopt bar mean ΔLL ≥ +0.003 with both folds positive):
+
+  temperature −0.0032 ✂ · draw_shrink +0.0027 ✂ (just misses) · class_weight +0.0031 ✅ ·
+  vector −0.0008 ✂ (overfits) · log_pool alone +0.0025 ✂ · **log_pool+draw_shrink +0.0049 ✅**
+
+Winner: geometric (log) pooling of XGB/LGBM/DC at the same fixed weights, then p(draw)×0.871,
+renormalized. Test LL 0.8461→0.8405, acc 0.6163→0.6176; emitted draw rate 25.9%→22.5% vs
+realized 22.4% — the 1.75× draw-upweight inflation is removed at inference. Held-out gain
+(+0.0049) exceeds the gain that justified V4 (+0.0033). Trade-off accepted with eyes open:
+draw RECALL collapses 9%→1% (argmax almost never picks draw) — classification was already
+structurally capped; the betting layer prices off probabilities, which are strictly better.
+
+Strong independent validation: rerunning the live forecast, the calibrator moved the model
+TOWARD the market on precisely the documented bias teams — Spain 18.4→22.1% (model fade
+shrinks), Mexico 7.1→6.0%, Japan 5.9→4.7%, USA 4.2→3.4%, Iran/Korea/Canada all down. Nobody
+told it about those biases; it found them via the draw/longshot miscalibration.
+
+Integration (additive + reversible): `src/models/calibrator.py`, gated on
+`models/calibrator_v6.json` — delete the file and monte_carlo/predict_wc2026/live_update all
+revert to the v4 linear blend. v1–v4 artifacts untouched. Full chain regenerated (predictions,
+10k sims, EV, desk calls, dashboard). Match +EV rows 125→119; draw +EV 70→58 — tilt reduced,
+not gone (κ=0.871 is a calibration fix, not the dog-compression fix; that one is structural).
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit

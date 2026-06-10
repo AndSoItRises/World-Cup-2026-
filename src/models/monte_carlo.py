@@ -323,7 +323,12 @@ def get_matchup_prob(home, away, is_knockout,
     else:
         dc_p = np.array([1/3, 1/3, 1/3])
 
-    blended = WEIGHTS["xgb"] * xgb_p + WEIGHTS["lgb"] * lgb_p + WEIGHTS["dc"] * dc_p
+    # V6: log-pool + draw-shrink calibrator if adopted (falls back to the v4
+    # linear blend when models/calibrator_v6.json is absent)
+    from src.models.calibrator import pool_and_calibrate
+    blended = pool_and_calibrate(
+        xgb_p, lgb_p, dc_p,
+        weights=(WEIGHTS["xgb"], WEIGHTS["lgb"], WEIGHTS["dc"]))
     # blended: [p_away_win, p_draw, p_home_win]
     return blended[2], blended[1], blended[0]   # p_home, p_draw, p_away
 

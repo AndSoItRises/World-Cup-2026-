@@ -404,11 +404,12 @@ def main():
     ])
 
     # ── Blend ─────────────────────────────────────────────────────────────────
-    ensemble_proba = (
-        WEIGHTS["xgb"] * xgb_proba +
-        WEIGHTS["lgb"] * lgb_proba +
-        WEIGHTS["dc"]  * dc_proba
-    )
+    # V6: log-pool + draw-shrink calibrator if adopted (v4 linear blend fallback)
+    from src.models.calibrator import pool_and_calibrate, banner
+    print(f"  {banner()}")
+    ensemble_proba = pool_and_calibrate(
+        xgb_proba, lgb_proba, dc_proba,
+        weights=(WEIGHTS["xgb"], WEIGHTS["lgb"], WEIGHTS["dc"]))
     # Columns: [p_away_win, p_draw, p_home_win]
 
     RESULT_LABELS = {0: "away_win", 1: "draw", 2: "home_win"}

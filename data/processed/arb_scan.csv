@@ -1,10 +1,10 @@
 match_id,match,date,n_books,best_home_decimal,best_draw_decimal,best_away_decimal,best_home_book,best_draw_book,best_away_book,inv_sum,arb,arb_roi_pct,near_arb
 72,Algeria vs Austria,2026-06-27,1,3.75,3.2,2.25,unknown,unknown,unknown,1.0236,False,0.0,False
-12,Tunisia vs Sweden,2026-06-14,1,4.3,3.45,1.952,unknown,unknown,unknown,1.0346,False,0.0,False
 52,Morocco vs Haiti,2026-06-24,1,1.351,5.25,9.5,unknown,unknown,unknown,1.036,False,0.0,False
 33,Netherlands vs Sweden,2026-06-20,1,1.645,4.2,5.25,unknown,unknown,unknown,1.0364,False,0.0,False
 66,Egypt vs Iran,2026-06-26,1,2.3,3.05,3.65,unknown,unknown,unknown,1.0366,False,0.0,False
 11,Ivory Coast vs Ecuador,2026-06-14,1,3.6,2.85,2.45,unknown,unknown,unknown,1.0368,False,0.0,False
+12,Tunisia vs Sweden,2026-06-14,1,4.4,3.5,1.909,unknown,unknown,unknown,1.0368,False,0.0,False
 43,Norway vs Senegal,2026-06-22,1,2.15,3.6,3.4,unknown,unknown,unknown,1.037,False,0.0,False
 40,New Zealand vs Egypt,2026-06-21,1,4.7,3.85,1.769,unknown,unknown,unknown,1.0377,False,0.0,False
 61,Norway vs France,2026-06-26,1,4.5,3.7,1.833,unknown,unknown,unknown,1.0379,False,0.0,False
