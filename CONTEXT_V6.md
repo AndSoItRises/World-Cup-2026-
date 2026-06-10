@@ -187,6 +187,21 @@ revert to the v4 linear blend. v1–v4 artifacts untouched. Full chain regenerat
 10k sims, EV, desk calls, dashboard). Match +EV rows 125→119; draw +EV 70→58 — tilt reduced,
 not gone (κ=0.871 is a calibration fix, not the dog-compression fix; that one is structural).
 
+### DL-10 — Underdog tilt: CUT — it's a market disagreement, not a miscalibration
+Stage-2 experiments (`calibrate_tilt.py`, stacked on DL-09, same held-out protocol) tested
+dog_shrink / favorite-logit remap / lopsidedness-conditional temperature. First, the
+diagnostic: bucketing test matches by favorite prob, predicted vs REALIZED favorite win rates
+are flat (gaps −3.8%…+2.0%, no monotone pattern) — the model's underdog probabilities are
+honest against reality on 2,257 held-out internationals. Fitted dog_shrink κ ≈ 1.02 ("do
+nothing", ΔLL +0.0000); the 2-param transforms actively hurt held-out (−0.004…−0.006).
+
+Implication: the dog/draw tilt vs the MARKET is the model genuinely disagreeing with the
+price, not a calibration bug. Either the market knows things the model can't see (lineups,
+injuries, motivation) or this is where the edge lives — indistinguishable until WC2026
+results arrive. That makes the CLV tracker (phase 5) the decisive experiment: score the
+dog-side desk calls against closing lines and realized outcomes as the group stage plays
+out. Until then the desk-call haircuts (longshot/draw/CONCACAF) remain the risk treatment.
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit

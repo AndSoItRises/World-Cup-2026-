@@ -28,7 +28,9 @@ BASE = Path(__file__).resolve().parents[2]
 DATA_RAW = BASE / "data" / "raw"
 DATA_PROC = BASE / "data" / "processed"
 OUT_PATH = BASE / "outputs" / "quant_dashboard.html"
+HANDOFF_PATH = BASE / "HANDOFF.md"
 
+# Fallback only — the NOTES tab embeds HANDOFF.md (single source of truth)
 NEXT_STEPS = """\
 V6 BUILD STATE (this file doubles as the context doc — see CONTEXT_V6.md in repo)
 
@@ -87,7 +89,8 @@ def build_payload() -> dict:
             "accuracy": "62.0% | LL 0.8461 | model-market corr 0.84",
             "devig": "Shin",
         },
-        "nextSteps": NEXT_STEPS,
+        "nextSteps": (HANDOFF_PATH.read_text(encoding="utf-8")
+                      if HANDOFF_PATH.exists() else NEXT_STEPS),
         "desk": load("desk_calls.csv").fillna("").to_dict("records"),
         "futures": load("value_bets_futures.csv").to_dict("records"),
         "bets": load("value_bets.csv").to_dict("records"),
@@ -279,7 +282,7 @@ padding:12px 14px;margin-bottom:10px}
 </div>
 
 <div class="tab" id="tab-notes">
-  <h2>Context & Next Steps (embedded research state)</h2>
+  <h2>Agent Handoff — full research state (mirror of HANDOFF.md in the repo)</h2>
   <div class="card"><pre id="notes-pre"></pre></div>
 </div>
 
