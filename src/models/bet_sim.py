@@ -217,10 +217,17 @@ def main():
         print(f"  odds, not edge. Kept in the CSV, excluded from the headline table.")
     print(f"  ({n_value} positive-EV total of {len(futures)} priced teams)")
 
-    real = matches[matches["market_source"] == "real"]
+    real = matches[matches["market_source"] == "real"].copy()
     if len(real):
+        real["bet_label"] = real["selection"] + " (" + real["outcome"] + ") " + real["match"]
         print_bet_table(real, f"Match bets (real lines) — "
-                              f"{int((real['ev'] > 0).sum())} positive-EV", "match")
+                              f"{int((real['ev'] > 0).sum())} positive-EV", "bet_label")
+        pos = real[real["ev"] > 0]
+        by_outcome = pos["outcome"].value_counts().to_dict()
+        print(f"\n  Positive-EV by outcome: {by_outcome} of {len(real)} rows.")
+        print(f"  ⚠️  Draw/underdog-heavy +EV is the model's DOCUMENTED draw upweight")
+        print(f"  (1.75×) and ELO compression on lopsided ties — model bias, not")
+        print(f"  market error. Trust favorite-side edges more than draw/dog edges.")
     else:
         print(f"\n── Match bets ──")
         print(f"  No real match lines yet → all {len(matches)} match-outcome rows are")

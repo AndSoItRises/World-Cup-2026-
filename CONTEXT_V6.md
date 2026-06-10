@@ -82,10 +82,15 @@ V6 spec lives in: `fable-wc2026-prompt.md` (Jake's prompt doc, outside the repo:
 |---|---|---|
 | 1 | `src/models/bet_sim.py` — EV engine + Kelly | ✅ done |
 | 2 | `src/models/market_ingestion.py` — odds ingestion + juice stripping | ✅ done (merged into phase 1, see DL-01) |
-| 3 | `outputs/quant_dashboard.html` — interactive research dashboard | ⬜ |
-| 4 | `src/models/uncertainty.py` — aleatoric/epistemic quantification | ⬜ |
-| 5 | `src/models/clv_tracker.py` — closing line value tracking | ⬜ |
+| 3 | `outputs/quant_dashboard.html` — interactive research dashboard | ✅ done |
+| + | `src/models/fetch_live_odds.py` — live ESPN/DraftKings line scraper | ✅ done (added scope, DL-05) |
+| + | `src/models/market_monitor.py` — line movement + arb scanner | ✅ done (added scope, DL-06) |
+| 4 | `src/models/uncertainty.py` — aleatoric/epistemic quantification | ⬜ (aleatoric entropy proxy already in dashboard) |
+| 5 | `src/models/clv_tracker.py` — closing line value tracking | ⬜ (line history already archiving per fetch) |
 | 6 | Signal tests for 5 new candidate features (orthogonality gate) | ⬜ |
+
+The full next-steps list (incl. multi-book arb, stage futures, bracket re-sim bands) is embedded
+in the dashboard's NOTES tab, so the research state travels with the HTML file.
 
 ---
 
@@ -120,6 +125,30 @@ massive EV — the favorite-longshot trap. Added `tail_risk = model_prob < 0.02`
 sheet; tail rows stay in the CSV but are excluded from the headline table. Also printed with
 every run: the edge-vs-market is unproven (V5 DL-05), and the Mexico edge (+6.2pp) overlaps
 the DOCUMENTED CONCACAF inflation bias — model error, not market error.
+
+### DL-05 — Live match odds unlocked via ESPN's public scoreboard JSON
+`site.api.espn.com/.../soccer/fifa.world/scoreboard` serves DraftKings 3-way moneylines for all
+72 group matches with BOTH opening and current odds — free, no key, one GET. `fetch_live_odds.py`
+appends snapshots to `wc2026_match_odds.csv` (opening written once per match/book; current
+accumulates a line history per run). Ten ESPN events had home/away flipped vs our fixtures
+(neutral-venue convention) — matcher tries both orientations and re-orients odds to the fixture's
+home/away (what the model probs are keyed to). 72/72 matched. This closed DL-02's gap same-day:
+match EV is now real, not model_estimated.
+
+### DL-06 — Line movement + arb scanner (added scope)
+`market_monitor.py`: per-outcome open→current implied shift (significant = ≥0.10 decimal or
+≥5pp), classified toward/against the model (did the market move closer to our number?). First
+read: 137/216 lines moved significantly since open, 81 AGAINST the model vs 56 toward — the
+market has hardened favorites the model is lukewarm on. Arb scan takes best-line per outcome
+across books (Σ 1/odds < 1 = riskless); with one book it correctly reports none (tightest
+Σ=1.024) and activates automatically as more books are added to the odds CSV.
+
+### DL-07 — Match-level +EV is draw/dog-heavy = documented model bias, surfaced everywhere
+With real lines, 125/216 outcomes show +EV — concentrated in draws (the deliberate 1.75×
+upweight) and lopsided-match underdogs (ELO compression). That's model bias, not market error.
+Handled honestly: bet_sim prints the outcome breakdown + warning; the dashboard scanner defaults
+to "hide draw bets"; the bankroll simulator offers truth = model / 50-50 blend / market-fair so
+the optimistic-vs-pessimistic bounds are explicit.
 
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
