@@ -1,72 +1,70 @@
 {
   "market_overround": 1.1752,
-  "matched_teams": 47,
-  "unmatched_market": [
-    "Congo DR"
-  ],
-  "model_market_corr": 0.8385,
-  "mean_abs_divergence_pp": 1.211,
+  "matched_teams": 48,
+  "unmatched_market": [],
+  "model_market_corr": 0.8402,
+  "mean_abs_divergence_pp": 1.195,
   "top_value_picks": [
     {
       "team": "Mexico",
-      "edge_pp": 6.08,
-      "model_pct": 7.13,
+      "edge_pp": 6.01,
+      "model_pct": 7.06,
       "market_pct": 1.05
     },
     {
       "team": "Japan",
-      "edge_pp": 4.61,
-      "model_pct": 5.9,
+      "edge_pp": 4.57,
+      "model_pct": 5.86,
       "market_pct": 1.29
     },
     {
       "team": "Spain",
-      "edge_pp": 3.07,
-      "model_pct": 18.54,
+      "edge_pp": 2.96,
+      "model_pct": 18.43,
       "market_pct": 15.47
     },
     {
       "team": "USA",
-      "edge_pp": 2.71,
-      "model_pct": 4.1,
+      "edge_pp": 2.8,
+      "model_pct": 4.19,
       "market_pct": 1.39
     },
     {
       "team": "Iran",
-      "edge_pp": 2.13,
-      "model_pct": 2.25,
+      "edge_pp": 2.22,
+      "model_pct": 2.34,
       "market_pct": 0.12
     }
   ],
   "top_fades": [
     {
       "team": "France",
-      "edge_pp": -7.69,
-      "model_pct": 7.11,
+      "edge_pp": -7.47,
+      "model_pct": 7.33,
       "market_pct": 14.8
     },
     {
       "team": "Portugal",
-      "edge_pp": -5.11,
-      "model_pct": 3.85,
+      "edge_pp": -5.36,
+      "model_pct": 3.6,
       "market_pct": 8.96
     },
     {
       "team": "Argentina",
-      "edge_pp": -2.47,
-      "model_pct": 6.04,
+      "edge_pp": -2.67,
+      "model_pct": 5.84,
       "market_pct": 8.51
     },
     {
       "team": "Norway",
-      "edge_pp": -1.88,
-      "model_pct": 0.48,
+      "edge_pp": -1.79,
+      "model_pct": 0.57,
       "market_pct": 2.36
     },
     {
       "team": "Brazil",
-      "edge_pp": -1.75,
-      "model_pct": 6.35,
+      "edge_pp": -1.63,
+      "model_pct": 6.47,
       "market_pct": 8.1
     }
   ]

@@ -42,7 +42,8 @@ MARKET_TO_MODEL = {
     "Bosnia and Herzegovina": "Bosnia-Herzegovina",
     "Cape Verde":             "Cape Verde Islands",
     "Curacao":                "Curaçao",
-    "Congo DR":               "DR Congo",
+    # "Congo DR" needs no mapping — the model files use "Congo DR" verbatim
+    # (mapping it to "DR Congo" silently dropped the team; caught by V6's name audit)
 }
 
 
