@@ -30,6 +30,11 @@ State which queue item (section 7) you're on before touching files.
 Python: `.\venv\Scripts\python.exe -m src.models.<script>` (module form, from repo root).
 
 ## 3. REFRESH PIPELINE (after results land / any time for odds)
+Odds snapshots are AUTOMATED: Windows scheduled task "WC2026 odds snapshot" runs
+`scripts/fetch_odds_task.ps1` hourly through the final (logs to logs/odds_fetch.log;
+catches up after sleep/reboot via StartWhenAvailable). This keeps closing lines tight
+for clv_tracker without manual fetches. Delete the task after 2026-07-19.
+
 Run in this order — each feeds the next:
 ```powershell
 # 1. Jake enters finished matches into data/raw/wc2026_live_results.csv
