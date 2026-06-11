@@ -85,8 +85,8 @@ def build_payload() -> dict:
     payload = {
         "meta": {
             "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-            "model": "V4 ensemble (XGB .275 / LGBM .275 / DC .45) — prod, ceiling-confirmed",
-            "accuracy": "62.0% | LL 0.8461 | model-market corr 0.84",
+            "model": "V4 ensemble (XGB .275 / LGBM .275 / DC .45) + V6 calibrator (log-pool · draw×0.871)",
+            "accuracy": "62.0% | LL 0.8405 calibrated | model-market corr 0.84",
             "devig": "Shin",
         },
         "nextSteps": (HANDOFF_PATH.read_text(encoding="utf-8")
@@ -97,6 +97,7 @@ def build_payload() -> dict:
         "implied": load("market_implied_probs.csv").to_dict("records"),
         "tourney": load("tournament_probs_live.csv").to_dict("records"),
         "movement": load("line_movement.csv").to_dict("records"),
+        "clv": load("clv_report.csv").fillna("").to_dict("records"),
         "arb": load("arb_scan.csv").to_dict("records"),
         "results": results.to_dict("records"),
         "groups": {g: sorted(set(d["home_team"]) | set(d["away_team"]))
@@ -171,11 +172,23 @@ padding:12px 14px;margin-bottom:10px}
 .deskcard li{font-size:11.5px;line-height:1.55;color:#aab4c8}
 .deskcard li.plus:before{content:"+ ";color:var(--grn)}
 .deskcard li.minus:before{content:"! ";color:var(--amb)}
+/* iOS / mobile: momentum scrolling, no auto text inflation, fluid tables */
+html{-webkit-text-size-adjust:100%}
+.scroll{-webkit-overflow-scrolling:touch;overflow:auto}
+nav button{min-height:34px}
+@media(max-width:760px){
+  main{padding:8px}header{padding:8px 10px;gap:8px}
+  .cards{grid-template-columns:1fr}
+  table{font-size:11px}th,td{padding:4px 5px}
+  .kpi{margin-right:14px}.kpi b{font-size:13px}
+  .deskcard .stake{margin-left:0;width:100%}
+}
 </style></head><body>
 <header>
   <h1>WC2026 QUANT DESK</h1>
   <span class="sub" id="meta-sub"></span>
   <button class="act" onclick="liveRefresh()">⟳ LIVE ODDS</button>
+  <label style="margin:0"><input type="checkbox" id="auto-live"> auto 4m</label>
   <span id="live-status"></span>
 </header>
 <div id="ticker-wrap"><div id="ticker"></div></div>
@@ -184,9 +197,21 @@ padding:12px 14px;margin-bottom:10px}
 
 <div class="tab" id="tab-desk">
   <h2>Desk Calls — what we'd actually bet, and why</h2>
-  <div class="note">Rule-based verdicts from the data in the other tabs. Every bet shows its
-  evidence chain (+) and its risk haircuts (!). Stakes are ¼-Kelly, capped 5% per bet and 25%
-  total book exposure. PASS reasons are documented model biases — not vibes.</div>
+  <div class="card" style="border-left:3px solid var(--cyn)">
+    <h3>How to use this desk</h3>
+    <div class="note" style="margin:4px 0">
+    <b style="color:var(--grn)">BET</b> = the model's edge survives every documented-bias haircut ·
+    <b style="color:var(--cyn)">LEAN</b> = positive but thinner — half conviction ·
+    PASS = explained below, not hidden.<br>
+    Stakes are ¼-Kelly (5% per-bet cap, 25% whole-book cap) on a $1,000 bankroll — scale to yours.<br>
+    Hunting on your own? <b>SCANNER</b> = every +EV price right now ·
+    <b>GROUPS / BRACKET</b> = advancement &amp; winner odds vs fair price ·
+    <b>MOVEMENT+ARB</b> = where the lines are going and where arbitrage would show ·
+    <b>CLV</b> = the desk's scorecard vs closing lines (the honest test of edge).<br>
+    Press <b>⟳ LIVE ODDS</b> (or tick auto) — odds, EV and these verdicts recompute on
+    the live DraftKings number.</div>
+  </div>
+  <div class="note" id="desk-live-note"></div>
   <div id="desk-kpis" style="margin:10px 0"></div>
   <div id="desk-cards"></div>
   <div class="card"><h3 id="desk-pass-head"></h3><div class="note" id="desk-pass-note"></div></div>
@@ -202,10 +227,10 @@ padding:12px 14px;margin-bottom:10px}
   <div class="cav">Draw probs are upweighted 1.75× by design and ELO compresses
   lopsided ties — draw/underdog "edges" are mostly documented model bias, not
   market error. Edge is unproven out-of-sample (V5 DL-05). Stakes: ¼-Kelly, 5% cap.</div>
-  <div style="max-height:60vh;overflow:auto"><table id="sc-table"></table></div>
+  <div class="scroll" style="max-height:60vh"><table id="sc-table"></table></div>
   <h2 style="margin-top:20px">Tournament Winner Futures</h2>
   <label><input type="checkbox" id="fu-tail" checked> hide tail-risk (model &lt; 2%)</label>
-  <div style="max-height:40vh;overflow:auto"><table id="fu-table"></table></div>
+  <div class="scroll" style="max-height:40vh"><table id="fu-table"></table></div>
 </div>
 
 <div class="tab" id="tab-matches">
@@ -226,7 +251,7 @@ padding:12px 14px;margin-bottom:10px}
   <div class="note">P10/P50/P90 bands + in-browser re-sim are queued (next step 9 —
   needs the sim-distribution dump from live_update.py). The interactive bracket
   lives in <a style="color:var(--cyn)" href="bracket_simulator.html">bracket_simulator.html</a>.</div>
-  <div style="max-height:70vh;overflow:auto"><table id="br-table"></table></div>
+  <div class="scroll" style="max-height:70vh"><table id="br-table"></table></div>
 </div>
 
 <div class="tab" id="tab-scatter">
@@ -264,9 +289,25 @@ padding:12px 14px;margin-bottom:10px}
   <div class="kpi"><b id="arb-n">–</b><span>true arbs</span></div>
   <div class="kpi"><b id="arb-books">–</b><span>books feeding</span></div>
   <div class="note">moves toward model = the line travelled in the model's direction
-  since open (sharps agreeing); against = market hardening the other way. Arbs need
-  ≥2 books — add rows to wc2026_match_odds.csv and rebuild.</div>
-  <div style="max-height:65vh;overflow:auto"><table id="mv-table"></table></div>
+  since open (sharps agreeing); against = market hardening the other way.</div>
+  <div class="card">
+    <h3>Where is the arbitrage?</h3>
+    <div class="note" id="arb-answer"></div>
+    <div class="scroll" style="max-height:30vh"><table id="arb-table"></table></div>
+  </div>
+  <div class="scroll" style="max-height:65vh"><table id="mv-table"></table></div>
+</div>
+
+<div class="tab" id="tab-clv">
+  <h2>CLV — are the desk calls beating the closing line?</h2>
+  <div class="note">Every BET/LEAN is logged once (append-only) with the line taken.
+  CLV% = taken ÷ closing − 1. Consistently positive CLV = real edge, long before
+  win/loss records mean anything. The dog rows decide DL-10: is the model's market
+  disagreement on underdogs edge, or did the market know better? Until a match
+  settles its "close" is just the latest snapshot (provisional) — only FINAL closes
+  feed back into desk-call scoring (n ≥ 8 per category).</div>
+  <div id="clv-kpis" style="margin:10px 0"></div>
+  <div class="scroll" style="max-height:62vh"><table id="clv-table"></table></div>
 </div>
 
 <div class="tab" id="tab-uncertainty">
@@ -274,7 +315,7 @@ padding:12px 14px;margin-bottom:10px}
   <h3>Aleatoric — how unpredictable is the match itself (3-way entropy)</h3>
   <div class="note">entropy of the model's [home, draw, away] in bits; max = 1.585
   (perfect 3-way coin-flip). High entropy ⇒ genuinely volatile tie ⇒ size down.</div>
-  <div style="max-height:45vh;overflow:auto"><table id="un-table"></table></div>
+  <div class="scroll" style="max-height:45vh"><table id="un-table"></table></div>
   <div class="cav">Epistemic uncertainty (XGB vs LGBM vs DC disagreement per match)
   is phase 4 — needs per-component probabilities saved at predict time
   (src/models/uncertainty.py, next step 4). Until then: treat tail-risk futures
@@ -296,7 +337,7 @@ const cls = x => x>0.0001?'pos':(x<-0.0001?'neg':'fl');
 /* ── nav ── */
 const TABS = [['desk','DESK CALLS'],['scanner','SCANNER'],['matches','MATCHES'],['groups','GROUPS'],
  ['bracket','BRACKET'],['scatter','DIVERGENCE'],['bankroll','BANKROLL'],
- ['monitor','MOVEMENT+ARB'],['uncertainty','UNCERTAINTY'],['notes','NOTES']];
+ ['monitor','MOVEMENT+ARB'],['clv','CLV'],['uncertainty','UNCERTAINTY'],['notes','NOTES']];
 const nav = document.getElementById('nav');
 TABS.forEach(([id,label],i)=>{
   const b=document.createElement('button');b.textContent=label;b.dataset.t=id;
@@ -308,19 +349,22 @@ document.getElementById('meta-sub').textContent =
   `${D.meta.model} · ${D.meta.accuracy} · de-vig: ${D.meta.devig} · built ${D.meta.built_at}`;
 document.getElementById('notes-pre').textContent = D.nextSteps;
 
-/* ── desk calls ── */
-(function(){
-  const picks=D.desk.filter(r=>r.verdict!=='PASS')
+/* ── desk calls — renderer + a JS mirror of desk_call.py so verdicts
+      recompute on live lines (model probs stay fixed; re-sim is the
+      local Python pipeline) ── */
+function drawDesk(rows,liveNote){
+  const picks=rows.filter(r=>r.verdict!=='PASS')
     .sort((a,b)=>(a.verdict.localeCompare(b.verdict))||(b.score-a.score));
-  const passes=D.desk.filter(r=>r.verdict==='PASS');
+  const passes=rows.filter(r=>r.verdict==='PASS');
   const nBet=picks.filter(r=>r.verdict==='BET').length;
   const total=picks.reduce((s,r)=>s+(+r.stake_usd||0),0);
+  document.getElementById('desk-live-note').innerHTML=liveNote||'';
   document.getElementById('desk-kpis').innerHTML=
     `<span class="kpi"><b class="pos">${nBet}</b><span>BET</span></span>`+
     `<span class="kpi"><b style="color:var(--cyn)">${picks.length-nBet}</b><span>LEAN</span></span>`+
     `<span class="kpi"><b>${passes.length}</b><span>PASS</span></span>`+
     `<span class="kpi"><b>$${total.toFixed(0)}</b><span>total book (of $1,000)</span></span>`;
-  const el=document.getElementById('desk-cards');
+  const el=document.getElementById('desk-cards');el.innerHTML='';
   picks.forEach(r=>{
     const c=document.createElement('div');
     c.className='deskcard'+(r.verdict==='LEAN'?' lean':'');
@@ -344,7 +388,89 @@ document.getElementById('notes-pre').textContent = D.nextSteps;
     .sort((a,b)=>b[1]-a[1]).slice(0,6)
     .map(([k,v])=>`${v}× ${k}`).join('<br>')+
     '<br><br>Full detail per bet: SCANNER tab (uncheck the filters to see everything).';
-})();
+}
+drawDesk(D.desk);
+
+/* constants + rules mirror src/models/desk_call.py — keep in sync */
+const DK={BET:6,LEAN:3,ENT:1.5,
+  CONCACAF:new Set(['Mexico','USA','Canada','Panama','Haiti','Curacao','Curaçao'])};
+const liveMove={};   // `${mid}|${outcome}` → {significant,toward,open,now} from live fetch
+function embMove(mid,outcome){
+  const r=D.movement.find(x=>x.match_id===mid&&x.outcome===outcome);
+  if(!r)return null;
+  return {significant:r.significant===true||r.significant==='True',
+    toward:r.direction_vs_model==='toward',open:+r.open_decimal,now:+r.now_decimal};
+}
+function entropyOf(mid){
+  const p=['home','draw','away'].map(s=>{
+    const b=D.bets.find(x=>x.match_id===mid&&x.outcome===s);
+    return Math.max(b?+b.model_prob:1e-9,1e-9);});
+  return -p.reduce((a,x)=>a+x*Math.log2(x),0);
+}
+function clvAdjJS(){
+  const fin=D.clv.filter(r=>(r.close_is_final===true||r.close_is_final==='True')
+    &&r.clv_pct!==''&&r.clv_pct!==null);
+  const adj={};
+  ['fav','dog','draw'].forEach(cat=>{
+    const g=fin.filter(r=>r.category===cat);
+    if(g.length<8)return;
+    const avg=g.reduce((s,r)=>s+(+r.clv_pct),0)/g.length;
+    if(avg>=2)adj[cat]=[1.5,`desk's ${cat} calls are beating final closes (${avg>=0?'+':''}${avg.toFixed(1)}% avg CLV, n=${g.length}) — market confirms this lane`];
+    else if(avg<=-2)adj[cat]=[-1.5,`desk's ${cat} calls are losing to final closes (${avg.toFixed(1)}% avg CLV, n=${g.length}) — market keeps beating us here`];
+  });
+  return adj;
+}
+function deskCallJS(b,mv,ent,clvAdj){
+  const why=[],cau=[];
+  if(b.ev<=0)return{verdict:'PASS',score:0,sizeDown:false,
+    why:['negative EV — the price is better than the model'],cau:[]};
+  if(b.outcome==='draw')return{verdict:'PASS',score:0,sizeDown:false,
+    why:["draw bet — model upweights draws 1.75× by design; this 'edge' is model bias"],cau:[]};
+  let score=Math.min(b.edge*100,10)*0.6;
+  why.push(`model ${(b.model_prob*100).toFixed(0)}% vs market fair ${(b.market_implied*100).toFixed(0)}% = +${(b.edge*100).toFixed(1)}pp edge, EV ${b.ev>=0?'+':''}${(+b.ev).toFixed(2)}/$1 at ${(+b.decimal_odds).toFixed(2)}`);
+  if(b.market_implied>=0.40){score+=2;
+    why.push('favorite side — the zone where the model is most trustworthy');}
+  else if(b.market_implied<0.15){score-=3;
+    cau.push('longshot — ELO compression inflates underdog probs (model bias)');}
+  if(mv&&mv.significant){
+    if(mv.toward){score+=2;
+      why.push(`line moved TOWARD model since open (${mv.open.toFixed(2)}→${mv.now.toFixed(2)}) — sharp money on our side of the number`);}
+    else{score-=2;
+      cau.push(`line moved AGAINST model since open (${mv.open.toFixed(2)}→${mv.now.toFixed(2)}) — the market is hardening the other way`);}
+  }
+  const sizeDown=ent>DK.ENT;
+  if(sizeDown)cau.push(`coin-flip match (entropy ${ent.toFixed(2)} bits) — stake halved`);
+  if(DK.CONCACAF.has(b.selection)){score-=2;
+    cau.push('CONCACAF selection — model inflation documented (Mexico ~+6pp); edge partly model error');}
+  const cat=b.market_implied>=0.40?'fav':'dog';
+  if(clvAdj[cat]){const[pts,line]=clvAdj[cat];score+=pts;(pts>0?why:cau).push(line);}
+  let verdict=score>=DK.BET?'BET':score>=DK.LEAN?'LEAN':'PASS';
+  if(verdict==='PASS')cau.push('signal too weak after bias haircuts');
+  return{verdict,score:Math.round(score*100)/100,sizeDown,why,cau};
+}
+function recomputeDesk(){
+  const clvAdj=clvAdjJS();
+  const rows=[];
+  D.bets.filter(b=>b.market_source==='real').forEach(b=>{
+    const mv=liveMove[`${b.match_id}|${b.outcome}`]||embMove(b.match_id,b.outcome);
+    const r=deskCallJS(b,mv,entropyOf(b.match_id),clvAdj);
+    const raw=(Math.min(+b.kelly_quarter||0,0.05)*1000)*(r.sizeDown?0.5:1);
+    rows.push({kind:'match',match_id:b.match_id,outcome:b.outcome,date:b.date,
+      label:b.match,selection:`${b.selection} (${b.outcome})`,
+      verdict:r.verdict,score:r.score,model_prob:b.model_prob,
+      market_implied:b.market_implied,edge:b.edge,ev:b.ev,
+      decimal_odds:b.decimal_odds,
+      stake_raw_usd:r.verdict==='PASS'?0:raw,
+      why:r.why.join(' | '),cautions:r.cau.join(' | ')});
+  });
+  D.desk.filter(r=>r.kind==='futures').forEach(r=>
+    rows.push({...r,stake_raw_usd:+r.stake_raw_usd||+r.stake_usd||0}));
+  const rawTotal=rows.filter(r=>r.verdict!=='PASS')
+    .reduce((s,r)=>s+(+r.stake_raw_usd||0),0);
+  const k=rawTotal>250?250/rawTotal:1;   // 25% exposure cap on $1,000
+  rows.forEach(r=>r.stake_usd=r.verdict==='PASS'?0:(+r.stake_raw_usd||0)*k);
+  return rows;
+}
 
 /* ── sortable tables ── */
 function renderTable(el, cols, rows){
@@ -453,8 +579,9 @@ drawMatches();
        <span style="width:150px;overflow:hidden;white-space:nowrap">${r.t}</span>
        <span style="flex:1">${bar(r.adv,0)}</span>
        <span style="width:52px">${fmtP(r.adv)}</span>
+       <span style="width:50px;color:var(--dim)">@${r.adv>0.001?(1/r.adv).toFixed(2):'–'}</span>
        <span style="width:60px;color:var(--dim)">W ${fmtP(r.win)}</span></div>`).join('')+
-      `<div class="note">advance% · W = win tournament</div>`;
+      `<div class="note">advance% · @fair decimal odds to advance (beat this price = value) · W = win tournament</div>`;
     el.appendChild(card);});
 })();
 
@@ -464,6 +591,7 @@ renderTable(document.getElementById('br-table'),[
   ...['p_group_adv','p_r16','p_quarterfinal','p_semifinal','p_final','p_winner']
     .map(k=>({k,h:k.replace('p_','').replace('quarterfinal','QF').replace('semifinal','SF')
       .replace('group_adv','adv'),f:r=>fmtP(r[k]||0)})),
+  {k:'p_winner',h:'fair winner odds',f:r=>r.p_winner>0.001?(1/r.p_winner).toFixed(1):'–'},
   {k:'eliminated',h:'out?',f:r=>r.eliminated===true||r.eliminated==='True'?'✖':'',c:()=>'neg'},
 ],[...D.tourney].sort((a,b)=>b.p_winner-a.p_winner));
 
@@ -542,7 +670,32 @@ function runBankroll(){
   document.getElementById('mv-against').textContent=sig.filter(r=>r.direction_vs_model==='against').length;
   const arbs=D.arb.filter(r=>r.arb===true||r.arb==='True');
   document.getElementById('arb-n').textContent=arbs.length;
-  document.getElementById('arb-books').textContent=D.arb.length?Math.max(...D.arb.map(r=>r.n_books)):0;
+  const nBooks=D.arb.length?Math.max(...D.arb.map(r=>r.n_books)):0;
+  document.getElementById('arb-books').textContent=nBooks;
+  // "where is the arbitrage?" — straight answer + the tightest tickets
+  const tight=D.implied.filter(m=>m.market_source==='real').map(m=>{
+    const sum=1/m.home_decimal_odds+1/m.draw_decimal_odds+1/m.away_decimal_odds;
+    return {match:`${m.home_team} vs ${m.away_team}`,date:m.date,sum,
+      gap:(sum-1)*100};}).sort((a,b)=>a.sum-b.sum);
+  document.getElementById('arb-answer').innerHTML=arbs.length?
+    `<b class="pos">${arbs.length} riskless arb${arbs.length>1?'s':''} live</b> — best-line
+     Σ(1/odds) &lt; 100% across books. Stake each outcome ∝ 1/odds and the profit is locked
+     whatever happens. Details in arb_scan.csv.`:
+    `<b>Nowhere yet — and that's the expected answer with ${nBooks||1} book feeding.</b>
+     An arb = best available odds on all 3 outcomes summing below 100% implied. One book never
+     offers that (the vig guarantees Σ &gt; 100%). The tightest ticket right now is
+     <b>${tight.length?tight[0].match:'–'}</b> at Σ ${tight.length?(tight[0].sum*100).toFixed(1):'–'}%
+     — still ${tight.length?tight[0].gap.toFixed(1):'–'}pp short of riskless.
+     Add a second book's lines to wc2026_match_odds.csv (same schema, any source) and the
+     scanner compares best-line across books automatically — that's where arbs appear,
+     typically when books disagree after team news. Until then the money is made on
+     +EV desk calls, not arbs.`;
+  renderTable(document.getElementById('arb-table'),[
+    {k:'match',h:'match (tightest first)',f:r=>r.match},
+    {k:'date',h:'date',f:r=>r.date},
+    {k:'sum',h:'Σ implied',f:r=>(r.sum*100).toFixed(1)+'%'},
+    {k:'gap',h:'gap to arb',f:r=>r.gap.toFixed(1)+'pp',c:r=>r.gap<2?'warn':''},
+  ],tight.slice(0,10));
   renderTable(document.getElementById('mv-table'),[
     {k:'match',h:'match',f:r=>r.match},{k:'outcome',h:'out',f:r=>r.outcome},
     {k:'open_decimal',h:'open',f:r=>r.open_decimal.toFixed(2)},
@@ -553,6 +706,41 @@ function runBankroll(){
      c:r=>r.direction_vs_model==='toward'?'pos':'neg'},
     {k:'significant',h:'sig',f:r=>(r.significant===true||r.significant==='True')?'●':''},
   ],[...mv].sort((a,b)=>Math.abs(b.implied_shift)-Math.abs(a.implied_shift)));
+})();
+
+/* ── CLV ── */
+(function(){
+  const rows=D.clv;
+  const withClv=rows.filter(r=>r.clv_pct!==''&&r.clv_pct!==null);
+  const settled=rows.filter(r=>r.status!=='pending');
+  const avg=withClv.length?withClv.reduce((s,r)=>s+(+r.clv_pct),0)/withClv.length:0;
+  const beat=withClv.length?withClv.filter(r=>+r.clv_pct>0).length/withClv.length:0;
+  const pnl=settled.reduce((s,r)=>s+(+r.pnl_usd||0),0);
+  const dogs=withClv.filter(r=>r.category==='dog');
+  const dogAvg=dogs.length?dogs.reduce((s,r)=>s+(+r.clv_pct),0)/dogs.length:0;
+  document.getElementById('clv-kpis').innerHTML=
+    `<span class="kpi"><b>${rows.length}</b><span>bets tracked</span></span>`+
+    `<span class="kpi"><b class="${avg>=0?'pos':'neg'}">${avg>=0?'+':''}${avg.toFixed(2)}%</b><span>avg CLV</span></span>`+
+    `<span class="kpi"><b>${(beat*100).toFixed(0)}%</b><span>beating close</span></span>`+
+    `<span class="kpi"><b class="${dogAvg>=0?'pos':'neg'}">${dogAvg>=0?'+':''}${dogAvg.toFixed(2)}%</b><span>dog CLV (DL-10)</span></span>`+
+    `<span class="kpi"><b>${settled.filter(r=>r.status==='WON').length}-${settled.filter(r=>r.status==='LOST').length}</b><span>record</span></span>`+
+    `<span class="kpi"><b class="${pnl>=0?'pos':'neg'}">$${pnl.toFixed(0)}</b><span>realized P&L</span></span>`;
+  renderTable(document.getElementById('clv-table'),[
+    {k:'date',h:'date',f:r=>r.date},
+    {k:'label',h:'match',f:r=>r.label},
+    {k:'selection',h:'bet',f:r=>r.selection},
+    {k:'verdict',h:'call',f:r=>r.verdict},
+    {k:'category',h:'cat',f:r=>r.category},
+    {k:'taken_decimal',h:'taken',f:r=>(+r.taken_decimal).toFixed(2)},
+    {k:'closing_decimal',h:'close',f:r=>r.closing_decimal?(+r.closing_decimal).toFixed(2):'–'},
+    {k:'clv_pct',h:'CLV%',f:r=>r.clv_pct===''?'–':(+r.clv_pct>=0?'+':'')+(+r.clv_pct).toFixed(2)+'%',
+     c:r=>r.clv_pct===''?'':cls(+r.clv_pct)},
+    {k:'stake_usd',h:'stake$',f:r=>(+r.stake_usd).toFixed(0)},
+    {k:'status',h:'status',f:r=>r.status,
+     c:r=>r.status==='WON'?'pos':r.status==='LOST'?'neg':'fl'},
+    {k:'pnl_usd',h:'P&L',f:r=>r.status==='pending'?'–':'$'+(+r.pnl_usd).toFixed(0),
+     c:r=>cls(+r.pnl_usd)},
+  ],rows);
 })();
 
 /* ── uncertainty (aleatoric proxy) ── */
@@ -573,9 +761,11 @@ function runBankroll(){
 })();
 
 /* ── ticker + live refresh ── */
+let liveScores=[];   // filled by liveRefresh from ESPN scoreboard
 function buildTicker(){
   const moveByMid={};
   D.movement.forEach(r=>{(moveByMid[r.match_id]=moveByMid[r.match_id]||{})[r.outcome]=r;});
+  const live=liveScores.map(s=>`<span>${s}</span>`).join('');
   const t=D.implied.map(m=>{
     const mv=moveByMid[m.match_id]||{};
     const arrow=s=>{const r=mv[s];if(!r)return '';
@@ -584,7 +774,7 @@ function buildTicker(){
       `${m.home_decimal_odds.toFixed(2)}${arrow('home')} / ${m.draw_decimal_odds.toFixed(2)}${arrow('draw')}`+
       ` / ${m.away_decimal_odds.toFixed(2)}${arrow('away')}`+
       `${m.market_source!=='real'?' <span class="fl">(est)</span>':''}</span>`;}).join('');
-  document.getElementById('ticker').innerHTML=t+t;
+  document.getElementById('ticker').innerHTML=live+t+live+t;
 }
 buildTicker();
 const A2D=a=>{a=+String(a).replace('+','');return 1+(a>0?a/100:100/-a);};
@@ -592,7 +782,7 @@ async function liveRefresh(){
   const st=document.getElementById('live-status');
   st.textContent='fetching ESPN…';
   try{
-    const ds=D.implied.map(m=>m.date.replace(/-/g,''));
+    const ds=D.implied.map(m=>m.date.replace(/-/g,'')).sort();
     const url=`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${ds[0]}-${ds[ds.length-1]}&limit=300`;
     const r=await fetch(url);const j=await r.json();
     const alias={'United States':'USA','Bosnia-Herzegovina':'Bosnia and Herzegovina',
@@ -600,21 +790,38 @@ async function liveRefresh(){
       'Cabo Verde':'Cape Verde','Curaçao':'Curacao','Congo DR':'DR Congo'};
     const norm=s=>String(s).normalize('NFD').replace(/[^a-zA-Z]/g,'').toLowerCase().replace('and','');
     const byPair={};D.implied.forEach(m=>byPair[norm(m.home_team)+'|'+norm(m.away_team)]=m);
-    let hit=0;
+    let hit=0;liveScores=[];
     (j.events||[]).forEach(ev=>{
       const c=ev.competitions[0];if(!c)return;
-      const tm={};c.competitors.forEach(x=>tm[x.homeAway]=alias[x.team.displayName]||x.team.displayName);
+      const tm={},sc={};c.competitors.forEach(x=>{
+        tm[x.homeAway]=alias[x.team.displayName]||x.team.displayName;
+        sc[x.homeAway]=x.score;});
+      const state=((ev.status||{}).type||{}).state;
+      if(state==='in'||state==='post'){
+        const clock=state==='in'?` ${(ev.status.displayClock||'')}'`:' FT';
+        liveScores.push(`<b class="${state==='in'?'up':'fl'}">⚽ ${state==='in'?'LIVE':'FT'}</b> `+
+          `<b>${tm.home}</b> ${sc.home??''}–${sc.away??''} <b>${tm.away}</b>${state==='in'?clock:''}`);
+      }
       let m=byPair[norm(tm.home)+'|'+norm(tm.away)],sw=false;
       if(!m){m=byPair[norm(tm.away)+'|'+norm(tm.home)];sw=true;}
       const o=(c.odds||[]).find(x=>x.moneyline);if(!m||!o)return;
-      const g=s=>{const n=o.moneyline[s]||{};return (n.close||{}).odds??(n.open||{}).odds;};
-      let h=g('home'),d=g('draw'),a=g('away');if(h==null||a==null)return;
-      if(sw)[h,a]=[a,h];
+      const g=(s,k)=>{const n=o.moneyline[s]||{};return ((n[k]||{}).odds);};
+      let h=g('home','close')??g('home','open'),d=g('draw','close')??g('draw','open'),
+          a=g('away','close')??g('away','open');
+      let ho=g('home','open'),dop=g('draw','open'),ao=g('away','open');
+      if(h==null||a==null)return;
+      if(sw){[h,a]=[a,h];[ho,ao]=[ao,ho];}
       m.home_decimal_odds=A2D(h);m.draw_decimal_odds=A2D(d);m.away_decimal_odds=A2D(a);
       m.market_source='real';m.snapshot='live';
       // recompute edge/EV/Kelly on the live number (proportional de-vig in-browser)
       const dec=[m.home_decimal_odds,m.draw_decimal_odds,m.away_decimal_odds];
       const imp=dec.map(x=>1/x),s2=imp.reduce((p,q)=>p+q,0);
+      // open→now movement on the live numbers (same thresholds as market_monitor.py)
+      let fairOpen=null;
+      if(ho!=null&&ao!=null&&dop!=null){
+        const dop3=[A2D(ho),A2D(dop),A2D(ao)],io=dop3.map(x=>1/x),so=io.reduce((p,q)=>p+q,0);
+        fairOpen={home:io[0]/so,draw:io[1]/so,away:io[2]/so,dec:dop3};
+      }
       ['home','draw','away'].forEach((side,i)=>{
         const b=D.bets.find(x=>x.match_id===m.match_id&&x.outcome===side);if(!b)return;
         b.decimal_odds=dec[i];b.market_implied=imp[i]/s2;b.market_source='real';
@@ -623,12 +830,29 @@ async function liveRefresh(){
         const kb=dec[i]-1;b.kelly_full=Math.max(0,(kb*b.model_prob-(1-b.model_prob))/kb);
         b.kelly_quarter=b.kelly_full/4;
         b.recommended_stake_usd=Math.min(b.kelly_quarter,0.05)*1000;
-        m[side+'_fair_prob']=b.market_implied;});
+        m[side+'_fair_prob']=b.market_implied;
+        if(fairOpen){
+          const fNow=imp[i]/s2,fOpen=fairOpen[side];
+          liveMove[`${m.match_id}|${side}`]={
+            significant:Math.abs(dec[i]-fairOpen.dec[i])>=0.10||Math.abs(fNow-fOpen)>=0.05,
+            toward:Math.abs(b.model_prob-fNow)<Math.abs(b.model_prob-fOpen),
+            open:fairOpen.dec[i],now:dec[i]};
+        }});
       hit++;});
+    const ts=new Date().toISOString().slice(11,16);
     buildTicker();drawScanner();drawMatches();
-    st.textContent=`live: ${hit} matches updated ${new Date().toISOString().slice(11,16)}Z (proportional de-vig in-browser)`;
+    drawDesk(recomputeDesk(),
+      `⟳ verdicts + stakes recomputed on LIVE lines at ${ts}Z (proportional de-vig in-browser). `+
+      `Model probabilities are the local 10k-sim output — run the Python pipeline to re-simulate `+
+      `after results land.`);
+    st.textContent=`live: ${hit} matches + desk recomputed ${ts}Z`+
+      (liveScores.length?` · ${liveScores.length} in-play/finished`:'');
   }catch(e){st.textContent='live fetch failed ('+e.message+') — showing embedded data';}
 }
+let autoTimer=null;
+document.getElementById('auto-live').onchange=e=>{
+  if(e.target.checked){liveRefresh();autoTimer=setInterval(liveRefresh,240000);}
+  else clearInterval(autoTimer);};
 </script></body></html>
 """
 

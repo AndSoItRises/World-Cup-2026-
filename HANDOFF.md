@@ -1,8 +1,8 @@
 # WC2026 QUANT MODEL — AGENT HANDOFF (V6)
-Updated: 2026-06-10 · repo: https://github.com/AndSoItRises/World-Cup-2026- · tournament starts 2026-06-11
+Updated: 2026-06-11 · repo: https://github.com/AndSoItRises/World-Cup-2026- · tournament starts 2026-06-11
 
 This document is sufficient to start work cold. Read it top to bottom, then run the
-SESSION START block. Detailed history lives in CONTEXT_V6.md (decision log DL-01..10)
+SESSION START block. Detailed history lives in CONTEXT_V6.md (decision log DL-01..11)
 and CONTEXT_V2–V5 (model evolution); you should not need them to begin.
 
 ---
@@ -39,7 +39,8 @@ python -m src.models.predict_wc2026     # match-level 3-way probs (calibrated)
 python -m src.models.fetch_live_odds    # scrape ESPN/DraftKings lines (appends snapshot history)
 python -m src.models.market_monitor     # line movement vs model + arb scan
 python -m src.models.bet_sim            # edge / EV / Kelly sheets
-python -m src.models.desk_call          # BET/LEAN/PASS verdicts
+python -m src.models.desk_call          # BET/LEAN/PASS verdicts (+ CLV feedback)
+python -m src.models.clv_tracker        # log new calls, score vs closing lines
 python -m src.models.build_dashboard    # regenerates outputs/quant_dashboard.html
 git add . ; git commit -m "..." ; git push
 ```
@@ -54,7 +55,8 @@ git add . ; git commit -m "..." ; git push
 | market_ingestion.py | odds CSVs | market_implied_probs/futures.csv | odds parsing + Shin de-vig + name audits |
 | bet_sim.py | predictions, implied probs | value_bets.csv, value_bets_futures.csv | edge / EV / Kelly (¼, 5% cap), tail_risk flag |
 | market_monitor.py | match odds history | line_movement.csv, arb_scan.csv | open→now shifts vs model; cross-book arb (needs ≥2 books) |
-| desk_call.py | value_bets, movement | desk_calls.csv | BET/LEAN/PASS + evidence; 25% portfolio cap |
+| desk_call.py | value_bets, movement, clv_report | desk_calls.csv | BET/LEAN/PASS + evidence; 25% portfolio cap; CLV confidence input (final closes, n≥8/category) |
+| clv_tracker.py | desk_calls, match odds history, live results | bet_ledger.csv (append-only), clv_report.csv | CLV per logged bet vs closing line; settles DL-10 |
 | build_dashboard.py | all of the above + HANDOFF.md | outputs/quant_dashboard.html | self-contained dashboard; embeds this doc in NOTES tab |
 | live_update.py / monte_carlo.py / predict_wc2026.py | v4 models + calibrator | tournament_probs_live.csv, wc2026_predictions.csv | prod inference (pre-existing, now calibrated) |
 
@@ -91,11 +93,10 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
    books hardened favorites the model is lukewarm on. Track, don't panic.
 
 ## 7. WORK QUEUE (in order; each item is self-contained)
-1. **clv_tracker.py** (decisive experiment): per desk-call bet, compare taken line vs
-   closing line (last snapshot before kickoff in wc2026_match_odds.csv) and realized
-   outcome. Output: CLV per bet, running CLV by outcome-type (fav/dog/draw), realized
-   ROI vs Kelly-expected. This answers whether the dog-tilt (§6.3) is edge or error.
-   Wire results into a dashboard panel + desk_call as a confidence input.
+1. ~~**clv_tracker.py**~~ ✅ DONE 2026-06-11 (DL-11): append-only bet_ledger.csv +
+   clv_report.csv; CLV tab on dashboard; desk_call confidence input gated on FINAL
+   closes (settled matches) with n ≥ 8 per category. The dog-CLV KPI settles DL-10
+   as the group stage plays out — check it after each matchday.
 2. **uncertainty.py** (epistemic): save per-component probs (XGB/LGBM/DC) at predict
    time, ensemble disagreement = mean pairwise JS-divergence per match; high
    disagreement → desk_call stake haircut. Aleatoric (entropy) already on dashboard.
@@ -110,10 +111,15 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
    live_update.py, embed distribution in dashboard panel C.
 
 ## 8. DASHBOARD (outputs/quant_dashboard.html)
-Self-contained, offline, dark terminal theme. Tabs: DESK CALLS (landing — verdicts +
-evidence), SCANNER, MATCHES, GROUPS, BRACKET, DIVERGENCE, BANKROLL (1k-path Kelly sim,
-truth=model/blend/market), MOVEMENT+ARB, UNCERTAINTY, NOTES (this doc, embedded at build).
-"⟳ LIVE ODDS" re-fetches ESPN in-browser and recomputes EV (proportional de-vig in JS).
+Self-contained, offline, dark terminal theme; mobile/iOS-friendly (open the GitHub
+Pages URL in Safari). Tabs: DESK CALLS (landing — verdicts + evidence + how-to),
+SCANNER, MATCHES, GROUPS (advance % + fair odds), BRACKET, DIVERGENCE, BANKROLL
+(1k-path Kelly sim, truth=model/blend/market), MOVEMENT+ARB (incl. "where is the
+arbitrage?" panel — gap-to-arb per match, activates with a 2nd book), CLV, UNCERTAINTY,
+NOTES (this doc, embedded at build). "⟳ LIVE ODDS" (+ auto-4m toggle) re-fetches ESPN
+in-browser: live scores in the ticker, EV/Kelly recomputed, AND desk verdicts/stakes
+recomputed via a JS mirror of desk_call.py (keep the two in sync when rules change).
+Model probs stay the local 10k-sim output — re-simulation is the Python pipeline.
 Rebuild with `python -m src.models.build_dashboard` after ANY data change.
 
 ## 9. STYLE

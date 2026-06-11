@@ -10,7 +10,8 @@ and every haircut is a documented model bias, not a vibe:
                   futures tail noise (model_prob < 2%)
   Score the rest: edge size (capped) + favorite-side trust + line movement
                   toward/against the model − longshot haircut − CONCACAF
-                  inflation haircut
+                  inflation haircut ± realized CLV by category (the desk's own
+                  track record vs FINAL closing lines, once n ≥ 8 — queue #1)
   Size          : ¼-Kelly capped at 5% bankroll; HALVED on coin-flip matches
                   (3-way entropy > 1.5 bits)
   Verdict       : score ≥ 6 BET · ≥ 3 LEAN · else PASS (reason given)
@@ -36,11 +37,54 @@ DATA_PROC = BASE / "data" / "processed"
 BETS_PATH     = DATA_PROC / "value_bets.csv"
 FUTURES_PATH  = DATA_PROC / "value_bets_futures.csv"
 MOVEMENT_PATH = DATA_PROC / "line_movement.csv"
+CLV_PATH      = DATA_PROC / "clv_report.csv"
 OUT_PATH      = DATA_PROC / "desk_calls.csv"
 
 BET_SCORE, LEAN_SCORE = 6.0, 3.0
 ENTROPY_COINFLIP = 1.5            # bits; max 3-way entropy = 1.585
 CONCACAF = {"Mexico", "USA", "Canada", "Panama", "Haiti", "Curacao", "Curaçao"}
+CLV_MIN_N, CLV_THRESH, CLV_POINTS = 8, 2.0, 1.5   # confidence input gates
+
+
+def clv_confidence() -> dict:
+    """category → (score_adj, evidence line) from the desk's own realized CLV.
+
+    Uses ONLY final closes (settled matches) — pre-kickoff "closes" are just the
+    latest snapshot and would feed the desk its own current line. Gated on
+    n ≥ CLV_MIN_N per category and |avg CLV| ≥ CLV_THRESH so early noise can't
+    swing verdicts. This is queue #1's feedback loop: if our dog calls beat the
+    close, the DL-10 disagreement was edge — trust it more; if the close
+    steamrolls them, the market knew better — haircut harder.
+    """
+    if not CLV_PATH.exists():
+        return {}
+    rep = pd.read_csv(CLV_PATH)
+    if "close_is_final" not in rep.columns:
+        return {}
+    rep = rep[rep["close_is_final"] == True]  # noqa: E712 — CSV bools
+    rep["clv_pct"] = pd.to_numeric(rep["clv_pct"], errors="coerce")
+    rep = rep[rep["clv_pct"].notna()]
+    adj = {}
+    for cat, g in rep.groupby("category"):
+        if len(g) < CLV_MIN_N:
+            continue
+        avg = g["clv_pct"].mean()
+        if avg >= CLV_THRESH:
+            adj[cat] = (CLV_POINTS,
+                        f"desk's {cat} calls are beating final closes "
+                        f"({avg:+.1f}% avg CLV, n={len(g)}) — market confirms this lane")
+        elif avg <= -CLV_THRESH:
+            adj[cat] = (-CLV_POINTS,
+                        f"desk's {cat} calls are losing to final closes "
+                        f"({avg:+.1f}% avg CLV, n={len(g)}) — market keeps beating us here")
+    return adj
+
+
+def bet_category(market_implied: float, outcome: str) -> str:
+    """Same buckets as clv_tracker: draw | fav (fair ≥ 40%) | dog."""
+    if outcome == "draw":
+        return "draw"
+    return "fav" if market_implied >= 0.40 else "dog"
 
 
 def match_entropy(bets: pd.DataFrame) -> dict:
@@ -53,7 +97,7 @@ def match_entropy(bets: pd.DataFrame) -> dict:
     return ent
 
 
-def call_match_bet(b, move_row, entropy):
+def call_match_bet(b, move_row, entropy, clv_adj=None):
     """One bet row → (verdict, score, size_down, why[], cautions[])."""
     why, cautions = [], []
     if b["ev"] <= 0:
@@ -93,6 +137,13 @@ def call_match_bet(b, move_row, entropy):
         score -= 2.0
         cautions.append("CONCACAF selection — model inflation documented (Mexico ~+6pp); "
                         "edge partly model error")
+
+    if clv_adj:
+        cat = bet_category(b["market_implied"], b["outcome"])
+        if cat in clv_adj:
+            pts, line = clv_adj[cat]
+            score += pts
+            (why if pts > 0 else cautions).append(line)
 
     verdict = "BET" if score >= BET_SCORE else "LEAN" if score >= LEAN_SCORE else "PASS"
     if verdict == "PASS":
@@ -142,15 +193,23 @@ def main():
     move = pd.read_csv(MOVEMENT_PATH)
     move_idx = {(r["match_id"], r["outcome"]): r for _, r in move.iterrows()}
     entropy = match_entropy(bets)
+    clv_adj = clv_confidence()
+    if clv_adj:
+        print("\n  CLV feedback active (realized track record vs final closes):")
+        for cat, (pts, line) in clv_adj.items():
+            print(f"    {cat}: {pts:+.1f} pts — {line}")
+    else:
+        print("\n  CLV feedback: dormant (needs ≥ 8 settled bets per category)")
 
     rows = []
     for _, b in bets.iterrows():
         mr = move_idx.get((b["match_id"], b["outcome"]))
         verdict, score, size_down, why, cautions = call_match_bet(
-            b, mr, entropy.get(b["match_id"], 0.0))
+            b, mr, entropy.get(b["match_id"], 0.0), clv_adj)
         stake = b["recommended_stake_usd"] * (0.5 if size_down else 1.0)
         rows.append({
-            "kind": "match", "date": b["date"], "label": b["match"],
+            "kind": "match", "match_id": int(b["match_id"]), "outcome": b["outcome"],
+            "date": b["date"], "label": b["match"],
             "selection": f"{b['selection']} ({b['outcome']})",
             "verdict": verdict, "score": score,
             "model_prob": b["model_prob"], "market_implied": b["market_implied"],
@@ -161,7 +220,8 @@ def main():
     for _, f in futures.iterrows():
         verdict, score, _, why, cautions = call_future(f)
         rows.append({
-            "kind": "futures", "date": "", "label": "Tournament winner",
+            "kind": "futures", "match_id": "", "outcome": "",
+            "date": "", "label": "Tournament winner",
             "selection": f["selection"], "verdict": verdict, "score": score,
             "model_prob": f["model_prob"], "market_implied": f["market_implied"],
             "edge": f["edge"], "ev": f["ev"], "decimal_odds": f["decimal_odds"],
@@ -174,7 +234,10 @@ def main():
 
     # Portfolio concentration cap: Kelly sizes bets in isolation, but 20+
     # simultaneous group-stage positions compound — cap total book exposure
-    # at 25% of bankroll, scaling every stake proportionally.
+    # at 25% of bankroll, scaling every stake proportionally. stake_raw_usd
+    # keeps the pre-cap number so the dashboard can re-apply the same cap
+    # after recomputing stakes on live lines.
+    out["stake_raw_usd"] = out["stake_usd"]
     cap_total = 0.25 * args.bankroll
     raw_total = out.loc[out["verdict"] != "PASS", "stake_usd"].sum()
     scaled = raw_total > cap_total

@@ -86,7 +86,7 @@ V6 spec lives in: `fable-wc2026-prompt.md` (Jake's prompt doc, outside the repo:
 | + | `src/models/fetch_live_odds.py` — live ESPN/DraftKings line scraper | ✅ done (added scope, DL-05) |
 | + | `src/models/market_monitor.py` — line movement + arb scanner | ✅ done (added scope, DL-06) |
 | 4 | `src/models/uncertainty.py` — aleatoric/epistemic quantification | ⬜ (aleatoric entropy proxy already in dashboard) |
-| 5 | `src/models/clv_tracker.py` — closing line value tracking | ⬜ (line history already archiving per fetch) |
+| 5 | `src/models/clv_tracker.py` — closing line value tracking | ✅ done (DL-11) |
 | 6 | Signal tests for 5 new candidate features (orthogonality gate) | ⬜ |
 
 The full next-steps list (incl. multi-book arb, stage futures, bracket re-sim bands) is embedded
@@ -201,6 +201,30 @@ injuries, motivation) or this is where the edge lives — indistinguishable unti
 results arrive. That makes the CLV tracker (phase 5) the decisive experiment: score the
 dog-side desk calls against closing lines and realized outcomes as the group stage plays
 out. Until then the desk-call haircuts (longshot/draw/CONCACAF) remain the risk treatment.
+
+### DL-11 — CLV tracker shipped (queue #1, the DL-10 decider) + live desk on the dashboard
+`clv_tracker.py`: every match-kind BET/LEAN is logged ONCE into an append-only
+`bet_ledger.csv` (key match_id+outcome, line-at-log-time) — the desk changing its mind on
+a re-run never rewrites history. Closing line = last snapshot per match in
+`wc2026_match_odds.csv`; flagged `close_is_final` only after the match settles, because a
+pre-kickoff "close" is just the latest fetch (provisional CLV would feed the desk its own
+current line). First run: 29 bets logged opening day (2026-06-11T12:25Z). Futures excluded
+(no close until July).
+
+Feedback loop into `desk_call.py` (queue #1's confidence input): per-category (fav/dog/draw)
+avg CLV over FINAL closes only, gated n ≥ 8 and |avg| ≥ 2% → ±1.5 score with an evidence
+line. Dormant until enough matches settle; the dog category is the DL-10 verdict.
+
+Dashboard upgrades in the same pass (Jake asks: live feed, value bets, advancement odds,
+arb clarity, iOS): CLV tab with dog-CLV KPI; desk-call rules ported to JS so ⟳ LIVE ODDS
+(+ new auto-4m toggle) recomputes BET/LEAN verdicts and capped stakes on live lines (model
+probs remain the 10k-sim output — honest note shown); live scores in the ticker; "Where is
+the arbitrage?" panel (per-match Σ implied + gap-to-arb; explains one book ⇒ no riskless
+arb until a 2nd book's lines are added); fair-odds equivalents on GROUPS/BRACKET advancement
+probs; how-to-use intro on the landing tab; mobile/iOS CSS (text-size-adjust, touch
+scrolling, single-column cards). Maintenance cost accepted: the JS desk mirror must be kept
+in sync with desk_call.py — flagged in HANDOFF §8. Meta line fixed to show calibrated LL
+0.8405.
 
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
