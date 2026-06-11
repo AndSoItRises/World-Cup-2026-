@@ -4,6 +4,7 @@ Updated: 2026-06-11 · repo: https://github.com/AndSoItRises/World-Cup-2026- · 
 This document is sufficient to start work cold. Read it top to bottom, then run the
 SESSION START block. Detailed history lives in CONTEXT_V6.md (decision log DL-01..11)
 and CONTEXT_V2–V5 (model evolution); you should not need them to begin.
+Human-facing operator guide (dashboard tabs + results-entry workflow): DASHBOARD_GUIDE.md.
 
 ---
 
