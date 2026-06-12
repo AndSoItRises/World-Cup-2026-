@@ -11,6 +11,9 @@ data/raw/
 # Jupyter checkpoints
 .ipynb_checkpoints/
 
+# Claude Code session worktrees (refresh_all.ps1 does git add -A — never commit these)
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
