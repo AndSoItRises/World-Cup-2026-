@@ -77,6 +77,8 @@ def extract_moneyline(event):
     if not comps:
         return None
     for o in comps[0].get("odds") or []:
+        if not isinstance(o, dict):   # ESPN occasionally emits a null odds entry
+            continue
         ml = o.get("moneyline")
         if not ml:
             continue

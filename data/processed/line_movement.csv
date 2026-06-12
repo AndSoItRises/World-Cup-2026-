@@ -1,217 +1,220 @@
 match_id,match,date,book,outcome,open_decimal,now_decimal,decimal_move,open_fair_prob,now_fair_prob,implied_shift,model_prob,significant,direction_vs_model,last_fetched
-1,Mexico vs South Africa,2026-06-11,DraftKings,home,1.588,1.426,-0.163,0.6098,0.682,0.0723,0.6714,True,toward,2026-06-11T12:59:40Z
-1,Mexico vs South Africa,2026-06-11,DraftKings,draw,3.95,4.4,0.45,0.2378,0.2131,-0.0247,0.243,True,against,2026-06-11T12:59:40Z
-1,Mexico vs South Africa,2026-06-11,DraftKings,away,6.0,8.5,2.5,0.1525,0.1049,-0.0475,0.0855,True,toward,2026-06-11T12:59:40Z
-2,South Korea vs Czechia,2026-06-11,unknown,home,2.55,2.7,0.15,0.3577,0.3555,-0.0022,0.4467,True,against,2026-06-11T12:59:40Z
-2,South Korea vs Czechia,2026-06-11,unknown,draw,2.95,3.1,0.15,0.3058,0.3082,0.0024,0.3043,True,against,2026-06-11T12:59:40Z
-2,South Korea vs Czechia,2026-06-11,unknown,away,2.7,2.85,0.15,0.3365,0.3362,-0.0002,0.249,True,toward,2026-06-11T12:59:40Z
-3,Canada vs Bosnia and Herzegovina,2026-06-12,unknown,home,2.0,1.833,-0.167,0.4611,0.5285,0.0673,0.6602,True,toward,2026-06-11T12:59:40Z
-3,Canada vs Bosnia and Herzegovina,2026-06-12,unknown,draw,3.2,3.55,0.35,0.2784,0.2676,-0.0108,0.2348,True,toward,2026-06-11T12:59:40Z
-3,Canada vs Bosnia and Herzegovina,2026-06-12,unknown,away,3.4,4.6,1.2,0.2605,0.204,-0.0565,0.1051,True,toward,2026-06-11T12:59:40Z
-4,USA vs Paraguay,2026-06-12,unknown,home,2.05,1.952,-0.098,0.469,0.4935,0.0244,0.5246,False,toward,2026-06-11T12:59:40Z
-4,USA vs Paraguay,2026-06-12,unknown,draw,3.55,3.4,-0.15,0.2655,0.2781,0.0126,0.2978,True,toward,2026-06-11T12:59:40Z
-4,USA vs Paraguay,2026-06-12,unknown,away,3.55,4.1,0.55,0.2655,0.2285,-0.037,0.1776,True,toward,2026-06-11T12:59:40Z
-5,Qatar vs Switzerland,2026-06-13,unknown,home,7.0,13.0,6.0,0.1132,0.0663,-0.0469,0.1822,True,against,2026-06-11T12:59:40Z
-5,Qatar vs Switzerland,2026-06-13,unknown,draw,4.8,6.5,1.7,0.1763,0.1422,-0.0341,0.3029,True,against,2026-06-11T12:59:40Z
-5,Qatar vs Switzerland,2026-06-13,unknown,away,1.323,1.235,-0.087,0.7105,0.7915,0.081,0.5149,True,against,2026-06-11T12:59:40Z
-6,Brazil vs Morocco,2026-06-13,unknown,home,1.571,1.69,0.118,0.6174,0.576,-0.0415,0.439,True,toward,2026-06-11T12:59:40Z
-6,Brazil vs Morocco,2026-06-13,unknown,draw,4.1,3.75,-0.35,0.2294,0.254,0.0246,0.313,True,toward,2026-06-11T12:59:40Z
-6,Brazil vs Morocco,2026-06-13,unknown,away,6.0,5.5,-0.5,0.1532,0.17,0.0169,0.248,True,toward,2026-06-11T12:59:40Z
-7,Haiti vs Scotland,2026-06-13,unknown,home,6.5,6.0,-0.5,0.1268,0.1545,0.0277,0.3207,True,toward,2026-06-11T12:59:40Z
-7,Haiti vs Scotland,2026-06-13,unknown,draw,4.7,4.3,-0.4,0.1839,0.2197,0.0358,0.3315,True,toward,2026-06-11T12:59:40Z
-7,Haiti vs Scotland,2026-06-13,unknown,away,1.37,1.556,0.185,0.6892,0.6258,-0.0635,0.3479,True,toward,2026-06-11T12:59:40Z
-8,Australia vs Turkey,2026-06-13,unknown,home,4.7,5.25,0.55,0.1815,0.1781,-0.0034,0.3974,True,against,2026-06-11T12:59:40Z
-8,Australia vs Turkey,2026-06-13,unknown,draw,3.6,3.85,0.25,0.2446,0.2466,0.002,0.2885,True,toward,2026-06-11T12:59:40Z
-8,Australia vs Turkey,2026-06-13,unknown,away,1.625,1.69,0.065,0.5738,0.5753,0.0015,0.3141,False,against,2026-06-11T12:59:40Z
-9,Germany vs Curacao,2026-06-14,unknown,home,1.005,1.033,0.028,0.9622,0.9366,-0.0256,0.7837,False,toward,2026-06-11T12:59:40Z
-9,Germany vs Curacao,2026-06-14,unknown,draw,17.0,16.0,-1.0,0.0352,0.0443,0.0091,0.1284,True,toward,2026-06-11T12:59:40Z
-9,Germany vs Curacao,2026-06-14,unknown,away,76.0,29.0,-47.0,0.0026,0.0191,0.0164,0.0879,True,toward,2026-06-11T12:59:40Z
-10,Netherlands vs Japan,2026-06-14,unknown,home,1.952,2.0,0.048,0.4864,0.4751,-0.0113,0.3768,False,toward,2026-06-11T12:59:40Z
-10,Netherlands vs Japan,2026-06-14,unknown,draw,3.4,3.45,0.05,0.272,0.2684,-0.0036,0.2484,False,toward,2026-06-11T12:59:40Z
-10,Netherlands vs Japan,2026-06-14,unknown,away,3.8,3.6,-0.2,0.2416,0.2565,0.0149,0.3748,True,toward,2026-06-11T12:59:40Z
-11,Ivory Coast vs Ecuador,2026-06-14,unknown,home,3.3,3.6,0.3,0.2678,0.2661,-0.0017,0.3625,True,against,2026-06-11T12:59:40Z
-11,Ivory Coast vs Ecuador,2026-06-14,unknown,draw,2.75,2.85,0.1,0.3268,0.3386,0.0118,0.3205,True,against,2026-06-11T12:59:40Z
-11,Ivory Coast vs Ecuador,2026-06-14,unknown,away,2.25,2.45,0.2,0.4054,0.3953,-0.0101,0.317,True,toward,2026-06-11T12:59:40Z
-12,Tunisia vs Sweden,2026-06-14,unknown,home,3.9,4.3,0.4,0.2261,0.2185,-0.0076,0.2906,True,against,2026-06-11T12:59:40Z
-12,Tunisia vs Sweden,2026-06-14,unknown,draw,3.25,3.45,0.2,0.276,0.2751,-0.0009,0.3653,True,against,2026-06-11T12:59:40Z
-12,Tunisia vs Sweden,2026-06-14,unknown,away,1.87,1.909,0.04,0.4979,0.5064,0.0085,0.3441,False,against,2026-06-11T12:59:40Z
-13,Spain vs Cape Verde,2026-06-15,unknown,home,1.071,1.083,0.012,0.886,0.9018,0.0158,0.7345,False,against,2026-06-11T12:59:40Z
-13,Spain vs Cape Verde,2026-06-15,unknown,draw,8.5,12.0,3.5,0.0876,0.0708,-0.0168,0.1937,True,against,2026-06-11T12:59:40Z
-13,Spain vs Cape Verde,2026-06-15,unknown,away,20.0,26.0,6.0,0.0264,0.0274,0.001,0.0718,True,toward,2026-06-11T12:59:40Z
-14,Belgium vs Egypt,2026-06-15,unknown,home,1.588,1.645,0.057,0.6047,0.5849,-0.0199,0.4548,False,toward,2026-06-11T12:59:40Z
-14,Belgium vs Egypt,2026-06-15,unknown,draw,4.3,3.85,-0.45,0.2136,0.2417,0.028,0.2929,True,toward,2026-06-11T12:59:40Z
-14,Belgium vs Egypt,2026-06-15,unknown,away,5.0,5.25,0.25,0.1816,0.1735,-0.0082,0.2524,True,against,2026-06-11T12:59:40Z
-15,Saudi Arabia vs Uruguay,2026-06-15,unknown,home,5.0,7.5,2.5,0.1687,0.1213,-0.0474,0.2366,True,against,2026-06-11T12:59:40Z
-15,Saudi Arabia vs Uruguay,2026-06-15,unknown,draw,3.6,4.5,0.9,0.2441,0.2091,-0.035,0.318,True,against,2026-06-11T12:59:40Z
-15,Saudi Arabia vs Uruguay,2026-06-15,unknown,away,1.588,1.455,-0.134,0.5872,0.6696,0.0824,0.4454,True,against,2026-06-11T12:59:40Z
-16,Iran vs New Zealand,2026-06-15,unknown,home,1.645,1.833,0.188,0.5658,0.5287,-0.0371,0.4933,True,toward,2026-06-11T12:59:40Z
-16,Iran vs New Zealand,2026-06-15,unknown,draw,3.6,3.5,-0.1,0.2441,0.2717,0.0276,0.199,True,against,2026-06-11T12:59:40Z
-16,Iran vs New Zealand,2026-06-15,unknown,away,4.5,4.7,0.2,0.1902,0.1996,0.0094,0.3077,True,toward,2026-06-11T12:59:40Z
-17,France vs Senegal,2026-06-16,unknown,home,1.408,1.476,0.068,0.6678,0.6578,-0.01,0.5282,False,toward,2026-06-11T12:59:40Z
-17,France vs Senegal,2026-06-16,unknown,draw,4.2,4.4,0.2,0.2069,0.2128,0.0059,0.2227,True,toward,2026-06-11T12:59:40Z
-17,France vs Senegal,2026-06-16,unknown,away,6.5,7.0,0.5,0.1253,0.1295,0.0041,0.2491,True,toward,2026-06-11T12:59:40Z
-18,Norway vs Iraq,2026-06-16,unknown,home,1.408,1.211,-0.198,0.6649,0.8079,0.143,0.4085,True,against,2026-06-11T12:59:40Z
-18,Norway vs Iraq,2026-06-16,unknown,draw,4.3,7.0,2.7,0.1994,0.1312,-0.0681,0.2748,True,against,2026-06-11T12:59:40Z
-18,Norway vs Iraq,2026-06-16,unknown,away,6.0,14.0,8.0,0.1358,0.0609,-0.0749,0.3167,True,against,2026-06-11T12:59:40Z
-19,Argentina vs Algeria,2026-06-16,unknown,home,1.364,1.408,0.045,0.6893,0.6938,0.0045,0.5733,False,against,2026-06-11T12:59:40Z
-19,Argentina vs Algeria,2026-06-16,unknown,draw,4.2,4.6,0.4,0.2059,0.2056,-0.0003,0.2125,True,against,2026-06-11T12:59:40Z
-19,Argentina vs Algeria,2026-06-16,unknown,away,7.5,9.0,1.5,0.1048,0.1005,-0.0042,0.2142,True,against,2026-06-11T12:59:40Z
-20,Austria vs Jordan,2026-06-16,unknown,home,1.323,1.323,0.0,0.7105,0.7374,0.0269,0.4591,False,against,2026-06-11T12:59:40Z
-20,Austria vs Jordan,2026-06-16,unknown,draw,4.8,5.5,0.7,0.1763,0.1691,-0.0072,0.2375,True,against,2026-06-11T12:59:40Z
-20,Austria vs Jordan,2026-06-16,unknown,away,7.0,9.5,2.5,0.1132,0.0935,-0.0197,0.3034,True,against,2026-06-11T12:59:40Z
-21,Portugal vs DR Congo,2026-06-17,unknown,home,1.286,1.286,0.0,0.7318,0.7591,0.0273,0.608,False,against,2026-06-11T12:59:40Z
-21,Portugal vs DR Congo,2026-06-17,unknown,draw,4.9,5.75,0.85,0.1721,0.1614,-0.0107,0.2536,True,against,2026-06-11T12:59:40Z
-21,Portugal vs DR Congo,2026-06-17,unknown,away,8.0,11.0,3.0,0.0961,0.0795,-0.0166,0.1384,True,against,2026-06-11T12:59:40Z
-22,England vs Croatia,2026-06-17,unknown,home,1.741,1.714,-0.026,0.5571,0.5633,0.0062,0.5587,False,against,2026-06-11T12:59:40Z
-22,England vs Croatia,2026-06-17,unknown,draw,3.7,3.85,0.15,0.2562,0.2437,-0.0125,0.2692,True,against,2026-06-11T12:59:40Z
-22,England vs Croatia,2026-06-17,unknown,away,5.0,4.8,-0.2,0.1867,0.193,0.0063,0.1721,True,against,2026-06-11T12:59:40Z
-23,Ghana vs Panama,2026-06-17,unknown,home,1.952,2.1,0.148,0.4731,0.4602,-0.0129,0.2178,True,toward,2026-06-11T12:59:40Z
-23,Ghana vs Panama,2026-06-17,unknown,draw,3.55,3.45,-0.1,0.2485,0.2759,0.0274,0.3866,False,toward,2026-06-11T12:59:40Z
-23,Ghana vs Panama,2026-06-17,unknown,away,3.2,3.6,0.4,0.2784,0.2639,-0.0145,0.3956,True,against,2026-06-11T12:59:40Z
-24,Uzbekistan vs Colombia,2026-06-17,unknown,home,6.0,8.5,2.5,0.135,0.1054,-0.0296,0.2447,True,against,2026-06-11T12:59:40Z
-24,Uzbekistan vs Colombia,2026-06-17,unknown,draw,3.8,4.7,0.9,0.2282,0.1993,-0.029,0.3357,True,against,2026-06-11T12:59:40Z
-24,Uzbekistan vs Colombia,2026-06-17,unknown,away,1.465,1.4,-0.065,0.6367,0.6954,0.0586,0.4197,True,against,2026-06-11T12:59:40Z
-25,South Africa vs Czechia,2026-06-18,unknown,home,4.0,4.2,0.2,0.2336,0.2245,-0.0091,0.2522,True,against,2026-06-11T12:59:40Z
-25,South Africa vs Czechia,2026-06-18,unknown,draw,3.3,3.4,0.1,0.286,0.2799,-0.0061,0.3365,True,against,2026-06-11T12:59:40Z
-25,South Africa vs Czechia,2026-06-18,unknown,away,2.0,1.952,-0.048,0.4804,0.4956,0.0152,0.4113,False,against,2026-06-11T12:59:40Z
-26,Switzerland vs Bosnia and Herzegovina,2026-06-18,unknown,home,1.571,1.625,0.054,0.6168,0.599,-0.0179,0.6022,False,toward,2026-06-11T12:59:40Z
-26,Switzerland vs Bosnia and Herzegovina,2026-06-18,unknown,draw,4.2,4.1,-0.1,0.2232,0.2312,0.008,0.2609,True,toward,2026-06-11T12:59:40Z
-26,Switzerland vs Bosnia and Herzegovina,2026-06-18,unknown,away,5.75,5.5,-0.25,0.1599,0.1698,0.0099,0.1369,True,against,2026-06-11T12:59:40Z
-27,Canada vs Qatar,2026-06-18,unknown,home,1.526,1.312,-0.214,0.6382,0.7431,0.1049,0.6022,True,against,2026-06-11T12:59:40Z
-27,Canada vs Qatar,2026-06-18,unknown,draw,4.3,5.25,0.95,0.2198,0.1776,-0.0423,0.275,True,against,2026-06-11T12:59:40Z
-27,Canada vs Qatar,2026-06-18,unknown,away,6.5,11.0,4.5,0.142,0.0794,-0.0626,0.1228,True,against,2026-06-11T12:59:40Z
-28,Mexico vs South Korea,2026-06-18,unknown,home,1.8,1.8,0.0,0.5389,0.5393,0.0004,0.4837,False,against,2026-06-11T12:59:40Z
-28,Mexico vs South Korea,2026-06-18,unknown,draw,3.7,3.65,-0.05,0.2567,0.2606,0.0039,0.3137,False,toward,2026-06-11T12:59:40Z
-28,Mexico vs South Korea,2026-06-18,unknown,away,4.6,4.7,0.1,0.2044,0.2001,-0.0043,0.2026,True,against,2026-06-11T12:59:40Z
-29,USA vs Australia,2026-06-19,unknown,home,1.741,1.769,0.028,0.5563,0.5495,-0.0068,0.3976,False,toward,2026-06-11T12:59:40Z
-29,USA vs Australia,2026-06-19,unknown,draw,4.0,3.95,-0.05,0.2356,0.2406,0.005,0.3165,False,toward,2026-06-11T12:59:40Z
-29,USA vs Australia,2026-06-19,unknown,away,4.5,4.5,0.0,0.2081,0.2099,0.0018,0.2859,False,toward,2026-06-11T12:59:40Z
-30,Scotland vs Morocco,2026-06-19,unknown,home,3.65,4.2,0.55,0.2573,0.2255,-0.0318,0.1641,True,toward,2026-06-11T12:59:40Z
-30,Scotland vs Morocco,2026-06-19,unknown,draw,3.3,3.3,0.0,0.2859,0.2898,0.0038,0.2953,False,toward,2026-06-11T12:59:40Z
-30,Scotland vs Morocco,2026-06-19,unknown,away,2.1,2.0,-0.1,0.4568,0.4847,0.0279,0.5406,True,toward,2026-06-11T12:59:40Z
-31,Brazil vs Haiti,2026-06-19,unknown,home,1.083,1.083,0.0,0.9012,0.9048,0.0037,0.7067,False,against,2026-06-11T12:59:40Z
-31,Brazil vs Haiti,2026-06-19,unknown,draw,11.0,13.0,2.0,0.0776,0.0663,-0.0113,0.2029,True,against,2026-06-11T12:59:40Z
-31,Brazil vs Haiti,2026-06-19,unknown,away,31.0,26.0,-5.0,0.0212,0.0289,0.0077,0.0904,True,toward,2026-06-11T12:59:40Z
-32,Paraguay vs Turkey,2026-06-19,unknown,home,3.45,3.45,0.0,0.2749,0.2749,0.0,0.2295,False,against,2026-06-11T12:59:40Z
-32,Paraguay vs Turkey,2026-06-19,unknown,draw,3.2,3.2,0.0,0.2973,0.2973,0.0,0.3239,False,against,2026-06-11T12:59:40Z
-32,Paraguay vs Turkey,2026-06-19,unknown,away,2.25,2.25,0.0,0.4277,0.4277,0.0,0.4466,False,against,2026-06-11T12:59:40Z
-33,Netherlands vs Sweden,2026-06-20,unknown,home,1.645,1.645,0.0,0.5873,0.5934,0.006,0.5633,False,against,2026-06-11T12:59:40Z
-33,Netherlands vs Sweden,2026-06-20,unknown,draw,4.1,4.2,0.1,0.228,0.2269,-0.0011,0.301,True,against,2026-06-11T12:59:40Z
-33,Netherlands vs Sweden,2026-06-20,unknown,away,5.0,5.25,0.25,0.1847,0.1797,-0.0049,0.1357,True,toward,2026-06-11T12:59:40Z
-34,Germany vs Ivory Coast,2026-06-20,unknown,home,1.571,1.556,-0.016,0.6159,0.625,0.0091,0.4593,False,against,2026-06-11T12:59:40Z
-34,Germany vs Ivory Coast,2026-06-20,unknown,draw,4.3,4.4,0.1,0.2171,0.2139,-0.0032,0.2965,True,against,2026-06-11T12:59:40Z
-34,Germany vs Ivory Coast,2026-06-20,unknown,away,5.5,5.75,0.25,0.167,0.1611,-0.0059,0.2442,True,against,2026-06-11T12:59:40Z
-35,Ecuador vs Curacao,2026-06-20,unknown,home,1.256,1.2,-0.056,0.7756,0.8136,0.038,0.5564,False,against,2026-06-11T12:59:40Z
-35,Ecuador vs Curacao,2026-06-20,unknown,draw,6.0,7.5,1.5,0.1532,0.1209,-0.0323,0.2618,True,against,2026-06-11T12:59:40Z
-35,Ecuador vs Curacao,2026-06-20,unknown,away,12.0,13.0,1.0,0.0712,0.0654,-0.0058,0.1818,True,against,2026-06-11T12:59:40Z
-36,Tunisia vs Japan,2026-06-20,unknown,home,4.6,5.25,0.65,0.2034,0.1775,-0.0259,0.1545,True,toward,2026-06-11T12:59:40Z
-36,Tunisia vs Japan,2026-06-20,unknown,draw,3.4,3.7,0.3,0.2793,0.2564,-0.0229,0.2256,True,toward,2026-06-11T12:59:40Z
-36,Tunisia vs Japan,2026-06-20,unknown,away,1.87,1.714,-0.155,0.5173,0.5661,0.0488,0.6199,True,toward,2026-06-11T12:59:40Z
-37,Spain vs Saudi Arabia,2026-06-21,unknown,home,1.143,1.1,-0.043,0.8553,0.8886,0.0334,0.6875,False,against,2026-06-11T12:59:40Z
-37,Spain vs Saudi Arabia,2026-06-21,unknown,draw,8.5,11.0,2.5,0.1055,0.0787,-0.0267,0.1949,True,against,2026-06-11T12:59:40Z
-37,Spain vs Saudi Arabia,2026-06-21,unknown,away,20.0,23.0,3.0,0.0392,0.0326,-0.0066,0.1176,True,against,2026-06-11T12:59:40Z
-38,Belgium vs Iran,2026-06-21,unknown,home,1.435,1.408,-0.027,0.677,0.6918,0.0148,0.392,False,against,2026-06-11T12:59:40Z
-38,Belgium vs Iran,2026-06-21,unknown,draw,4.6,4.8,0.2,0.2029,0.1952,-0.0077,0.2676,True,against,2026-06-11T12:59:40Z
-38,Belgium vs Iran,2026-06-21,unknown,away,7.5,8.0,0.5,0.12,0.113,-0.0071,0.3404,True,against,2026-06-11T12:59:40Z
-39,Uruguay vs Cape Verde,2026-06-21,unknown,home,1.444,1.444,0.0,0.6743,0.6743,0.0,0.6088,False,against,2026-06-11T12:59:40Z
-39,Uruguay vs Cape Verde,2026-06-21,unknown,draw,4.6,4.6,0.0,0.2044,0.2044,0.0,0.2623,False,against,2026-06-11T12:59:40Z
-39,Uruguay vs Cape Verde,2026-06-21,unknown,away,7.5,7.5,0.0,0.1213,0.1213,0.0,0.1289,False,against,2026-06-11T12:59:40Z
-40,New Zealand vs Egypt,2026-06-21,unknown,home,4.8,4.7,-0.1,0.194,0.2014,0.0075,0.3236,False,toward,2026-06-11T12:59:40Z
-40,New Zealand vs Egypt,2026-06-21,unknown,draw,3.9,3.85,-0.05,0.2415,0.248,0.0065,0.4649,False,toward,2026-06-11T12:59:40Z
-40,New Zealand vs Egypt,2026-06-21,unknown,away,1.714,1.769,0.055,0.5646,0.5506,-0.0139,0.2115,False,toward,2026-06-11T12:59:40Z
-41,Argentina vs Austria,2026-06-22,unknown,home,1.69,1.645,-0.044,0.5726,0.5927,0.0201,0.5341,False,against,2026-06-11T12:59:40Z
-41,Argentina vs Austria,2026-06-22,unknown,draw,3.75,3.9,0.15,0.2513,0.2445,-0.0068,0.2491,True,against,2026-06-11T12:59:40Z
-41,Argentina vs Austria,2026-06-22,unknown,away,5.25,5.75,0.5,0.1761,0.1628,-0.0133,0.2167,True,against,2026-06-11T12:59:40Z
-42,France vs Iraq,2026-06-22,unknown,home,1.143,1.125,-0.018,0.8541,0.8709,0.0169,0.6399,False,against,2026-06-11T12:59:40Z
-42,France vs Iraq,2026-06-22,unknown,draw,8.5,9.0,0.5,0.1048,0.1001,-0.0047,0.2722,True,against,2026-06-11T12:59:40Z
-42,France vs Iraq,2026-06-22,unknown,away,19.0,26.0,7.0,0.0412,0.029,-0.0122,0.0879,True,against,2026-06-11T12:59:40Z
-43,Norway vs Senegal,2026-06-22,unknown,home,2.0,2.15,0.15,0.4809,0.4517,-0.0292,0.2891,True,toward,2026-06-11T12:59:40Z
-43,Norway vs Senegal,2026-06-22,unknown,draw,3.65,3.6,-0.05,0.2577,0.2661,0.0084,0.281,False,toward,2026-06-11T12:59:40Z
-43,Norway vs Senegal,2026-06-22,unknown,away,3.6,3.4,-0.2,0.2614,0.2822,0.0208,0.4299,True,toward,2026-06-11T12:59:40Z
-44,Jordan vs Algeria,2026-06-22,unknown,home,4.9,6.5,1.6,0.1891,0.142,-0.0471,0.275,True,against,2026-06-11T12:59:40Z
-44,Jordan vs Algeria,2026-06-22,unknown,draw,3.8,4.3,0.5,0.2473,0.2198,-0.0275,0.3099,True,against,2026-06-11T12:59:40Z
-44,Jordan vs Algeria,2026-06-22,unknown,away,1.714,1.526,-0.188,0.5636,0.6382,0.0746,0.4152,True,against,2026-06-11T12:59:40Z
-45,Portugal vs Uzbekistan,2026-06-23,unknown,home,1.222,1.235,0.013,0.7934,0.7887,-0.0047,0.6153,False,toward,2026-06-11T12:59:40Z
-45,Portugal vs Uzbekistan,2026-06-23,unknown,draw,6.5,6.5,0.0,0.1378,0.1403,0.0025,0.2415,False,toward,2026-06-11T12:59:40Z
-45,Portugal vs Uzbekistan,2026-06-23,unknown,away,12.0,12.0,0.0,0.0688,0.071,0.0022,0.1432,False,toward,2026-06-11T12:59:40Z
-46,England vs Ghana,2026-06-23,unknown,home,1.339,1.312,-0.026,0.7269,0.7429,0.016,0.6098,False,against,2026-06-11T12:59:40Z
-46,England vs Ghana,2026-06-23,unknown,draw,5.5,5.5,0.0,0.1682,0.1689,0.0007,0.2553,False,toward,2026-06-11T12:59:40Z
-46,England vs Ghana,2026-06-23,unknown,away,8.5,10.0,1.5,0.1049,0.0882,-0.0167,0.1348,True,against,2026-06-11T12:59:40Z
-47,Panama vs Croatia,2026-06-23,unknown,home,7.0,6.5,-0.5,0.1302,0.1406,0.0104,0.3232,True,toward,2026-06-11T12:59:40Z
-47,Panama vs Croatia,2026-06-23,unknown,draw,3.95,4.0,0.05,0.2391,0.2355,-0.0036,0.3219,False,against,2026-06-11T12:59:40Z
-47,Panama vs Croatia,2026-06-23,unknown,away,1.541,1.556,0.015,0.6307,0.6239,-0.0068,0.3549,False,toward,2026-06-11T12:59:40Z
-48,Colombia vs DR Congo,2026-06-23,unknown,home,1.488,1.455,-0.033,0.6503,0.6709,0.0206,0.4709,False,against,2026-06-11T12:59:40Z
-48,Colombia vs DR Congo,2026-06-23,unknown,draw,4.2,4.4,0.2,0.2218,0.2151,-0.0067,0.3188,True,against,2026-06-11T12:59:40Z
-48,Colombia vs DR Congo,2026-06-23,unknown,away,7.0,8.0,1.0,0.128,0.114,-0.014,0.2103,True,against,2026-06-11T12:59:40Z
-49,Canada vs Switzerland,2026-06-24,unknown,home,3.65,3.5,-0.15,0.2587,0.2728,0.0141,0.3262,True,toward,2026-06-11T12:59:40Z
-49,Canada vs Switzerland,2026-06-24,unknown,draw,3.35,3.45,0.1,0.2829,0.2769,-0.006,0.3318,True,against,2026-06-11T12:59:40Z
-49,Canada vs Switzerland,2026-06-24,unknown,away,2.1,2.15,0.05,0.4585,0.4504,-0.0081,0.342,False,toward,2026-06-11T12:59:40Z
-50,Qatar vs Bosnia and Herzegovina,2026-06-24,unknown,home,5.0,6.0,1.0,0.1852,0.1544,-0.0308,0.4231,True,against,2026-06-11T12:59:40Z
-50,Qatar vs Bosnia and Herzegovina,2026-06-24,unknown,draw,3.75,3.95,0.2,0.251,0.2399,-0.011,0.3093,True,against,2026-06-11T12:59:40Z
-50,Qatar vs Bosnia and Herzegovina,2026-06-24,unknown,away,1.714,1.606,-0.108,0.5638,0.6056,0.0418,0.2676,True,against,2026-06-11T12:59:40Z
-51,Scotland vs Brazil,2026-06-24,unknown,home,7.5,6.0,-1.5,0.1189,0.1543,0.0354,0.1426,True,toward,2026-06-11T12:59:40Z
-51,Scotland vs Brazil,2026-06-24,unknown,draw,4.9,4.9,0.0,0.1886,0.1913,0.0027,0.2571,False,toward,2026-06-11T12:59:40Z
-51,Scotland vs Brazil,2026-06-24,unknown,away,1.4,1.488,0.088,0.6925,0.6544,-0.038,0.6002,False,toward,2026-06-11T12:59:40Z
-52,Morocco vs Haiti,2026-06-24,unknown,home,1.364,1.351,-0.013,0.7156,0.7248,0.0092,0.5791,False,against,2026-06-11T12:59:40Z
-52,Morocco vs Haiti,2026-06-24,unknown,draw,5.25,5.25,0.0,0.1782,0.1798,0.0016,0.3065,False,toward,2026-06-11T12:59:40Z
-52,Morocco vs Haiti,2026-06-24,unknown,away,8.5,9.5,1.0,0.1062,0.0955,-0.0108,0.1144,True,against,2026-06-11T12:59:40Z
-53,Mexico vs Czechia,2026-06-24,unknown,home,1.952,1.8,-0.152,0.4928,0.5393,0.0465,0.5874,True,toward,2026-06-11T12:59:40Z
-53,Mexico vs Czechia,2026-06-24,unknown,draw,3.45,3.65,0.2,0.2733,0.2606,-0.0126,0.2717,True,against,2026-06-11T12:59:40Z
-53,Mexico vs Czechia,2026-06-24,unknown,away,4.0,4.7,0.7,0.2339,0.2001,-0.0339,0.1409,True,toward,2026-06-11T12:59:40Z
-54,South Korea vs South Africa,2026-06-24,unknown,home,2.1,1.952,-0.148,0.4585,0.4943,0.0359,0.6278,True,toward,2026-06-11T12:59:40Z
-54,South Korea vs South Africa,2026-06-24,unknown,draw,3.35,3.5,0.15,0.2829,0.2705,-0.0124,0.2563,True,toward,2026-06-11T12:59:40Z
-54,South Korea vs South Africa,2026-06-24,unknown,away,3.65,4.0,0.35,0.2587,0.2352,-0.0235,0.1159,True,toward,2026-06-11T12:59:40Z
-55,Ecuador vs Germany,2026-06-25,unknown,home,5.0,4.8,-0.2,0.1852,0.1966,0.0114,0.2082,True,toward,2026-06-11T12:59:40Z
-55,Ecuador vs Germany,2026-06-25,unknown,draw,4.0,3.9,-0.1,0.2345,0.2442,0.0097,0.297,True,toward,2026-06-11T12:59:40Z
-55,Ecuador vs Germany,2026-06-25,unknown,away,1.667,1.741,0.074,0.5803,0.5592,-0.0211,0.4948,False,toward,2026-06-11T12:59:40Z
-56,Curacao vs Ivory Coast,2026-06-25,unknown,home,9.0,13.0,4.0,0.0971,0.0669,-0.0302,0.1802,True,against,2026-06-11T12:59:40Z
-56,Curacao vs Ivory Coast,2026-06-25,unknown,draw,5.25,7.0,1.75,0.1752,0.132,-0.0432,0.3055,True,against,2026-06-11T12:59:40Z
-56,Curacao vs Ivory Coast,2026-06-25,unknown,away,1.333,1.222,-0.111,0.7278,0.8011,0.0734,0.5142,True,against,2026-06-11T12:59:40Z
-57,Tunisia vs Netherlands,2026-06-25,unknown,home,6.0,6.5,0.5,0.1548,0.1403,-0.0146,0.1233,True,toward,2026-06-11T12:59:40Z
-57,Tunisia vs Netherlands,2026-06-25,unknown,draw,4.2,4.4,0.2,0.2255,0.2127,-0.0127,0.2566,True,against,2026-06-11T12:59:40Z
-57,Tunisia vs Netherlands,2026-06-25,unknown,away,1.571,1.5,-0.071,0.6197,0.647,0.0273,0.6201,False,against,2026-06-11T12:59:40Z
-58,Japan vs Sweden,2026-06-25,unknown,home,2.05,2.1,0.05,0.4717,0.4588,-0.0129,0.4965,False,against,2026-06-11T12:59:40Z
-58,Japan vs Sweden,2026-06-25,unknown,draw,3.5,3.45,-0.05,0.2718,0.2746,0.0029,0.357,False,toward,2026-06-11T12:59:40Z
-58,Japan vs Sweden,2026-06-25,unknown,away,3.7,3.55,-0.15,0.2565,0.2666,0.0101,0.1464,True,against,2026-06-11T12:59:40Z
-59,USA vs Turkey,2026-06-25,unknown,home,2.5,2.55,0.05,0.3837,0.3769,-0.0068,0.4344,False,against,2026-06-11T12:59:40Z
-59,USA vs Turkey,2026-06-25,unknown,draw,3.45,3.55,0.1,0.2749,0.2677,-0.0072,0.2907,False,against,2026-06-11T12:59:40Z
-59,USA vs Turkey,2026-06-25,unknown,away,2.8,2.7,-0.1,0.3414,0.3554,0.014,0.2748,False,against,2026-06-11T12:59:40Z
-60,Paraguay vs Australia,2026-06-25,unknown,home,2.2,2.15,-0.05,0.4388,0.4485,0.0097,0.2274,False,against,2026-06-11T12:59:40Z
-60,Paraguay vs Australia,2026-06-25,unknown,draw,3.25,3.3,0.05,0.2935,0.2882,-0.0052,0.3169,False,against,2026-06-11T12:59:40Z
-60,Paraguay vs Australia,2026-06-25,unknown,away,3.55,3.6,0.05,0.2678,0.2633,-0.0045,0.4557,False,against,2026-06-11T12:59:40Z
-61,Norway vs France,2026-06-26,unknown,home,4.9,4.5,-0.4,0.1901,0.2107,0.0207,0.1739,True,against,2026-06-11T12:59:40Z
-61,Norway vs France,2026-06-26,unknown,draw,3.85,3.7,-0.15,0.245,0.2583,0.0133,0.2981,True,toward,2026-06-11T12:59:40Z
-61,Norway vs France,2026-06-26,unknown,away,1.714,1.833,0.119,0.5649,0.5309,-0.034,0.528,True,toward,2026-06-11T12:59:40Z
-62,Senegal vs Iraq,2026-06-26,unknown,home,1.5,1.426,-0.074,0.6449,0.685,0.0401,0.5641,False,against,2026-06-11T12:59:40Z
-62,Senegal vs Iraq,2026-06-26,unknown,draw,4.3,4.7,0.4,0.2163,0.2009,-0.0154,0.2817,True,against,2026-06-11T12:59:40Z
-62,Senegal vs Iraq,2026-06-26,unknown,away,6.5,8.0,1.5,0.1388,0.1141,-0.0247,0.1542,True,against,2026-06-11T12:59:40Z
-63,Uruguay vs Spain,2026-06-26,unknown,home,5.25,5.5,0.25,0.1763,0.1702,-0.0061,0.1339,True,toward,2026-06-11T12:59:40Z
-63,Uruguay vs Spain,2026-06-26,unknown,draw,4.0,4.0,0.0,0.235,0.2377,0.0027,0.2475,False,toward,2026-06-11T12:59:40Z
-63,Uruguay vs Spain,2026-06-26,unknown,away,1.645,1.645,0.0,0.5887,0.5921,0.0034,0.6186,False,toward,2026-06-11T12:59:40Z
-64,Cape Verde vs Saudi Arabia,2026-06-26,unknown,home,2.95,2.6,-0.35,0.3219,0.3698,0.0479,0.1875,True,against,2026-06-11T12:59:40Z
-64,Cape Verde vs Saudi Arabia,2026-06-26,unknown,draw,3.6,3.25,-0.35,0.2615,0.2937,0.0322,0.3076,True,toward,2026-06-11T12:59:40Z
-64,Cape Verde vs Saudi Arabia,2026-06-26,unknown,away,2.3,2.85,0.55,0.4165,0.3364,-0.0801,0.5049,True,against,2026-06-11T12:59:40Z
-65,New Zealand vs Belgium,2026-06-26,unknown,home,10.5,10.0,-0.5,0.0833,0.0893,0.0061,0.2745,True,toward,2026-06-11T12:59:40Z
-65,New Zealand vs Belgium,2026-06-26,unknown,draw,6.0,6.0,0.0,0.1537,0.1552,0.0015,0.3423,False,toward,2026-06-11T12:59:40Z
-65,New Zealand vs Belgium,2026-06-26,unknown,away,1.278,1.294,0.016,0.763,0.7555,-0.0076,0.3832,False,toward,2026-06-11T12:59:40Z
-66,Egypt vs Iran,2026-06-26,unknown,home,2.4,2.3,-0.1,0.4003,0.4218,0.0214,0.2079,True,against,2026-06-11T12:59:40Z
-66,Egypt vs Iran,2026-06-26,unknown,draw,3.15,3.05,-0.1,0.3023,0.3158,0.0135,0.3925,True,toward,2026-06-11T12:59:40Z
-66,Egypt vs Iran,2026-06-26,unknown,away,3.2,3.65,0.45,0.2974,0.2624,-0.035,0.3996,True,against,2026-06-11T12:59:40Z
-67,Panama vs England,2026-06-27,unknown,home,12.0,8.5,-3.5,0.0716,0.1054,0.0339,0.2132,True,toward,2026-06-11T12:59:40Z
-67,Panama vs England,2026-06-27,unknown,draw,7.0,6.5,-0.5,0.1301,0.1411,0.011,0.2077,True,toward,2026-06-11T12:59:40Z
-67,Panama vs England,2026-06-27,unknown,away,1.222,1.294,0.072,0.7983,0.7534,-0.0449,0.5791,False,toward,2026-06-11T12:59:40Z
-68,Croatia vs Ghana,2026-06-27,unknown,home,1.714,1.667,-0.048,0.5638,0.5836,0.0198,0.5212,False,against,2026-06-11T12:59:40Z
-68,Croatia vs Ghana,2026-06-27,unknown,draw,3.75,3.85,0.1,0.251,0.2467,-0.0042,0.2722,True,against,2026-06-11T12:59:40Z
-68,Croatia vs Ghana,2026-06-27,unknown,away,5.0,5.5,0.5,0.1852,0.1697,-0.0155,0.2065,True,against,2026-06-11T12:59:40Z
-69,Colombia vs Portugal,2026-06-27,unknown,home,3.5,3.5,0.0,0.27,0.2734,0.0033,0.2376,False,against,2026-06-11T12:59:40Z
-69,Colombia vs Portugal,2026-06-27,unknown,draw,3.35,3.35,0.0,0.2827,0.286,0.0034,0.3251,False,toward,2026-06-11T12:59:40Z
-69,Colombia vs Portugal,2026-06-27,unknown,away,2.15,2.2,0.05,0.4473,0.4406,-0.0067,0.4374,False,toward,2026-06-11T12:59:40Z
-70,Uzbekistan vs DR Congo,2026-06-27,unknown,home,2.85,3.15,0.3,0.3355,0.3039,-0.0316,0.3961,True,against,2026-06-11T12:59:40Z
-70,Uzbekistan vs DR Congo,2026-06-27,unknown,draw,3.3,3.35,0.05,0.2882,0.2852,-0.003,0.3394,False,against,2026-06-11T12:59:40Z
-70,Uzbekistan vs DR Congo,2026-06-27,unknown,away,2.55,2.35,-0.2,0.3763,0.4109,0.0346,0.2645,True,against,2026-06-11T12:59:40Z
-71,Jordan vs Argentina,2026-06-27,unknown,home,15.0,15.0,0.0,0.0547,0.0563,0.0015,0.1105,False,toward,2026-06-11T12:59:40Z
-71,Jordan vs Argentina,2026-06-27,unknown,draw,7.5,7.5,0.0,0.1201,0.1219,0.0018,0.2788,False,toward,2026-06-11T12:59:40Z
-71,Jordan vs Argentina,2026-06-27,unknown,away,1.182,1.19,0.009,0.8252,0.8218,-0.0033,0.6107,False,toward,2026-06-11T12:59:40Z
-72,Algeria vs Austria,2026-06-27,unknown,home,3.6,3.75,0.15,0.2633,0.2592,-0.004,0.3822,True,against,2026-06-11T12:59:40Z
-72,Algeria vs Austria,2026-06-27,unknown,draw,3.3,3.2,-0.1,0.2882,0.3048,0.0166,0.3044,False,toward,2026-06-11T12:59:40Z
-72,Algeria vs Austria,2026-06-27,unknown,away,2.15,2.25,0.1,0.4485,0.436,-0.0125,0.3134,True,toward,2026-06-11T12:59:40Z
+1,Mexico vs South Africa,2026-06-11,DraftKings,home,1.588,1.435,-0.153,0.6098,0.6772,0.0675,0.6714,True,toward,2026-06-11T21:00:05Z
+1,Mexico vs South Africa,2026-06-11,DraftKings,draw,3.95,4.3,0.35,0.2378,0.2181,-0.0197,0.243,True,against,2026-06-11T21:00:05Z
+1,Mexico vs South Africa,2026-06-11,DraftKings,away,6.0,8.5,2.5,0.1525,0.1047,-0.0477,0.0855,True,toward,2026-06-11T21:00:05Z
+2,South Korea vs Czechia,2026-06-11,unknown,home,2.55,2.65,0.1,0.3577,0.3642,0.0065,0.4467,True,toward,2026-06-11T21:00:05Z
+2,South Korea vs Czechia,2026-06-11,unknown,draw,2.95,3.05,0.1,0.3058,0.3152,0.0093,0.3043,False,against,2026-06-11T21:00:05Z
+2,South Korea vs Czechia,2026-06-11,unknown,away,2.7,3.0,0.3,0.3365,0.3206,-0.0158,0.249,True,toward,2026-06-11T21:00:05Z
+3,Canada vs Bosnia and Herzegovina,2026-06-12,DraftKings,home,2.0,1.833,-0.167,0.4611,0.5304,0.0692,0.6602,True,toward,2026-06-12T15:41:47Z
+3,Canada vs Bosnia and Herzegovina,2026-06-12,DraftKings,draw,3.2,3.5,0.3,0.2784,0.2731,-0.0053,0.2348,True,toward,2026-06-12T15:41:47Z
+3,Canada vs Bosnia and Herzegovina,2026-06-12,DraftKings,away,3.4,4.8,1.4,0.2605,0.1965,-0.064,0.1051,True,toward,2026-06-12T15:41:47Z
+3,Canada vs Bosnia and Herzegovina,2026-06-12,unknown,home,2.0,1.87,-0.13,0.4611,0.5202,0.059,0.6602,True,toward,2026-06-11T21:00:05Z
+3,Canada vs Bosnia and Herzegovina,2026-06-12,unknown,draw,3.2,3.55,0.35,0.2784,0.2694,-0.009,0.2348,True,toward,2026-06-11T21:00:05Z
+3,Canada vs Bosnia and Herzegovina,2026-06-12,unknown,away,3.4,4.5,1.1,0.2605,0.2105,-0.05,0.1051,True,toward,2026-06-11T21:00:05Z
+4,USA vs Paraguay,2026-06-12,unknown,home,2.05,2.1,0.05,0.469,0.4597,-0.0093,0.5246,False,against,2026-06-12T15:41:47Z
+4,USA vs Paraguay,2026-06-12,unknown,draw,3.55,3.2,-0.35,0.2655,0.2979,0.0324,0.2978,True,toward,2026-06-12T15:41:47Z
+4,USA vs Paraguay,2026-06-12,unknown,away,3.55,3.9,0.35,0.2655,0.2424,-0.0231,0.1776,True,toward,2026-06-12T15:41:47Z
+5,Qatar vs Switzerland,2026-06-13,unknown,home,7.0,14.0,7.0,0.1132,0.0601,-0.0531,0.1822,True,against,2026-06-12T15:41:47Z
+5,Qatar vs Switzerland,2026-06-13,unknown,draw,4.8,6.5,1.7,0.1763,0.1412,-0.0351,0.3029,True,against,2026-06-12T15:41:47Z
+5,Qatar vs Switzerland,2026-06-13,unknown,away,1.323,1.222,-0.1,0.7105,0.7987,0.0882,0.5149,True,against,2026-06-12T15:41:47Z
+6,Brazil vs Morocco,2026-06-13,unknown,home,1.571,1.645,0.074,0.6174,0.5927,-0.0248,0.439,False,toward,2026-06-12T15:41:47Z
+6,Brazil vs Morocco,2026-06-13,unknown,draw,4.1,3.9,-0.2,0.2294,0.2445,0.0151,0.313,True,toward,2026-06-12T15:41:47Z
+6,Brazil vs Morocco,2026-06-13,unknown,away,6.0,5.75,-0.25,0.1532,0.1628,0.0097,0.248,True,toward,2026-06-12T15:41:47Z
+7,Haiti vs Scotland,2026-06-13,unknown,home,6.5,6.0,-0.5,0.1268,0.1548,0.028,0.3207,True,toward,2026-06-12T15:41:47Z
+7,Haiti vs Scotland,2026-06-13,unknown,draw,4.7,4.2,-0.5,0.1839,0.2255,0.0415,0.3315,True,toward,2026-06-12T15:41:47Z
+7,Haiti vs Scotland,2026-06-13,unknown,away,1.37,1.571,0.201,0.6892,0.6197,-0.0695,0.3479,True,toward,2026-06-12T15:41:47Z
+8,Australia vs Turkey,2026-06-13,unknown,home,4.7,5.0,0.3,0.1815,0.1862,0.0047,0.3974,True,toward,2026-06-12T15:41:47Z
+8,Australia vs Turkey,2026-06-13,unknown,draw,3.6,3.8,0.2,0.2446,0.2486,0.004,0.2885,True,toward,2026-06-12T15:41:47Z
+8,Australia vs Turkey,2026-06-13,unknown,away,1.625,1.714,0.089,0.5738,0.5652,-0.0087,0.3141,False,toward,2026-06-12T15:41:47Z
+9,Germany vs Curacao,2026-06-14,unknown,home,1.005,1.033,0.028,0.9622,0.9366,-0.0256,0.7837,False,toward,2026-06-12T15:41:47Z
+9,Germany vs Curacao,2026-06-14,unknown,draw,17.0,16.0,-1.0,0.0352,0.0443,0.0091,0.1284,True,toward,2026-06-12T15:41:47Z
+9,Germany vs Curacao,2026-06-14,unknown,away,76.0,29.0,-47.0,0.0026,0.0191,0.0164,0.0879,True,toward,2026-06-12T15:41:47Z
+10,Netherlands vs Japan,2026-06-14,unknown,home,1.952,1.952,0.0,0.4864,0.4855,-0.0009,0.3768,False,toward,2026-06-12T15:41:47Z
+10,Netherlands vs Japan,2026-06-14,unknown,draw,3.4,3.5,0.1,0.272,0.263,-0.009,0.2484,True,toward,2026-06-12T15:41:47Z
+10,Netherlands vs Japan,2026-06-14,unknown,away,3.8,3.65,-0.15,0.2416,0.2515,0.0099,0.3748,True,toward,2026-06-12T15:41:47Z
+11,Ivory Coast vs Ecuador,2026-06-14,unknown,home,3.3,3.6,0.3,0.2678,0.2661,-0.0017,0.3625,True,against,2026-06-12T15:41:47Z
+11,Ivory Coast vs Ecuador,2026-06-14,unknown,draw,2.75,2.85,0.1,0.3268,0.3386,0.0118,0.3205,True,against,2026-06-12T15:41:47Z
+11,Ivory Coast vs Ecuador,2026-06-14,unknown,away,2.25,2.45,0.2,0.4054,0.3953,-0.0101,0.317,True,toward,2026-06-12T15:41:47Z
+12,Tunisia vs Sweden,2026-06-14,unknown,home,3.9,4.3,0.4,0.2261,0.2185,-0.0076,0.2906,True,against,2026-06-12T15:41:47Z
+12,Tunisia vs Sweden,2026-06-14,unknown,draw,3.25,3.45,0.2,0.276,0.2751,-0.0009,0.3653,True,against,2026-06-12T15:41:47Z
+12,Tunisia vs Sweden,2026-06-14,unknown,away,1.87,1.909,0.04,0.4979,0.5064,0.0085,0.3441,False,against,2026-06-12T15:41:47Z
+13,Spain vs Cape Verde,2026-06-15,unknown,home,1.071,1.083,0.012,0.886,0.9018,0.0158,0.7345,False,against,2026-06-12T15:41:47Z
+13,Spain vs Cape Verde,2026-06-15,unknown,draw,8.5,12.0,3.5,0.0876,0.0708,-0.0168,0.1937,True,against,2026-06-12T15:41:47Z
+13,Spain vs Cape Verde,2026-06-15,unknown,away,20.0,26.0,6.0,0.0264,0.0274,0.001,0.0718,True,toward,2026-06-12T15:41:47Z
+14,Belgium vs Egypt,2026-06-15,unknown,home,1.588,1.588,0.0,0.6047,0.6069,0.0022,0.4548,False,against,2026-06-12T15:41:47Z
+14,Belgium vs Egypt,2026-06-15,unknown,draw,4.3,3.95,-0.35,0.2136,0.2356,0.0219,0.2929,True,toward,2026-06-12T15:41:47Z
+14,Belgium vs Egypt,2026-06-15,unknown,away,5.0,5.75,0.75,0.1816,0.1575,-0.0241,0.2524,True,against,2026-06-12T15:41:47Z
+15,Saudi Arabia vs Uruguay,2026-06-15,unknown,home,5.0,8.0,3.0,0.1687,0.114,-0.0547,0.2366,True,against,2026-06-12T15:41:47Z
+15,Saudi Arabia vs Uruguay,2026-06-15,unknown,draw,3.6,4.5,0.9,0.2441,0.2102,-0.034,0.318,True,against,2026-06-12T15:41:47Z
+15,Saudi Arabia vs Uruguay,2026-06-15,unknown,away,1.588,1.444,-0.144,0.5872,0.6758,0.0886,0.4454,True,against,2026-06-12T15:41:47Z
+16,Iran vs New Zealand,2026-06-15,unknown,home,1.645,1.833,0.188,0.5658,0.5287,-0.0371,0.4933,True,toward,2026-06-12T15:41:47Z
+16,Iran vs New Zealand,2026-06-15,unknown,draw,3.6,3.5,-0.1,0.2441,0.2717,0.0276,0.199,True,against,2026-06-12T15:41:47Z
+16,Iran vs New Zealand,2026-06-15,unknown,away,4.5,4.7,0.2,0.1902,0.1996,0.0094,0.3077,True,toward,2026-06-12T15:41:47Z
+17,France vs Senegal,2026-06-16,unknown,home,1.408,1.476,0.068,0.6678,0.6578,-0.01,0.5282,False,toward,2026-06-12T15:41:47Z
+17,France vs Senegal,2026-06-16,unknown,draw,4.2,4.4,0.2,0.2069,0.2128,0.0059,0.2227,True,toward,2026-06-12T15:41:47Z
+17,France vs Senegal,2026-06-16,unknown,away,6.5,7.0,0.5,0.1253,0.1295,0.0041,0.2491,True,toward,2026-06-12T15:41:47Z
+18,Norway vs Iraq,2026-06-16,unknown,home,1.408,1.211,-0.198,0.6649,0.8079,0.143,0.4085,True,against,2026-06-12T15:41:47Z
+18,Norway vs Iraq,2026-06-16,unknown,draw,4.3,7.0,2.7,0.1994,0.1312,-0.0681,0.2748,True,against,2026-06-12T15:41:47Z
+18,Norway vs Iraq,2026-06-16,unknown,away,6.0,14.0,8.0,0.1358,0.0609,-0.0749,0.3167,True,against,2026-06-12T15:41:47Z
+19,Argentina vs Algeria,2026-06-16,unknown,home,1.364,1.408,0.045,0.6893,0.6938,0.0045,0.5733,False,against,2026-06-12T15:41:47Z
+19,Argentina vs Algeria,2026-06-16,unknown,draw,4.2,4.6,0.4,0.2059,0.2056,-0.0003,0.2125,True,against,2026-06-12T15:41:47Z
+19,Argentina vs Algeria,2026-06-16,unknown,away,7.5,9.0,1.5,0.1048,0.1005,-0.0042,0.2142,True,against,2026-06-12T15:41:47Z
+20,Austria vs Jordan,2026-06-16,unknown,home,1.323,1.339,0.016,0.7105,0.7297,0.0192,0.4591,False,against,2026-06-12T15:41:47Z
+20,Austria vs Jordan,2026-06-16,unknown,draw,4.8,5.5,0.7,0.1763,0.1701,-0.0062,0.2375,True,against,2026-06-12T15:41:47Z
+20,Austria vs Jordan,2026-06-16,unknown,away,7.0,9.0,2.0,0.1132,0.1002,-0.013,0.3034,True,against,2026-06-12T15:41:47Z
+21,Portugal vs DR Congo,2026-06-17,unknown,home,1.286,1.278,-0.008,0.7318,0.7618,0.03,0.608,False,against,2026-06-12T15:41:47Z
+21,Portugal vs DR Congo,2026-06-17,unknown,draw,4.9,5.75,0.85,0.1721,0.16,-0.0121,0.2536,True,against,2026-06-12T15:41:47Z
+21,Portugal vs DR Congo,2026-06-17,unknown,away,8.0,11.0,3.0,0.0961,0.0783,-0.0178,0.1384,True,against,2026-06-12T15:41:47Z
+22,England vs Croatia,2026-06-17,unknown,home,1.741,1.714,-0.026,0.5571,0.5633,0.0062,0.5587,False,against,2026-06-12T15:41:47Z
+22,England vs Croatia,2026-06-17,unknown,draw,3.7,3.85,0.15,0.2562,0.2437,-0.0125,0.2692,True,against,2026-06-12T15:41:47Z
+22,England vs Croatia,2026-06-17,unknown,away,5.0,4.8,-0.2,0.1867,0.193,0.0063,0.1721,True,against,2026-06-12T15:41:47Z
+23,Ghana vs Panama,2026-06-17,unknown,home,1.952,2.15,0.198,0.4731,0.4488,-0.0242,0.2178,True,toward,2026-06-12T15:41:47Z
+23,Ghana vs Panama,2026-06-17,unknown,draw,3.55,3.4,-0.15,0.2485,0.2797,0.0313,0.3866,True,toward,2026-06-12T15:41:47Z
+23,Ghana vs Panama,2026-06-17,unknown,away,3.2,3.5,0.3,0.2784,0.2714,-0.007,0.3956,True,against,2026-06-12T15:41:47Z
+24,Uzbekistan vs Colombia,2026-06-17,unknown,home,6.0,8.5,2.5,0.135,0.1054,-0.0296,0.2447,True,against,2026-06-12T15:41:47Z
+24,Uzbekistan vs Colombia,2026-06-17,unknown,draw,3.8,4.7,0.9,0.2282,0.1993,-0.029,0.3357,True,against,2026-06-12T15:41:47Z
+24,Uzbekistan vs Colombia,2026-06-17,unknown,away,1.465,1.4,-0.065,0.6367,0.6954,0.0586,0.4197,True,against,2026-06-12T15:41:47Z
+25,South Africa vs Czechia,2026-06-18,unknown,home,4.0,5.0,1.0,0.2336,0.1888,-0.0448,0.2522,True,against,2026-06-12T15:41:47Z
+25,South Africa vs Czechia,2026-06-18,unknown,draw,3.3,3.8,0.5,0.286,0.2514,-0.0346,0.3365,True,against,2026-06-12T15:41:47Z
+25,South Africa vs Czechia,2026-06-18,unknown,away,2.0,1.741,-0.259,0.4804,0.5598,0.0794,0.4113,True,against,2026-06-12T15:41:47Z
+26,Switzerland vs Bosnia and Herzegovina,2026-06-18,unknown,home,1.571,1.625,0.054,0.6168,0.599,-0.0179,0.6022,False,toward,2026-06-12T15:41:47Z
+26,Switzerland vs Bosnia and Herzegovina,2026-06-18,unknown,draw,4.2,4.1,-0.1,0.2232,0.2312,0.008,0.2609,True,toward,2026-06-12T15:41:47Z
+26,Switzerland vs Bosnia and Herzegovina,2026-06-18,unknown,away,5.75,5.5,-0.25,0.1599,0.1698,0.0099,0.1369,True,against,2026-06-12T15:41:47Z
+27,Canada vs Qatar,2026-06-18,unknown,home,1.526,1.303,-0.223,0.6382,0.7499,0.1117,0.6022,True,against,2026-06-12T15:41:47Z
+27,Canada vs Qatar,2026-06-18,unknown,draw,4.3,5.5,1.2,0.2198,0.1699,-0.0499,0.275,True,against,2026-06-12T15:41:47Z
+27,Canada vs Qatar,2026-06-18,unknown,away,6.5,11.0,4.5,0.142,0.0802,-0.0618,0.1228,True,against,2026-06-12T15:41:47Z
+28,Mexico vs South Korea,2026-06-18,unknown,home,1.8,2.0,0.2,0.5389,0.4836,-0.0553,0.4837,True,toward,2026-06-12T15:41:47Z
+28,Mexico vs South Korea,2026-06-18,unknown,draw,3.7,3.4,-0.3,0.2567,0.28,0.0233,0.3137,True,toward,2026-06-12T15:41:47Z
+28,Mexico vs South Korea,2026-06-18,unknown,away,4.6,4.0,-0.6,0.2044,0.2364,0.032,0.2026,True,against,2026-06-12T15:41:47Z
+29,USA vs Australia,2026-06-19,unknown,home,1.741,1.769,0.028,0.5563,0.5495,-0.0068,0.3976,False,toward,2026-06-12T15:41:47Z
+29,USA vs Australia,2026-06-19,unknown,draw,4.0,3.95,-0.05,0.2356,0.2406,0.005,0.3165,False,toward,2026-06-12T15:41:47Z
+29,USA vs Australia,2026-06-19,unknown,away,4.5,4.5,0.0,0.2081,0.2099,0.0018,0.2859,False,toward,2026-06-12T15:41:47Z
+30,Scotland vs Morocco,2026-06-19,unknown,home,3.65,4.1,0.45,0.2573,0.2295,-0.0278,0.1641,True,toward,2026-06-12T15:41:47Z
+30,Scotland vs Morocco,2026-06-19,unknown,draw,3.3,3.3,0.0,0.2859,0.2879,0.002,0.2953,False,toward,2026-06-12T15:41:47Z
+30,Scotland vs Morocco,2026-06-19,unknown,away,2.1,2.0,-0.1,0.4568,0.4826,0.0258,0.5406,True,toward,2026-06-12T15:41:47Z
+31,Brazil vs Haiti,2026-06-19,unknown,home,1.083,1.083,0.0,0.9012,0.9048,0.0037,0.7067,False,against,2026-06-12T15:41:47Z
+31,Brazil vs Haiti,2026-06-19,unknown,draw,11.0,13.0,2.0,0.0776,0.0663,-0.0113,0.2029,True,against,2026-06-12T15:41:47Z
+31,Brazil vs Haiti,2026-06-19,unknown,away,31.0,26.0,-5.0,0.0212,0.0289,0.0077,0.0904,True,toward,2026-06-12T15:41:47Z
+32,Paraguay vs Turkey,2026-06-19,unknown,home,3.45,3.45,0.0,0.2749,0.2749,0.0,0.2295,False,against,2026-06-12T15:41:47Z
+32,Paraguay vs Turkey,2026-06-19,unknown,draw,3.2,3.2,0.0,0.2973,0.2973,0.0,0.3239,False,against,2026-06-12T15:41:47Z
+32,Paraguay vs Turkey,2026-06-19,unknown,away,2.25,2.25,0.0,0.4277,0.4277,0.0,0.4466,False,against,2026-06-12T15:41:47Z
+33,Netherlands vs Sweden,2026-06-20,unknown,home,1.645,1.645,0.0,0.5873,0.5934,0.006,0.5633,False,against,2026-06-12T15:41:47Z
+33,Netherlands vs Sweden,2026-06-20,unknown,draw,4.1,4.2,0.1,0.228,0.2269,-0.0011,0.301,True,against,2026-06-12T15:41:47Z
+33,Netherlands vs Sweden,2026-06-20,unknown,away,5.0,5.25,0.25,0.1847,0.1797,-0.0049,0.1357,True,toward,2026-06-12T15:41:47Z
+34,Germany vs Ivory Coast,2026-06-20,unknown,home,1.571,1.556,-0.016,0.6159,0.625,0.0091,0.4593,False,against,2026-06-12T15:41:47Z
+34,Germany vs Ivory Coast,2026-06-20,unknown,draw,4.3,4.4,0.1,0.2171,0.2139,-0.0032,0.2965,True,against,2026-06-12T15:41:47Z
+34,Germany vs Ivory Coast,2026-06-20,unknown,away,5.5,5.75,0.25,0.167,0.1611,-0.0059,0.2442,True,against,2026-06-12T15:41:47Z
+35,Ecuador vs Curacao,2026-06-20,unknown,home,1.256,1.2,-0.056,0.7756,0.8136,0.038,0.5564,False,against,2026-06-12T15:41:47Z
+35,Ecuador vs Curacao,2026-06-20,unknown,draw,6.0,7.5,1.5,0.1532,0.1209,-0.0323,0.2618,True,against,2026-06-12T15:41:47Z
+35,Ecuador vs Curacao,2026-06-20,unknown,away,12.0,13.0,1.0,0.0712,0.0654,-0.0058,0.1818,True,against,2026-06-12T15:41:47Z
+36,Tunisia vs Japan,2026-06-20,unknown,home,4.6,5.25,0.65,0.2034,0.1775,-0.0259,0.1545,True,toward,2026-06-12T15:41:47Z
+36,Tunisia vs Japan,2026-06-20,unknown,draw,3.4,3.7,0.3,0.2793,0.2564,-0.0229,0.2256,True,toward,2026-06-12T15:41:47Z
+36,Tunisia vs Japan,2026-06-20,unknown,away,1.87,1.714,-0.155,0.5173,0.5661,0.0488,0.6199,True,toward,2026-06-12T15:41:47Z
+37,Spain vs Saudi Arabia,2026-06-21,unknown,home,1.143,1.1,-0.043,0.8553,0.8886,0.0334,0.6875,False,against,2026-06-12T15:41:47Z
+37,Spain vs Saudi Arabia,2026-06-21,unknown,draw,8.5,11.0,2.5,0.1055,0.0787,-0.0267,0.1949,True,against,2026-06-12T15:41:47Z
+37,Spain vs Saudi Arabia,2026-06-21,unknown,away,20.0,23.0,3.0,0.0392,0.0326,-0.0066,0.1176,True,against,2026-06-12T15:41:47Z
+38,Belgium vs Iran,2026-06-21,unknown,home,1.435,1.408,-0.027,0.677,0.6918,0.0148,0.392,False,against,2026-06-12T15:41:47Z
+38,Belgium vs Iran,2026-06-21,unknown,draw,4.6,4.8,0.2,0.2029,0.1952,-0.0077,0.2676,True,against,2026-06-12T15:41:47Z
+38,Belgium vs Iran,2026-06-21,unknown,away,7.5,8.0,0.5,0.12,0.113,-0.0071,0.3404,True,against,2026-06-12T15:41:47Z
+39,Uruguay vs Cape Verde,2026-06-21,unknown,home,1.444,1.444,0.0,0.6743,0.6743,0.0,0.6088,False,against,2026-06-12T15:41:47Z
+39,Uruguay vs Cape Verde,2026-06-21,unknown,draw,4.6,4.6,0.0,0.2044,0.2044,0.0,0.2623,False,against,2026-06-12T15:41:47Z
+39,Uruguay vs Cape Verde,2026-06-21,unknown,away,7.5,7.5,0.0,0.1213,0.1213,0.0,0.1289,False,against,2026-06-12T15:41:47Z
+40,New Zealand vs Egypt,2026-06-21,unknown,home,4.8,4.7,-0.1,0.194,0.2014,0.0075,0.3236,False,toward,2026-06-12T15:41:47Z
+40,New Zealand vs Egypt,2026-06-21,unknown,draw,3.9,3.85,-0.05,0.2415,0.248,0.0065,0.4649,False,toward,2026-06-12T15:41:47Z
+40,New Zealand vs Egypt,2026-06-21,unknown,away,1.714,1.769,0.055,0.5646,0.5506,-0.0139,0.2115,False,toward,2026-06-12T15:41:47Z
+41,Argentina vs Austria,2026-06-22,unknown,home,1.69,1.645,-0.044,0.5726,0.5927,0.0201,0.5341,False,against,2026-06-12T15:41:47Z
+41,Argentina vs Austria,2026-06-22,unknown,draw,3.75,3.9,0.15,0.2513,0.2445,-0.0068,0.2491,True,against,2026-06-12T15:41:47Z
+41,Argentina vs Austria,2026-06-22,unknown,away,5.25,5.75,0.5,0.1761,0.1628,-0.0133,0.2167,True,against,2026-06-12T15:41:47Z
+42,France vs Iraq,2026-06-22,unknown,home,1.143,1.125,-0.018,0.8541,0.8709,0.0169,0.6399,False,against,2026-06-12T15:41:47Z
+42,France vs Iraq,2026-06-22,unknown,draw,8.5,9.0,0.5,0.1048,0.1001,-0.0047,0.2722,True,against,2026-06-12T15:41:47Z
+42,France vs Iraq,2026-06-22,unknown,away,19.0,26.0,7.0,0.0412,0.029,-0.0122,0.0879,True,against,2026-06-12T15:41:47Z
+43,Norway vs Senegal,2026-06-22,unknown,home,2.0,2.15,0.15,0.4809,0.4517,-0.0292,0.2891,True,toward,2026-06-12T15:41:47Z
+43,Norway vs Senegal,2026-06-22,unknown,draw,3.65,3.6,-0.05,0.2577,0.2661,0.0084,0.281,False,toward,2026-06-12T15:41:47Z
+43,Norway vs Senegal,2026-06-22,unknown,away,3.6,3.4,-0.2,0.2614,0.2822,0.0208,0.4299,True,toward,2026-06-12T15:41:47Z
+44,Jordan vs Algeria,2026-06-22,unknown,home,4.9,6.5,1.6,0.1891,0.142,-0.0471,0.275,True,against,2026-06-12T15:41:47Z
+44,Jordan vs Algeria,2026-06-22,unknown,draw,3.8,4.3,0.5,0.2473,0.2198,-0.0275,0.3099,True,against,2026-06-12T15:41:47Z
+44,Jordan vs Algeria,2026-06-22,unknown,away,1.714,1.526,-0.188,0.5636,0.6382,0.0746,0.4152,True,against,2026-06-12T15:41:47Z
+45,Portugal vs Uzbekistan,2026-06-23,unknown,home,1.222,1.235,0.013,0.7934,0.7887,-0.0047,0.6153,False,toward,2026-06-12T15:41:47Z
+45,Portugal vs Uzbekistan,2026-06-23,unknown,draw,6.5,6.5,0.0,0.1378,0.1403,0.0025,0.2415,False,toward,2026-06-12T15:41:47Z
+45,Portugal vs Uzbekistan,2026-06-23,unknown,away,12.0,12.0,0.0,0.0688,0.071,0.0022,0.1432,False,toward,2026-06-12T15:41:47Z
+46,England vs Ghana,2026-06-23,unknown,home,1.339,1.312,-0.026,0.7269,0.7429,0.016,0.6098,False,against,2026-06-12T15:41:47Z
+46,England vs Ghana,2026-06-23,unknown,draw,5.5,5.5,0.0,0.1682,0.1689,0.0007,0.2553,False,toward,2026-06-12T15:41:47Z
+46,England vs Ghana,2026-06-23,unknown,away,8.5,10.0,1.5,0.1049,0.0882,-0.0167,0.1348,True,against,2026-06-12T15:41:47Z
+47,Panama vs Croatia,2026-06-23,unknown,home,7.0,6.5,-0.5,0.1302,0.1406,0.0104,0.3232,True,toward,2026-06-12T15:41:47Z
+47,Panama vs Croatia,2026-06-23,unknown,draw,3.95,4.0,0.05,0.2391,0.2355,-0.0036,0.3219,False,against,2026-06-12T15:41:47Z
+47,Panama vs Croatia,2026-06-23,unknown,away,1.541,1.556,0.015,0.6307,0.6239,-0.0068,0.3549,False,toward,2026-06-12T15:41:47Z
+48,Colombia vs DR Congo,2026-06-23,unknown,home,1.488,1.455,-0.033,0.6503,0.6709,0.0206,0.4709,False,against,2026-06-12T15:41:47Z
+48,Colombia vs DR Congo,2026-06-23,unknown,draw,4.2,4.4,0.2,0.2218,0.2151,-0.0067,0.3188,True,against,2026-06-12T15:41:47Z
+48,Colombia vs DR Congo,2026-06-23,unknown,away,7.0,8.0,1.0,0.128,0.114,-0.014,0.2103,True,against,2026-06-12T15:41:47Z
+49,Canada vs Switzerland,2026-06-24,unknown,home,3.65,3.5,-0.15,0.2587,0.2728,0.0141,0.3262,True,toward,2026-06-12T15:41:47Z
+49,Canada vs Switzerland,2026-06-24,unknown,draw,3.35,3.45,0.1,0.2829,0.2769,-0.006,0.3318,True,against,2026-06-12T15:41:47Z
+49,Canada vs Switzerland,2026-06-24,unknown,away,2.1,2.15,0.05,0.4585,0.4504,-0.0081,0.342,False,toward,2026-06-12T15:41:47Z
+50,Qatar vs Bosnia and Herzegovina,2026-06-24,unknown,home,5.0,5.75,0.75,0.1852,0.1619,-0.0233,0.4231,True,against,2026-06-12T15:41:47Z
+50,Qatar vs Bosnia and Herzegovina,2026-06-24,unknown,draw,3.75,3.85,0.1,0.251,0.2468,-0.0042,0.3093,True,against,2026-06-12T15:41:47Z
+50,Qatar vs Bosnia and Herzegovina,2026-06-24,unknown,away,1.714,1.645,-0.069,0.5638,0.5914,0.0275,0.2676,False,against,2026-06-12T15:41:47Z
+51,Scotland vs Brazil,2026-06-24,unknown,home,7.5,6.0,-1.5,0.1189,0.1525,0.0336,0.1426,True,toward,2026-06-12T15:41:47Z
+51,Scotland vs Brazil,2026-06-24,unknown,draw,4.9,5.0,0.1,0.1886,0.1854,-0.0032,0.2571,False,against,2026-06-12T15:41:47Z
+51,Scotland vs Brazil,2026-06-24,unknown,away,1.4,1.465,0.065,0.6925,0.6621,-0.0303,0.6002,False,toward,2026-06-12T15:41:47Z
+52,Morocco vs Haiti,2026-06-24,unknown,home,1.364,1.323,-0.041,0.7156,0.7359,0.0203,0.5791,False,against,2026-06-12T15:41:47Z
+52,Morocco vs Haiti,2026-06-24,unknown,draw,5.25,5.25,0.0,0.1782,0.1766,-0.0016,0.3065,False,against,2026-06-12T15:41:47Z
+52,Morocco vs Haiti,2026-06-24,unknown,away,8.5,10.0,1.5,0.1062,0.0875,-0.0188,0.1144,True,against,2026-06-12T15:41:47Z
+53,Mexico vs Czechia,2026-06-24,unknown,home,1.952,1.833,-0.119,0.4928,0.5281,0.0353,0.5874,True,toward,2026-06-12T15:41:47Z
+53,Mexico vs Czechia,2026-06-24,unknown,draw,3.45,3.6,0.15,0.2733,0.2634,-0.0099,0.2717,True,against,2026-06-12T15:41:47Z
+53,Mexico vs Czechia,2026-06-24,unknown,away,4.0,4.5,0.5,0.2339,0.2085,-0.0254,0.1409,True,toward,2026-06-12T15:41:47Z
+54,South Korea vs South Africa,2026-06-24,unknown,home,2.1,1.606,-0.494,0.4585,0.6064,0.148,0.6278,True,toward,2026-06-12T15:41:47Z
+54,South Korea vs South Africa,2026-06-24,unknown,draw,3.35,4.1,0.75,0.2829,0.2314,-0.0515,0.2563,True,toward,2026-06-12T15:41:47Z
+54,South Korea vs South Africa,2026-06-24,unknown,away,3.65,5.75,2.1,0.2587,0.1622,-0.0965,0.1159,True,toward,2026-06-12T15:41:47Z
+55,Ecuador vs Germany,2026-06-25,unknown,home,5.0,4.8,-0.2,0.1852,0.1966,0.0114,0.2082,True,toward,2026-06-12T15:41:47Z
+55,Ecuador vs Germany,2026-06-25,unknown,draw,4.0,3.9,-0.1,0.2345,0.2442,0.0097,0.297,True,toward,2026-06-12T15:41:47Z
+55,Ecuador vs Germany,2026-06-25,unknown,away,1.667,1.741,0.074,0.5803,0.5592,-0.0211,0.4948,False,toward,2026-06-12T15:41:47Z
+56,Curacao vs Ivory Coast,2026-06-25,unknown,home,9.0,13.0,4.0,0.0971,0.0669,-0.0302,0.1802,True,against,2026-06-12T15:41:47Z
+56,Curacao vs Ivory Coast,2026-06-25,unknown,draw,5.25,7.0,1.75,0.1752,0.132,-0.0432,0.3055,True,against,2026-06-12T15:41:47Z
+56,Curacao vs Ivory Coast,2026-06-25,unknown,away,1.333,1.222,-0.111,0.7278,0.8011,0.0734,0.5142,True,against,2026-06-12T15:41:47Z
+57,Tunisia vs Netherlands,2026-06-25,unknown,home,6.0,6.5,0.5,0.1548,0.1403,-0.0146,0.1233,True,toward,2026-06-12T15:41:47Z
+57,Tunisia vs Netherlands,2026-06-25,unknown,draw,4.2,4.4,0.2,0.2255,0.2127,-0.0127,0.2566,True,against,2026-06-12T15:41:47Z
+57,Tunisia vs Netherlands,2026-06-25,unknown,away,1.571,1.5,-0.071,0.6197,0.647,0.0273,0.6201,False,against,2026-06-12T15:41:47Z
+58,Japan vs Sweden,2026-06-25,unknown,home,2.05,2.1,0.05,0.4717,0.4588,-0.0129,0.4965,False,against,2026-06-12T15:41:47Z
+58,Japan vs Sweden,2026-06-25,unknown,draw,3.5,3.45,-0.05,0.2718,0.2746,0.0029,0.357,False,toward,2026-06-12T15:41:47Z
+58,Japan vs Sweden,2026-06-25,unknown,away,3.7,3.55,-0.15,0.2565,0.2666,0.0101,0.1464,True,against,2026-06-12T15:41:47Z
+59,USA vs Turkey,2026-06-25,unknown,home,2.5,2.55,0.05,0.3837,0.3769,-0.0068,0.4344,False,against,2026-06-12T15:41:47Z
+59,USA vs Turkey,2026-06-25,unknown,draw,3.45,3.55,0.1,0.2749,0.2677,-0.0072,0.2907,False,against,2026-06-12T15:41:47Z
+59,USA vs Turkey,2026-06-25,unknown,away,2.8,2.7,-0.1,0.3414,0.3554,0.014,0.2748,False,against,2026-06-12T15:41:47Z
+60,Paraguay vs Australia,2026-06-25,unknown,home,2.2,2.15,-0.05,0.4388,0.4485,0.0097,0.2274,False,against,2026-06-12T15:41:47Z
+60,Paraguay vs Australia,2026-06-25,unknown,draw,3.25,3.3,0.05,0.2935,0.2882,-0.0052,0.3169,False,against,2026-06-12T15:41:47Z
+60,Paraguay vs Australia,2026-06-25,unknown,away,3.55,3.6,0.05,0.2678,0.2633,-0.0045,0.4557,False,against,2026-06-12T15:41:47Z
+61,Norway vs France,2026-06-26,unknown,home,4.9,4.3,-0.6,0.1901,0.2199,0.0299,0.1739,True,against,2026-06-12T15:41:47Z
+61,Norway vs France,2026-06-26,unknown,draw,3.85,3.65,-0.2,0.245,0.2609,0.0159,0.2981,True,toward,2026-06-12T15:41:47Z
+61,Norway vs France,2026-06-26,unknown,away,1.714,1.87,0.155,0.5649,0.5192,-0.0457,0.528,True,toward,2026-06-12T15:41:47Z
+62,Senegal vs Iraq,2026-06-26,unknown,home,1.5,1.408,-0.092,0.6449,0.6918,0.0469,0.5641,False,against,2026-06-12T15:41:47Z
+62,Senegal vs Iraq,2026-06-26,unknown,draw,4.3,4.8,0.5,0.2163,0.1952,-0.0211,0.2817,True,against,2026-06-12T15:41:47Z
+62,Senegal vs Iraq,2026-06-26,unknown,away,6.5,8.0,1.5,0.1388,0.113,-0.0258,0.1542,True,against,2026-06-12T15:41:47Z
+63,Uruguay vs Spain,2026-06-26,unknown,home,5.25,5.5,0.25,0.1763,0.1702,-0.0061,0.1339,True,toward,2026-06-12T15:41:47Z
+63,Uruguay vs Spain,2026-06-26,unknown,draw,4.0,4.0,0.0,0.235,0.2377,0.0027,0.2475,False,toward,2026-06-12T15:41:47Z
+63,Uruguay vs Spain,2026-06-26,unknown,away,1.645,1.645,0.0,0.5887,0.5921,0.0034,0.6186,False,toward,2026-06-12T15:41:47Z
+64,Cape Verde vs Saudi Arabia,2026-06-26,unknown,home,2.95,2.4,-0.55,0.3219,0.4012,0.0793,0.1875,True,against,2026-06-12T15:41:47Z
+64,Cape Verde vs Saudi Arabia,2026-06-26,unknown,draw,3.6,3.4,-0.2,0.2615,0.28,0.0185,0.3076,True,toward,2026-06-12T15:41:47Z
+64,Cape Verde vs Saudi Arabia,2026-06-26,unknown,away,2.3,3.0,0.7,0.4165,0.3188,-0.0977,0.5049,True,against,2026-06-12T15:41:47Z
+65,New Zealand vs Belgium,2026-06-26,unknown,home,10.5,10.0,-0.5,0.0833,0.0893,0.0061,0.2745,True,toward,2026-06-12T15:41:47Z
+65,New Zealand vs Belgium,2026-06-26,unknown,draw,6.0,6.0,0.0,0.1537,0.1552,0.0015,0.3423,False,toward,2026-06-12T15:41:47Z
+65,New Zealand vs Belgium,2026-06-26,unknown,away,1.278,1.294,0.016,0.763,0.7555,-0.0076,0.3832,False,toward,2026-06-12T15:41:47Z
+66,Egypt vs Iran,2026-06-26,unknown,home,2.4,2.3,-0.1,0.4003,0.4218,0.0214,0.2079,True,against,2026-06-12T15:41:47Z
+66,Egypt vs Iran,2026-06-26,unknown,draw,3.15,3.05,-0.1,0.3023,0.3158,0.0135,0.3925,True,toward,2026-06-12T15:41:47Z
+66,Egypt vs Iran,2026-06-26,unknown,away,3.2,3.65,0.45,0.2974,0.2624,-0.035,0.3996,True,against,2026-06-12T15:41:47Z
+67,Panama vs England,2026-06-27,unknown,home,12.0,8.5,-3.5,0.0716,0.1054,0.0339,0.2132,True,toward,2026-06-12T15:41:47Z
+67,Panama vs England,2026-06-27,unknown,draw,7.0,6.5,-0.5,0.1301,0.1411,0.011,0.2077,True,toward,2026-06-12T15:41:47Z
+67,Panama vs England,2026-06-27,unknown,away,1.222,1.294,0.072,0.7983,0.7534,-0.0449,0.5791,False,toward,2026-06-12T15:41:47Z
+68,Croatia vs Ghana,2026-06-27,unknown,home,1.714,1.645,-0.069,0.5638,0.5939,0.0301,0.5212,False,against,2026-06-12T15:41:47Z
+68,Croatia vs Ghana,2026-06-27,unknown,draw,3.75,3.95,0.2,0.251,0.2423,-0.0087,0.2722,True,against,2026-06-12T15:41:47Z
+68,Croatia vs Ghana,2026-06-27,unknown,away,5.0,5.75,0.75,0.1852,0.1638,-0.0214,0.2065,True,against,2026-06-12T15:41:47Z
+69,Colombia vs Portugal,2026-06-27,unknown,home,3.5,3.5,0.0,0.27,0.2734,0.0033,0.2376,False,against,2026-06-12T15:41:47Z
+69,Colombia vs Portugal,2026-06-27,unknown,draw,3.35,3.35,0.0,0.2827,0.286,0.0034,0.3251,False,toward,2026-06-12T15:41:47Z
+69,Colombia vs Portugal,2026-06-27,unknown,away,2.15,2.2,0.05,0.4473,0.4406,-0.0067,0.4374,False,toward,2026-06-12T15:41:47Z
+70,Uzbekistan vs DR Congo,2026-06-27,unknown,home,2.85,3.15,0.3,0.3355,0.3039,-0.0316,0.3961,True,against,2026-06-12T15:41:47Z
+70,Uzbekistan vs DR Congo,2026-06-27,unknown,draw,3.3,3.35,0.05,0.2882,0.2852,-0.003,0.3394,False,against,2026-06-12T15:41:47Z
+70,Uzbekistan vs DR Congo,2026-06-27,unknown,away,2.55,2.35,-0.2,0.3763,0.4109,0.0346,0.2645,True,against,2026-06-12T15:41:47Z
+71,Jordan vs Argentina,2026-06-27,unknown,home,15.0,15.0,0.0,0.0547,0.0563,0.0015,0.1105,False,toward,2026-06-12T15:41:47Z
+71,Jordan vs Argentina,2026-06-27,unknown,draw,7.5,7.5,0.0,0.1201,0.1219,0.0018,0.2788,False,toward,2026-06-12T15:41:47Z
+71,Jordan vs Argentina,2026-06-27,unknown,away,1.182,1.19,0.009,0.8252,0.8218,-0.0033,0.6107,False,toward,2026-06-12T15:41:47Z
+72,Algeria vs Austria,2026-06-27,unknown,home,3.6,3.75,0.15,0.2633,0.2592,-0.004,0.3822,True,against,2026-06-12T15:41:47Z
+72,Algeria vs Austria,2026-06-27,unknown,draw,3.3,3.2,-0.1,0.2882,0.3048,0.0166,0.3044,False,toward,2026-06-12T15:41:47Z
+72,Algeria vs Austria,2026-06-27,unknown,away,2.15,2.25,0.1,0.4485,0.436,-0.0125,0.3134,True,toward,2026-06-12T15:41:47Z

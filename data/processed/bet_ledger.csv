@@ -28,3 +28,5 @@ match_id,outcome,date,label,selection,verdict,category,model_prob,market_implied
 32,away,2026-06-19,Paraguay vs Turkey,Turkey (away),LEAN,fav,0.4466,0.4277,2.25,0.19,2026-06-11T12:25:14Z
 47,home,2026-06-23,Panama vs Croatia,Panama (home),LEAN,dog,0.3232,0.1406,6.5,9.67,2026-06-11T12:25:14Z
 67,home,2026-06-27,Panama vs England,Panama (home),LEAN,dog,0.2132,0.1054,8.5,10.47,2026-06-11T12:25:14Z
+4,home,2026-06-12,USA vs Paraguay,USA (home),LEAN,fav,0.5246,0.4597,2.1,9.26,2026-06-12T15:42:47Z
+14,away,2026-06-15,Belgium vs Egypt,Egypt (away),LEAN,dog,0.2524,0.1575,5.75,4.76,2026-06-12T15:42:47Z
