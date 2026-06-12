@@ -51,8 +51,8 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 16,2026-06-15,Group Stage,G,Iran vs New Zealand,away,New Zealand,0.3077,4.7,0.1996,real,unknown,0.1081,STRONG,0.4462,STRONG,0.1206,0.0301,0.0301,30.15
 72,2026-06-27,Group Stage,J,Algeria vs Austria,home,Algeria,0.3822,3.75,0.2528,real,unknown,0.1294,STRONG,0.4333,STRONG,0.1575,0.0394,0.0394,39.39
 15,2026-06-15,Group Stage,H,Saudi Arabia vs Uruguay,draw,Draw,0.318,4.5,0.2102,real,unknown,0.1078,STRONG,0.431,STRONG,0.1231,0.0308,0.0308,30.79
-34,2026-06-20,Group Stage,E,Germany vs Ivory Coast,away,Ivory Coast,0.2442,5.75,0.1611,real,unknown,0.0831,STRONG,0.4042,STRONG,0.0851,0.0213,0.0213,21.27
 46,2026-06-23,Group Stage,L,England vs Ghana,draw,Draw,0.2553,5.5,0.1689,real,unknown,0.0864,STRONG,0.4042,STRONG,0.0898,0.0225,0.0225,22.45
+34,2026-06-20,Group Stage,E,Germany vs Ivory Coast,away,Ivory Coast,0.2442,5.75,0.1611,real,unknown,0.0831,STRONG,0.4042,STRONG,0.0851,0.0213,0.0213,21.27
 48,2026-06-23,Group Stage,K,Colombia vs DR Congo,draw,Draw,0.3188,4.4,0.2151,real,unknown,0.1037,STRONG,0.4027,STRONG,0.1184,0.0296,0.0296,29.61
 7,2026-06-13,Group Stage,C,Haiti vs Scotland,draw,Draw,0.3315,4.2,0.2255,real,unknown,0.106,STRONG,0.3923,STRONG,0.1226,0.0306,0.0306,30.65
 23,2026-06-17,Group Stage,L,Ghana vs Panama,away,Panama,0.3956,3.5,0.2714,real,unknown,0.1242,STRONG,0.3846,STRONG,0.1538,0.0385,0.0385,38.46
@@ -79,7 +79,6 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 12,2026-06-14,Group Stage,F,Tunisia vs Sweden,home,Tunisia,0.2906,4.3,0.2185,real,unknown,0.0721,STRONG,0.2496,STRONG,0.0756,0.0189,0.0189,18.91
 70,2026-06-27,Group Stage,K,Uzbekistan vs DR Congo,home,Uzbekistan,0.3961,3.15,0.3039,real,unknown,0.0922,STRONG,0.2477,STRONG,0.1152,0.0288,0.0288,28.8
 41,2026-06-22,Group Stage,J,Argentina vs Austria,away,Austria,0.2167,5.75,0.1628,real,unknown,0.0539,STRONG,0.246,STRONG,0.0518,0.0129,0.0129,12.95
-3,2026-06-12,Group Stage,B,Canada vs Bosnia and Herzegovina,home,Canada,0.6602,1.8696,0.5186,real,DraftKings,0.1416,STRONG,0.2343,STRONG,0.2694,0.0674,0.05,50.0
 62,2026-06-26,Group Stage,I,Senegal vs Iraq,away,Iraq,0.1542,8.0,0.113,real,unknown,0.0412,value,0.2336,STRONG,0.0334,0.0083,0.0083,8.34
 58,2026-06-25,Group Stage,F,Japan vs Sweden,draw,Draw,0.357,3.45,0.2746,real,unknown,0.0824,STRONG,0.2317,STRONG,0.0946,0.0236,0.0236,23.64
 39,2026-06-21,Group Stage,H,Uruguay vs Cape Verde,draw,Draw,0.2623,4.6,0.2044,real,unknown,0.0579,STRONG,0.2066,STRONG,0.0574,0.0143,0.0143,14.35
@@ -97,12 +96,12 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 64,2026-06-26,Group Stage,H,Cape Verde vs Saudi Arabia,draw,Draw,0.3076,3.65,0.2594,real,unknown,0.0482,value,0.1227,STRONG,0.0463,0.0116,0.0116,11.58
 4,2026-06-12,Group Stage,D,USA vs Paraguay,home,USA,0.5246,2.1,0.4585,real,unknown,0.0661,STRONG,0.1017,STRONG,0.0924,0.0231,0.0231,23.1
 8,2026-06-13,Group Stage,D,Australia vs Turkey,draw,Draw,0.2885,3.8,0.2486,real,unknown,0.0399,value,0.0963,STRONG,0.0344,0.0086,0.0086,8.6
+26,2026-06-18,Group Stage,B,Switzerland vs Bosnia and Herzegovina,draw,Draw,0.2609,4.2,0.2274,real,unknown,0.0335,value,0.0958,STRONG,0.0299,0.0075,0.0075,7.48
 69,2026-06-27,Group Stage,K,Colombia vs Portugal,draw,Draw,0.3251,3.35,0.286,real,unknown,0.0391,value,0.0891,STRONG,0.0379,0.0095,0.0095,9.48
 61,2026-06-26,Group Stage,I,Norway vs France,draw,Draw,0.2981,3.65,0.2609,real,unknown,0.0372,value,0.0881,STRONG,0.0332,0.0083,0.0083,8.31
 30,2026-06-19,Group Stage,C,Scotland vs Morocco,away,Morocco,0.5406,2.0,0.4826,real,unknown,0.058,STRONG,0.0812,STRONG,0.0812,0.0203,0.0203,20.3
 53,2026-06-24,Group Stage,A,Mexico vs Czechia,home,Mexico,0.5874,1.8333,0.5281,real,unknown,0.0593,STRONG,0.0769,STRONG,0.0923,0.0231,0.0231,23.07
 68,2026-06-27,Group Stage,L,Croatia vs Ghana,draw,Draw,0.2722,3.95,0.2423,real,unknown,0.0299,,0.0752,STRONG,0.0255,0.0064,0.0064,6.37
-26,2026-06-18,Group Stage,B,Switzerland vs Bosnia and Herzegovina,draw,Draw,0.2609,4.1,0.2312,real,unknown,0.0297,,0.0697,STRONG,0.0225,0.0056,0.0056,5.62
 28,2026-06-18,Group Stage,A,Mexico vs South Korea,draw,Draw,0.3137,3.4,0.28,real,unknown,0.0337,value,0.0666,STRONG,0.0277,0.0069,0.0069,6.94
 36,2026-06-20,Group Stage,F,Tunisia vs Japan,away,Japan,0.6199,1.7143,0.5661,real,unknown,0.0538,STRONG,0.0627,STRONG,0.0878,0.0219,0.0219,21.94
 59,2026-06-25,Group Stage,D,USA vs Turkey,draw,Draw,0.2907,3.65,0.2603,real,unknown,0.0304,value,0.0611,STRONG,0.023,0.0058,0.0058,5.76
@@ -120,13 +119,13 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 63,2026-06-26,Group Stage,H,Uruguay vs Spain,draw,Draw,0.2475,4.0,0.2377,real,unknown,0.0098,,-0.01,,0.0,0.0,0.0,0.0
 61,2026-06-26,Group Stage,I,Norway vs France,away,France,0.528,1.8696,0.5192,real,unknown,0.0088,,-0.0129,,0.0,0.0,0.0,0.0
 17,2026-06-16,Group Stage,I,France vs Senegal,draw,Draw,0.2227,4.4,0.2128,real,unknown,0.0099,,-0.0201,,0.0,0.0,0.0,0.0
-26,2026-06-18,Group Stage,B,Switzerland vs Bosnia and Herzegovina,home,Switzerland,0.6022,1.625,0.599,real,unknown,0.0032,,-0.0214,,0.0,0.0,0.0,0.0
 53,2026-06-24,Group Stage,A,Mexico vs Czechia,draw,Draw,0.2717,3.6,0.2634,real,unknown,0.0083,,-0.0219,,0.0,0.0,0.0,0.0
 19,2026-06-16,Group Stage,J,Argentina vs Algeria,draw,Draw,0.2125,4.6,0.2056,real,unknown,0.0069,,-0.0225,,0.0,0.0,0.0,0.0
 30,2026-06-19,Group Stage,C,Scotland vs Morocco,draw,Draw,0.2953,3.3,0.2879,real,unknown,0.0074,,-0.0255,,0.0,0.0,0.0,0.0
 72,2026-06-27,Group Stage,J,Algeria vs Austria,draw,Draw,0.3044,3.2,0.2981,real,unknown,0.0063,,-0.0259,,0.0,0.0,0.0,0.0
 41,2026-06-22,Group Stage,J,Argentina vs Austria,draw,Draw,0.2491,3.9,0.2445,real,unknown,0.0046,,-0.0285,,0.0,0.0,0.0,0.0
 28,2026-06-18,Group Stage,A,Mexico vs South Korea,home,Mexico,0.4837,2.0,0.4836,real,unknown,0.0001,,-0.0326,,0.0,0.0,0.0,0.0
+26,2026-06-18,Group Stage,B,Switzerland vs Bosnia and Herzegovina,home,Switzerland,0.6022,1.6061,0.6087,real,unknown,-0.0065,,-0.0328,,0.0,0.0,0.0,0.0
 39,2026-06-21,Group Stage,H,Uruguay vs Cape Verde,away,Cape Verde,0.1289,7.5,0.1213,real,unknown,0.0076,,-0.0333,,0.0,0.0,0.0,0.0
 69,2026-06-27,Group Stage,K,Colombia vs Portugal,away,Portugal,0.4374,2.2,0.4406,real,unknown,-0.0032,,-0.0377,,0.0,0.0,0.0,0.0
 22,2026-06-17,Group Stage,L,England vs Croatia,home,England,0.5587,1.7143,0.5633,real,unknown,-0.0046,,-0.0422,,0.0,0.0,0.0,0.0
@@ -145,7 +144,6 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 36,2026-06-20,Group Stage,F,Tunisia vs Japan,draw,Draw,0.2256,3.7,0.2564,real,unknown,-0.0308,,-0.1653,,0.0,0.0,0.0,0.0
 69,2026-06-27,Group Stage,K,Colombia vs Portugal,home,Colombia,0.2376,3.5,0.2734,real,unknown,-0.0358,,-0.1684,,0.0,0.0,0.0,0.0
 22,2026-06-17,Group Stage,L,England vs Croatia,away,Croatia,0.1721,4.8,0.193,real,unknown,-0.0209,,-0.1739,,0.0,0.0,0.0,0.0
-3,2026-06-12,Group Stage,B,Canada vs Bosnia and Herzegovina,draw,Draw,0.2348,3.5,0.2721,real,DraftKings,-0.0373,,-0.1782,,0.0,0.0,0.0,0.0
 36,2026-06-20,Group Stage,F,Tunisia vs Japan,home,Tunisia,0.1545,5.25,0.1775,real,unknown,-0.023,,-0.1889,,0.0,0.0,0.0,0.0
 28,2026-06-18,Group Stage,A,Mexico vs South Korea,away,South Korea,0.2026,4.0,0.2364,real,unknown,-0.0338,,-0.1896,,0.0,0.0,0.0,0.0
 9,2026-06-14,Group Stage,E,Germany vs Curacao,home,Germany,0.7837,1.0333,0.9346,real,unknown,-0.1509,,-0.1902,,0.0,0.0,0.0,0.0
@@ -155,6 +153,7 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 13,2026-06-15,Group Stage,H,Spain vs Cape Verde,home,Spain,0.7345,1.0833,0.9018,real,unknown,-0.1673,,-0.2043,,0.0,0.0,0.0,0.0
 62,2026-06-26,Group Stage,I,Senegal vs Iraq,home,Senegal,0.5641,1.4082,0.6918,real,unknown,-0.1277,,-0.2056,,0.0,0.0,0.0,0.0
 32,2026-06-19,Group Stage,D,Paraguay vs Turkey,home,Paraguay,0.2295,3.45,0.2749,real,unknown,-0.0454,,-0.2082,,0.0,0.0,0.0,0.0
+26,2026-06-18,Group Stage,B,Switzerland vs Bosnia and Herzegovina,away,Bosnia and Herzegovina,0.1369,5.75,0.1638,real,unknown,-0.0269,,-0.2128,,0.0,0.0,0.0,0.0
 52,2026-06-24,Group Stage,C,Morocco vs Haiti,home,Morocco,0.5791,1.3571,0.7163,real,unknown,-0.1372,,-0.2141,,0.0,0.0,0.0,0.0
 27,2026-06-18,Group Stage,B,Canada vs Qatar,home,Canada,0.6022,1.303,0.7499,real,unknown,-0.1477,,-0.2153,,0.0,0.0,0.0,0.0
 17,2026-06-16,Group Stage,I,France vs Senegal,home,France,0.5282,1.4762,0.6578,real,unknown,-0.1296,,-0.2203,,0.0,0.0,0.0,0.0
@@ -163,7 +162,6 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 31,2026-06-19,Group Stage,C,Brazil vs Haiti,home,Brazil,0.7067,1.0833,0.9048,real,unknown,-0.1981,,-0.2344,,0.0,0.0,0.0,0.0
 45,2026-06-23,Group Stage,K,Portugal vs Uzbekistan,home,Portugal,0.6153,1.2353,0.7887,real,unknown,-0.1734,,-0.2399,,0.0,0.0,0.0,0.0
 37,2026-06-21,Group Stage,H,Spain vs Saudi Arabia,home,Spain,0.6875,1.1,0.8886,real,unknown,-0.2011,,-0.2437,,0.0,0.0,0.0,0.0
-26,2026-06-18,Group Stage,B,Switzerland vs Bosnia and Herzegovina,away,Bosnia and Herzegovina,0.1369,5.5,0.1698,real,unknown,-0.0329,,-0.247,,0.0,0.0,0.0,0.0
 67,2026-06-27,Group Stage,L,Panama vs England,away,England,0.5791,1.2941,0.7534,real,unknown,-0.1743,,-0.2506,,0.0,0.0,0.0,0.0
 61,2026-06-26,Group Stage,I,Norway vs France,home,Norway,0.1739,4.3,0.2199,real,unknown,-0.046,,-0.2522,,0.0,0.0,0.0,0.0
 63,2026-06-26,Group Stage,H,Uruguay vs Spain,home,Uruguay,0.1339,5.5,0.1702,real,unknown,-0.0363,,-0.2636,,0.0,0.0,0.0,0.0
@@ -191,8 +189,8 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 53,2026-06-24,Group Stage,A,Mexico vs Czechia,away,Czechia,0.1409,4.5,0.2085,real,unknown,-0.0676,,-0.3659,,0.0,0.0,0.0,0.0
 44,2026-06-22,Group Stage,J,Jordan vs Algeria,away,Algeria,0.4152,1.5263,0.6382,real,unknown,-0.223,,-0.3663,,0.0,0.0,0.0,0.0
 56,2026-06-25,Group Stage,E,Curacao vs Ivory Coast,away,Ivory Coast,0.5142,1.2222,0.8011,real,unknown,-0.2869,,-0.3715,,0.0,0.0,0.0,0.0
-70,2026-06-27,Group Stage,K,Uzbekistan vs DR Congo,away,DR Congo,0.2645,2.35,0.4109,real,unknown,-0.1464,,-0.3784,,0.0,0.0,0.0,0.0
 43,2026-06-22,Group Stage,I,Norway vs Senegal,home,Norway,0.2891,2.15,0.4517,real,unknown,-0.1626,,-0.3784,,0.0,0.0,0.0,0.0
+70,2026-06-27,Group Stage,K,Uzbekistan vs DR Congo,away,DR Congo,0.2645,2.35,0.4109,real,unknown,-0.1464,,-0.3784,,0.0,0.0,0.0,0.0
 20,2026-06-16,Group Stage,J,Austria vs Jordan,home,Austria,0.4591,1.339,0.7297,real,unknown,-0.2706,,-0.3853,,0.0,0.0,0.0,0.0
 24,2026-06-17,Group Stage,K,Uzbekistan vs Colombia,away,Colombia,0.4197,1.4,0.6954,real,unknown,-0.2757,,-0.4124,,0.0,0.0,0.0,0.0
 47,2026-06-23,Group Stage,L,Panama vs Croatia,away,Croatia,0.3549,1.5556,0.6239,real,unknown,-0.269,,-0.4479,,0.0,0.0,0.0,0.0
@@ -204,7 +202,6 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 18,2026-06-16,Group Stage,I,Norway vs Iraq,home,Norway,0.4085,1.2105,0.8079,real,unknown,-0.3994,,-0.5055,,0.0,0.0,0.0,0.0
 60,2026-06-25,Group Stage,D,Paraguay vs Australia,home,Paraguay,0.2274,2.15,0.4485,real,unknown,-0.2211,,-0.5111,,0.0,0.0,0.0,0.0
 66,2026-06-26,Group Stage,G,Egypt vs Iran,home,Egypt,0.2079,2.3,0.4218,real,unknown,-0.2139,,-0.5218,,0.0,0.0,0.0,0.0
-3,2026-06-12,Group Stage,B,Canada vs Bosnia and Herzegovina,away,Bosnia and Herzegovina,0.1051,4.5,0.2093,real,DraftKings,-0.1042,,-0.5271,,0.0,0.0,0.0,0.0
 23,2026-06-17,Group Stage,L,Ghana vs Panama,home,Ghana,0.2178,2.15,0.4488,real,unknown,-0.231,,-0.5317,,0.0,0.0,0.0,0.0
 50,2026-06-24,Group Stage,B,Qatar vs Bosnia and Herzegovina,away,Bosnia and Herzegovina,0.2676,1.6667,0.584,real,unknown,-0.3164,,-0.554,,0.0,0.0,0.0,0.0
 64,2026-06-26,Group Stage,H,Cape Verde vs Saudi Arabia,home,Cape Verde,0.1875,2.25,0.4279,real,unknown,-0.2404,,-0.5781,,0.0,0.0,0.0,0.0
