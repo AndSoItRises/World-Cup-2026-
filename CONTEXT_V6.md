@@ -226,6 +226,34 @@ scrolling, single-column cards). Maintenance cost accepted: the JS desk mirror m
 in sync with desk_call.py — flagged in HANDOFF §8. Meta line fixed to show calibrated LL
 0.8405.
 
+### DL-12 — Full unattended refresh loop: results auto-ingest + smart push (2026-06-12)
+The last manual steps (entering results + running the ritual + pushing) are now automated.
+`fetch_live_results.py` (NEW) reads ESPN's scoreboard — the same endpoint fetch_live_odds
+already hits — detects `status.state == "post"` matches, maps them to fixtures by match_id
+(reusing fetch_live_odds's normaliser + ESPN_TO_FIXTURE alias map), re-orients the score to
+the fixture's home/away (ESPN flips neutral-venue ties), and writes wc2026_live_results.csv.
+Idempotent: adds if missing, overwrites only if the SCORE changed, else no-op — so a human
+hand-edit (e.g. a penalty-shootout knockout) survives re-runs. Exit code 10 = new/changed
+result, 0 = none, signalling the orchestrator whether to run the expensive sims.
+
+`scripts/refresh_all.ps1` (NEW) is the orchestrator: every cycle it fetches odds + results,
+runs live_update + predict_wc2026 ONLY on a new result (gated on exit 10), always reprices
+(market_monitor/bet_sim/desk_call/clv_tracker), then commits+pushes ONLY when a tracked
+output materially changed — keyed on desk_calls/value_bets/predictions/tournament_probs_live,
+deliberately NOT on line_movement/arb_scan (which jitter every odds tick). Rationale: the
+dashboard already re-prices live odds client-side via ⟳ LIVE ODDS, so the Python push only
+needs to carry new results + changed verdicts — this avoids ~48 timestamp-only commits/day
+while keeping GitHub Pages live. `data/raw/` being gitignored means odds-snapshot noise never
+reaches git regardless. `register_refresh_task.ps1` registers the "WC2026 full refresh"
+scheduled task (every 30 min, StartWhenAvailable); it supersedes the hourly odds-only task.
+
+Also fixed a live bug in fetch_live_odds.extract_moneyline — a null entry in ESPN's odds list
+crashed the hourly task intermittently (`NoneType.get`); now guarded. First full run ingested
+the two opening-day finals (Mexico 2-0 South Africa, South Korea 2-1 Czechia), re-simmed, and
+pushed in ~70s. Carried caveat: knockout decided_by (AET vs 90-min vs pens) is best-effort from
+this endpoint — group stage is exact; verify knockout rows before R32. The JS desk mirror /
+desk_call.py sync obligation (DL-11, HANDOFF §8) is unchanged.
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit

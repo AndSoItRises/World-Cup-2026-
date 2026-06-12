@@ -119,34 +119,43 @@ teams in the slot order the bracket produced: fixture home slot first. Valid sta
 
 ---
 
-## 4. The refresh ritual (run after entering results)
+## 4. The refresh — now fully automated
 
-PowerShell, from the repo root:
+You no longer enter results or run anything by hand. The Windows scheduled task
+**"WC2026 full refresh"** runs `scripts\refresh_all.ps1` every 30 minutes and does the
+whole loop unattended:
 
+1. Pulls the latest DraftKings lines from ESPN.
+2. **Reads finished games straight off ESPN's scoreboard** and writes them into
+   `data\raw\wc2026_live_results.csv` for you (idempotent — it won't duplicate, and it
+   only overwrites a row if the score actually changed, so a manual fix sticks).
+3. When a new result lands, it re-runs the ELO update + 10k simulation and the
+   calibrated match probabilities (~1 min).
+4. Re-prices everything (EV / Kelly / desk calls / CLV).
+5. Rebuilds the dashboard and **pushes to GitHub Pages — but only when something that
+   matters changed** (a new result, or the desk verdicts / EV / model probabilities
+   moved). A few cents of odds drift won't trigger a commit, because the dashboard's own
+   **⟳ LIVE ODDS / auto-4m** button already re-prices live lines in your browser.
+
+Log: `logs\refresh.log`. Allow a minute or two after a push for Pages to redeploy.
+
+**Run it on demand** (e.g. right after a final whistle, instead of waiting for the next
+30-min tick):
 ```powershell
 cd "C:\Users\jakeh\OneDrive\Documents\Claude\Projects\World Cup 2026 Model"
-$env:PYTHONUTF8 = "1"
-.\venv\Scripts\python.exe -m src.models.live_update        # ELO update + 10k re-sim (~3 min)
-.\venv\Scripts\python.exe -m src.models.predict_wc2026     # calibrated match probs
-.\venv\Scripts\python.exe -m src.models.fetch_live_odds    # latest lines (also runs hourly on its own)
-.\venv\Scripts\python.exe -m src.models.market_monitor     # line movement + arb scan
-.\venv\Scripts\python.exe -m src.models.bet_sim            # edge / EV / Kelly
-.\venv\Scripts\python.exe -m src.models.desk_call          # BET/LEAN/PASS verdicts
-.\venv\Scripts\python.exe -m src.models.clv_tracker        # log new calls, settle vs closes
-.\venv\Scripts\python.exe -m src.models.build_dashboard    # regenerate the HTML
-git add . ; git commit -m "results: matchday YYYY-MM-DD" ; git push
+.\scripts\refresh_all.ps1
 ```
 
-The `git push` is what updates the GitHub Pages copy (your phone's version) — allow a
-minute or two for Pages to redeploy.
+**To (re)arm the every-30-min schedule** (one time):
+```powershell
+.\scripts\register_refresh_task.ps1
+```
 
-**What's already automated:** odds snapshots run hourly via the Windows scheduled task
-"WC2026 odds snapshot" (logs to `logs/odds_fetch.log`), keeping closing lines tight for
-the CLV tracker. You never need to fetch odds manually — though running one right
-before a kickoff you care about sharpens that close.
-
-**What's manual:** entering results (this file is the single source of truth for what
-actually happened) and running the ritual above.
+**Still want to enter a result by hand?** You can — just edit
+`data\raw\wc2026_live_results.csv` (columns in §3 above). The automation treats your
+edit as truth unless ESPN later shows a different score for that match. This is the
+escape hatch for knockout games decided on penalties, where you may want to set
+`decided_by`/`winner` yourself before R32.
 
 ---
 

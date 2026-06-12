@@ -30,26 +30,40 @@ git status                        # expect clean; note anything uncommitted
 State which queue item (section 7) you're on before touching files.
 Python: `.\venv\Scripts\python.exe -m src.models.<script>` (module form, from repo root).
 
-## 3. REFRESH PIPELINE (after results land / any time for odds)
-Odds snapshots are AUTOMATED: Windows scheduled task "WC2026 odds snapshot" runs
-`scripts/fetch_odds_task.ps1` hourly through the final (logs to logs/odds_fetch.log;
-catches up after sleep/reboot via StartWhenAvailable). This keeps closing lines tight
-for clv_tracker without manual fetches. Delete the task after 2026-07-19.
+## 3. REFRESH PIPELINE — NOW FULLY AUTOMATED (DL-12)
+The whole loop runs unattended every 30 min via Windows scheduled task
+"WC2026 full refresh" → `scripts/refresh_all.ps1` (logs to logs/refresh.log;
+StartWhenAvailable catches up after sleep/reboot). It supersedes the old
+hourly "WC2026 odds snapshot" task. Register/re-register with
+`scripts/register_refresh_task.ps1`. Delete both tasks after 2026-07-19.
 
-Run in this order — each feeds the next:
+What refresh_all.ps1 does each cycle:
+  1. `fetch_live_odds`     — snapshot DraftKings lines (always)
+  2. `fetch_live_results`  — NEW: auto-ingest finished matches from ESPN into
+     wc2026_live_results.csv (idempotent; exit 10 = a result was added/changed)
+  3. IF a new result landed → `live_update` (ELO + 10k sims) + `predict_wc2026`
+  4. `market_monitor`, `bet_sim`, `desk_call`, `clv_tracker` (always — reprice)
+  5. Push ONLY when a tracked output materially changed (new result, or desk
+     verdicts / EV / model probs moved). Raw odds jitter alone does NOT push —
+     the dashboard's in-browser "LIVE ODDS / auto-4m" refresh already keeps
+     prices fresh client-side. `data/raw/` is gitignored, so only processed
+     outputs + the HTML are ever pushed → GitHub Pages updates.
+
+Manual run is identical to the automated cycle — just run the script:
 ```powershell
-# 1. Jake enters finished matches into data/raw/wc2026_live_results.csv
-#    (columns: match_id,stage,group,date,home_team,away_team,home_goals,away_goals,decided_by,winner)
-python -m src.models.live_update        # ELO update + 10k sims -> tournament_probs_live.csv (~3 min)
-python -m src.models.predict_wc2026     # match-level 3-way probs (calibrated)
-python -m src.models.fetch_live_odds    # scrape ESPN/DraftKings lines (appends snapshot history)
-python -m src.models.market_monitor     # line movement vs model + arb scan
-python -m src.models.bet_sim            # edge / EV / Kelly sheets
-python -m src.models.desk_call          # BET/LEAN/PASS verdicts (+ CLV feedback)
-python -m src.models.clv_tracker        # log new calls, score vs closing lines
-python -m src.models.build_dashboard    # regenerates outputs/quant_dashboard.html
-git add . ; git commit -m "..." ; git push
+.\scripts\refresh_all.ps1
 ```
+To run the steps by hand (e.g. debugging one stage), the module order is:
+live_update → predict_wc2026 → fetch_live_odds → market_monitor → bet_sim →
+desk_call → clv_tracker → build_dashboard, then git add/commit/push.
+
+Results entry is no longer manual: `fetch_live_results` reads ESPN's scoreboard,
+matches finished games to fixtures by match_id (reusing fetch_live_odds's
+normaliser + alias map), orients the score to the fixture's home/away, and
+writes the row. Group stage is fully handled; knockouts set decided_by=pens +
+winner from ESPN's winner flag (AET vs 90-min is best-effort — verify knockout
+rows before R32). A human can still hand-edit a row; the ingestor only
+overwrites when the SCORE differs, so manual fixes for tricky games survive.
 
 ## 4. SYSTEM MAP (V6 modules, all in src/models/)
 | module | reads | writes | purpose |
