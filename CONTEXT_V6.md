@@ -254,6 +254,38 @@ pushed in ~70s. Carried caveat: knockout decided_by (AET vs 90-min vs pens) is b
 this endpoint — group stage is exact; verify knockout rows before R32. The JS desk mirror /
 desk_call.py sync obligation (DL-11, HANDOFF §8) is unchanged.
 
+### DL-13 — Prediction scoreboard + "Next 5" desk board (Jake ask, 2026-06-12)
+Jake asked for (a) correct/incorrect predictions stored and fed back to improve the model,
+and (b) a "next 5 games" feature on the Quant Desk showing upcoming picks + conviction.
+
+`prediction_tracker.py` (NEW): append-only `prediction_ledger.csv` logs every match's
+model probs + Shin-fair market probs ONCE while the match is still unplayed — necessary
+because wc2026_predictions.csv is regenerated after every result ingest, so a settled
+match's current row postdates its own result (scoring it would be leakage; same fix as
+DL-11's bet ledger). `prediction_scoreboard.csv` scores settled matches: argmax
+correct/incorrect, p(realized), log-loss, and the market's log-loss on the same match.
+The two matches that settled before the tracker existed were seeded from the
+pre-tournament git snapshot (13b9979^ — rows verified byte-identical to the live file,
+so predict_wc2026's features are confirmed as-of-date). Runs every refresh cycle;
+prediction_scoreboard.csv added to the push triggers.
+
+On "feed it back into the model": results ALREADY flow back — live_update re-rates ELO
+after every final and the next sims price on it. Anything deeper is gated, deliberately:
+the tracker prints a tournament reliability check only at n ≥ 40 settled (below that it's
+noise), and any recalibration it suggests must still clear the validate-or-cut bar
+(DL-09). Auto-refitting on a handful of results would chase noise AND contaminate the
+DL-11 CLV experiment mid-sample (see the edge-vs-error memo,
+outputs/research/wcup2026_edge_vs_error_memo.md — it recommends FREEZING desk-rule
+feedback during the measurement window, not adding more).
+
+Dashboard (DESK tab): "Next 5 games" board — per upcoming match: model prob bars vs
+market fair ticks, model pick, and the desk's best call with verdict + desk score
+(conviction after haircuts) + capped stake; re-renders on ⟳ LIVE ODDS via drawDesk.
+"Model record" card — KPI strip (record, accuracy, model LL vs market LL, pending) +
+full per-match table with ✓/✗. Both honest: post-result rows excluded from headline
+numbers, n<40 flagged as too-small, LL comparison labeled diary-grade (the powered
+statistic is CLV — memo §3a).
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit

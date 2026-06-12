@@ -42,7 +42,8 @@ What refresh_all.ps1 does each cycle:
   2. `fetch_live_results`  — NEW: auto-ingest finished matches from ESPN into
      wc2026_live_results.csv (idempotent; exit 10 = a result was added/changed)
   3. IF a new result landed → `live_update` (ELO + 10k sims) + `predict_wc2026`
-  4. `market_monitor`, `bet_sim`, `desk_call`, `clv_tracker` (always — reprice)
+  4. `market_monitor`, `bet_sim`, `desk_call`, `clv_tracker`,
+     `prediction_tracker` (always — reprice + score settled predictions)
   5. Push ONLY when a tracked output materially changed (new result, or desk
      verdicts / EV / model probs moved). Raw odds jitter alone does NOT push —
      the dashboard's in-browser "LIVE ODDS / auto-4m" refresh already keeps
@@ -55,7 +56,8 @@ Manual run is identical to the automated cycle — just run the script:
 ```
 To run the steps by hand (e.g. debugging one stage), the module order is:
 live_update → predict_wc2026 → fetch_live_odds → market_monitor → bet_sim →
-desk_call → clv_tracker → build_dashboard, then git add/commit/push.
+desk_call → clv_tracker → prediction_tracker → build_dashboard, then
+git add/commit/push.
 
 Results entry is no longer manual: `fetch_live_results` reads ESPN's scoreboard,
 matches finished games to fixtures by match_id (reusing fetch_live_odds's
@@ -77,6 +79,7 @@ overwrites when the SCORE differs, so manual fixes for tricky games survive.
 | market_monitor.py | match odds history | line_movement.csv, arb_scan.csv | open→now shifts vs model; cross-book arb (needs ≥2 books) |
 | desk_call.py | value_bets, movement, clv_report | desk_calls.csv | BET/LEAN/PASS + evidence; 25% portfolio cap; CLV confidence input (final closes, n≥8/category) |
 | clv_tracker.py | desk_calls, match odds history, live results | bet_ledger.csv (append-only), clv_report.csv | CLV per logged bet vs closing line; settles DL-10 |
+| prediction_tracker.py | predictions, implied probs, live results | prediction_ledger.csv (append-only), prediction_scoreboard.csv | logs every match prediction pre-result, scores correct/incorrect + LL vs market on settle (DL-13) |
 | build_dashboard.py | all of the above + HANDOFF.md | outputs/quant_dashboard.html | self-contained dashboard; embeds this doc in NOTES tab |
 | live_update.py / monte_carlo.py / predict_wc2026.py | v4 models + calibrator | tournament_probs_live.csv, wc2026_predictions.csv | prod inference (pre-existing, now calibrated) |
 
@@ -140,6 +143,9 @@ NOTES (this doc, embedded at build). "⟳ LIVE ODDS" (+ auto-4m toggle) re-fetch
 in-browser: live scores in the ticker, EV/Kelly recomputed, AND desk verdicts/stakes
 recomputed via a JS mirror of desk_call.py (keep the two in sync when rules change).
 Model probs stay the local 10k-sim output — re-simulation is the Python pipeline.
+DESK also carries "Next 5 games" (model board + desk conviction per upcoming match,
+recomputes with live odds) and "Model record" (prediction_tracker scoreboard:
+every prediction stored pre-result, ✓/✗ + log-loss vs market on settle).
 Rebuild with `python -m src.models.build_dashboard` after ANY data change.
 
 ## 9. STYLE

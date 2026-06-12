@@ -6,7 +6,8 @@
 #   1. fetch_live_odds      - snapshot current DraftKings lines        (always)
 #   2. fetch_live_results   - auto-ingest finished matches from ESPN   (always)
 #   3. IF a new/changed result landed:  live_update + predict_wc2026   (the sims)
-#   4. market_monitor, bet_sim, desk_call, clv_tracker                 (always - reprice)
+#   4. market_monitor, bet_sim, desk_call, clv_tracker,
+#      prediction_tracker                                              (always - reprice/score)
 #   5. build_dashboard + commit + push  - ONLY if a *meaningful* output changed
 #      (a new result, or the desk verdicts / EV / model probs moved). Raw odds
 #      jitter alone does NOT trigger a push - the dashboard's in-browser
@@ -51,6 +52,7 @@ if ($newResult) {
 & $py -m src.models.bet_sim        *>&1 | Select-Object -Last 2 | Add-Content $log
 & $py -m src.models.desk_call      *>&1 | Select-Object -Last 2 | Add-Content $log
 & $py -m src.models.clv_tracker    *>&1 | Select-Object -Last 2 | Add-Content $log
+& $py -m src.models.prediction_tracker *>&1 | Select-Object -Last 2 | Add-Content $log
 
 # 5. Push only on a meaningful change. These are the tracked outputs that, when they
 #    move, mean the dashboard actually says something different. (line_movement.csv /
@@ -60,7 +62,8 @@ $trigger = @(
     "data/processed/value_bets.csv",
     "data/processed/value_bets_futures.csv",
     "data/processed/wc2026_predictions.csv",
-    "data/processed/tournament_probs_live.csv"
+    "data/processed/tournament_probs_live.csv",
+    "data/processed/prediction_scoreboard.csv"
 )
 $dirty = git status --porcelain -- $trigger
 if ($newResult -or $dirty) {

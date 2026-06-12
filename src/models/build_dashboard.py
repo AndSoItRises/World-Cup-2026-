@@ -98,6 +98,7 @@ def build_payload() -> dict:
         "tourney": load("tournament_probs_live.csv").to_dict("records"),
         "movement": load("line_movement.csv").to_dict("records"),
         "clv": load("clv_report.csv").fillna("").to_dict("records"),
+        "scoreboard": load("prediction_scoreboard.csv").fillna("").to_dict("records"),
         "arb": load("arb_scan.csv").to_dict("records"),
         "results": results.to_dict("records"),
         "groups": {g: sorted(set(d["home_team"]) | set(d["away_team"]))
@@ -211,10 +212,30 @@ nav button{min-height:34px}
     Press <b>⟳ LIVE ODDS</b> (or tick auto) — odds, EV and these verdicts recompute on
     the live DraftKings number.</div>
   </div>
+  <div class="card" style="border-left:3px solid var(--grn)">
+    <h3>Next 5 games — what the model says</h3>
+    <div id="next5"></div>
+    <div class="note">desk score = conviction after every documented-bias haircut
+    (BET ≥ 6 · LEAN ≥ 3 · under 3 = PASS) · cyan bar = model prob, amber tick = market
+    fair · recomputes with ⟳ LIVE ODDS.</div>
+  </div>
   <div class="note" id="desk-live-note"></div>
   <div id="desk-kpis" style="margin:10px 0"></div>
   <div id="desk-cards"></div>
   <div class="card"><h3 id="desk-pass-head"></h3><div class="note" id="desk-pass-note"></div></div>
+  <div class="card">
+    <h3>Model record — every prediction stored, scored when it settles</h3>
+    <div id="record-kpis" style="margin:6px 0"></div>
+    <div class="scroll" style="max-height:34vh"><table id="record-table"></table></div>
+    <div class="note">Predictions are logged ONCE into append-only prediction_ledger.csv
+    while the match is still unplayed, then scored on settlement — post-result re-sims
+    can't rewrite history. Results already feed the model: live_update re-rates every
+    team's ELO after each final, and the next 10k-sim run prices on it. Deeper
+    recalibration is gated by prediction_tracker.py's n ≥ 40 reliability check and the
+    validate-or-cut bar (DL-09) — refitting on a handful of results is noise-chasing.
+    LL = log-loss (lower is better); market column scores the Shin-fair price logged at
+    the same moment.</div>
+  </div>
   <div class="cav">62% model · edge vs market UNPROVEN out-of-sample (V5 DL-05). These are
   research conclusions, not betting advice.</div>
 </div>
@@ -349,10 +370,51 @@ document.getElementById('meta-sub').textContent =
   `${D.meta.model} · ${D.meta.accuracy} · de-vig: ${D.meta.devig} · built ${D.meta.built_at}`;
 document.getElementById('notes-pre').textContent = D.nextSteps;
 
+/* ── next 5 games — model board (re-rendered by drawDesk so live odds
+      recomputes flow through) ── */
+function drawNext5(rows){
+  const el=document.getElementById('next5');if(!el)return;
+  const done=new Set(D.results.map(r=>+r.match_id));
+  const up=D.implied.filter(m=>!done.has(+m.match_id))
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date))||(+a.match_id-+b.match_id))
+    .slice(0,5);
+  el.innerHTML=up.map(m=>{
+    const sides=['home','draw','away'].map(s=>{
+      const b=D.bets.find(x=>x.match_id===m.match_id&&x.outcome===s)||{};
+      return {s,name:s==='draw'?'Draw':(s==='home'?m.home_team:m.away_team),
+        p:+b.model_prob||0,fair:+m[s+'_fair_prob']||0,edge:+b.edge||0};});
+    const pick=[...sides].sort((a,b)=>b.p-a.p)[0];
+    const calls=rows.filter(r=>r.kind==='match'&&+r.match_id===+m.match_id);
+    const act=calls.filter(r=>r.verdict!=='PASS').sort((a,b)=>b.score-a.score)[0];
+    const top=act||[...calls].sort((a,b)=>b.score-a.score)[0];
+    const verdictHtml=act
+      ?`<span class="vb ${act.verdict.toLowerCase()}">${act.verdict}</span>
+        <b style="color:#fff">${act.selection}</b> @ ${(+act.decimal_odds).toFixed(2)}
+        · desk score <b>${(+act.score).toFixed(1)}</b>
+        · stake <b class="pos">$${(+act.stake_usd).toFixed(0)}</b>`
+      :`<span style="color:var(--dim)">PASS — ${top?String(top.cautions||top.why)
+          .split(' | ')[0]:'no priced edge'}</span>`;
+    const bars=sides.map(x=>
+      `<div style="display:flex;gap:8px;align-items:center">
+        <span style="width:130px;overflow:hidden;white-space:nowrap">${x.name}</span>
+        <span style="flex:1">${bar(x.p,x.fair)}</span>
+        <span style="width:50px">${fmtP(x.p)}</span>
+        <span class="${cls(x.edge)}" style="width:58px">${fmtPP(x.edge)}</span></div>`).join('');
+    return `<div class="card" style="margin-bottom:8px">
+      <h3>#${m.match_id} ${m.home_team} vs ${m.away_team}
+        <span style="color:var(--dim);font-weight:normal">· ${m.date}</span></h3>
+      ${bars}
+      <div style="margin-top:6px;font-size:12px">model pick: <b>${pick.name}</b>
+        (${fmtP(pick.p)} vs fair ${fmtP(pick.fair)}) &nbsp;·&nbsp; ${verdictHtml}</div>
+    </div>`;
+  }).join('')||'<div class="note">no upcoming matches with prices</div>';
+}
+
 /* ── desk calls — renderer + a JS mirror of desk_call.py so verdicts
       recompute on live lines (model probs stay fixed; re-sim is the
       local Python pipeline) ── */
 function drawDesk(rows,liveNote){
+  drawNext5(rows);
   const picks=rows.filter(r=>r.verdict!=='PASS')
     .sort((a,b)=>(a.verdict.localeCompare(b.verdict))||(b.score-a.score));
   const passes=rows.filter(r=>r.verdict==='PASS');
@@ -741,6 +803,40 @@ function runBankroll(){
     {k:'pnl_usd',h:'P&L',f:r=>r.status==='pending'?'–':'$'+(+r.pnl_usd).toFixed(0),
      c:r=>cls(+r.pnl_usd)},
   ],rows);
+})();
+
+/* ── model record (prediction_tracker scoreboard) ── */
+(function(){
+  const sc=D.scoreboard||[];
+  const isTrue=v=>v===true||v==='True';
+  const scored=sc.filter(r=>r.status==='settled'&&r.prob_source==='pre_result');
+  const pending=sc.filter(r=>r.status==='pending').length;
+  const correct=scored.filter(r=>isTrue(r.correct)).length;
+  const mLL=scored.length?scored.reduce((s,r)=>s+(+r.log_loss),0)/scored.length:0;
+  const wm=scored.filter(r=>r.mkt_log_loss!==''&&r.mkt_log_loss!==null);
+  const kLL=wm.length?wm.reduce((s,r)=>s+(+r.mkt_log_loss),0)/wm.length:0;
+  const mLLm=wm.length?wm.reduce((s,r)=>s+(+r.log_loss),0)/wm.length:0;
+  document.getElementById('record-kpis').innerHTML=
+    `<span class="kpi"><b>${correct}-${scored.length-correct}</b><span>record (argmax)</span></span>`+
+    `<span class="kpi"><b>${scored.length?(100*correct/scored.length).toFixed(0)+'%':'–'}</b><span>accuracy</span></span>`+
+    `<span class="kpi"><b>${scored.length?mLL.toFixed(3):'–'}</b><span>model log-loss</span></span>`+
+    (wm.length?`<span class="kpi"><b class="${mLLm<=kLL?'pos':'neg'}">${kLL.toFixed(3)}</b><span>market log-loss</span></span>`:'')+
+    `<span class="kpi"><b>${pending}</b><span>pending</span></span>`+
+    (scored.length&&scored.length<40?`<span class="kpi"><b class="warn">n=${scored.length}</b><span>too small to mean anything</span></span>`:'');
+  renderTable(document.getElementById('record-table'),[
+    {k:'date',h:'date',f:r=>r.date},
+    {k:'home_team',h:'match',f:r=>`${r.home_team} vs ${r.away_team}`},
+    {k:'model_pick',h:'pick',f:r=>r.model_pick==='home'?r.home_team
+      :r.model_pick==='away'?r.away_team:'Draw'},
+    {k:'realized',h:'result',f:r=>r.realized||'–'},
+    {k:'correct',h:'✓',f:r=>r.status!=='settled'?'':(isTrue(r.correct)?'✓':'✗'),
+     c:r=>r.status!=='settled'?'':(isTrue(r.correct)?'pos':'neg')},
+    {k:'p_realized',h:'p(result)',f:r=>r.p_realized===''?'–':fmtP(+r.p_realized)},
+    {k:'log_loss',h:'LL',f:r=>r.log_loss===''?'–':(+r.log_loss).toFixed(3)},
+    {k:'mkt_log_loss',h:'mkt LL',f:r=>r.mkt_log_loss===''?'–':(+r.mkt_log_loss).toFixed(3),
+     c:r=>(r.log_loss!==''&&r.mkt_log_loss!=='')?(+r.log_loss<=+r.mkt_log_loss?'pos':'neg'):''},
+  ],[...sc].sort((a,b)=>((a.status==='settled'?0:1)-(b.status==='settled'?0:1))
+    ||String(a.date).localeCompare(String(b.date))));
 })();
 
 /* ── uncertainty (aleatoric proxy) ── */
