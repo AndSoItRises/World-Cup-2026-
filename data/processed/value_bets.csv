@@ -68,7 +68,7 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 20,2026-06-16,Group Stage,J,Austria vs Jordan,draw,Draw,0.2375,5.5,0.1701,real,unknown,0.0674,STRONG,0.3062,STRONG,0.0681,0.017,0.017,17.01
 11,2026-06-14,Group Stage,E,Ivory Coast vs Ecuador,home,Ivory Coast,0.3625,3.6,0.2661,real,unknown,0.0964,STRONG,0.305,STRONG,0.1173,0.0293,0.0293,29.33
 34,2026-06-20,Group Stage,E,Germany vs Ivory Coast,draw,Draw,0.2965,4.4,0.2139,real,unknown,0.0826,STRONG,0.3046,STRONG,0.0896,0.0224,0.0224,22.4
-6,2026-06-13,Group Stage,C,Brazil vs Morocco,away,Morocco,0.248,5.25,0.1747,real,unknown,0.0733,STRONG,0.302,STRONG,0.0711,0.0178,0.0178,17.76
+6,2026-06-13,Group Stage,C,Brazil vs Morocco,away,Morocco,0.248,5.25,0.1761,real,unknown,0.0719,STRONG,0.302,STRONG,0.0711,0.0178,0.0178,17.76
 12,2026-06-14,Group Stage,F,Tunisia vs Sweden,draw,Draw,0.3653,3.55,0.2696,real,unknown,0.0957,STRONG,0.2968,STRONG,0.1164,0.0291,0.0291,29.1
 47,2026-06-23,Group Stage,L,Panama vs Croatia,draw,Draw,0.3219,4.0,0.2355,real,unknown,0.0864,STRONG,0.2876,STRONG,0.0959,0.024,0.024,23.97
 51,2026-06-24,Group Stage,C,Scotland vs Brazil,draw,Draw,0.2571,5.0,0.1854,real,unknown,0.0717,STRONG,0.2855,STRONG,0.0714,0.0178,0.0178,17.84
@@ -84,8 +84,8 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 39,2026-06-21,Group Stage,H,Uruguay vs Cape Verde,draw,Draw,0.2623,4.6,0.2044,real,unknown,0.0579,STRONG,0.2066,STRONG,0.0574,0.0143,0.0143,14.35
 66,2026-06-26,Group Stage,G,Egypt vs Iran,draw,Draw,0.3925,3.05,0.3158,real,unknown,0.0767,STRONG,0.1971,STRONG,0.0962,0.024,0.024,24.04
 50,2026-06-24,Group Stage,B,Qatar vs Bosnia and Herzegovina,draw,Draw,0.3093,3.85,0.2468,real,unknown,0.0625,STRONG,0.1908,STRONG,0.0669,0.0167,0.0167,16.74
-6,2026-06-13,Group Stage,C,Brazil vs Morocco,draw,Draw,0.313,3.8,0.2464,real,unknown,0.0666,STRONG,0.1894,STRONG,0.0676,0.0169,0.0169,16.91
 68,2026-06-27,Group Stage,L,Croatia vs Ghana,away,Ghana,0.2065,5.75,0.1638,real,unknown,0.0427,value,0.1874,STRONG,0.0394,0.0099,0.0099,9.86
+6,2026-06-13,Group Stage,C,Brazil vs Morocco,draw,Draw,0.313,3.75,0.2513,real,unknown,0.0617,STRONG,0.1737,STRONG,0.0632,0.0158,0.0158,15.8
 55,2026-06-25,Group Stage,E,Ecuador vs Germany,draw,Draw,0.297,3.9,0.2442,real,unknown,0.0528,STRONG,0.1583,STRONG,0.0546,0.0136,0.0136,13.65
 14,2026-06-15,Group Stage,G,Belgium vs Egypt,draw,Draw,0.2929,3.95,0.2356,real,unknown,0.0573,STRONG,0.157,STRONG,0.0532,0.0133,0.0133,13.3
 49,2026-06-24,Group Stage,B,Canada vs Switzerland,draw,Draw,0.3318,3.45,0.2769,real,unknown,0.0549,STRONG,0.1447,STRONG,0.0591,0.0148,0.0148,14.77
@@ -162,10 +162,10 @@ match_id,date,stage,group,match,outcome,selection,model_prob,decimal_odds,market
 37,2026-06-21,Group Stage,H,Spain vs Saudi Arabia,home,Spain,0.6875,1.1,0.8886,real,unknown,-0.2011,,-0.2437,,0.0,0.0,0.0,0.0
 67,2026-06-27,Group Stage,L,Panama vs England,away,England,0.5791,1.2941,0.7534,real,unknown,-0.1743,,-0.2506,,0.0,0.0,0.0,0.0
 61,2026-06-26,Group Stage,I,Norway vs France,home,Norway,0.1739,4.3,0.2199,real,unknown,-0.046,,-0.2522,,0.0,0.0,0.0,0.0
+6,2026-06-13,Group Stage,C,Brazil vs Morocco,home,Brazil,0.439,1.6897,0.5726,real,unknown,-0.1336,,-0.2582,,0.0,0.0,0.0,0.0
 63,2026-06-26,Group Stage,H,Uruguay vs Spain,home,Uruguay,0.1339,5.5,0.1702,real,unknown,-0.0363,,-0.2636,,0.0,0.0,0.0,0.0
 10,2026-06-14,Group Stage,F,Netherlands vs Japan,home,Netherlands,0.3768,1.9524,0.4855,real,unknown,-0.1087,,-0.2643,,0.0,0.0,0.0,0.0
 49,2026-06-24,Group Stage,B,Canada vs Switzerland,away,Switzerland,0.342,2.15,0.4504,real,unknown,-0.1084,,-0.2647,,0.0,0.0,0.0,0.0
-6,2026-06-13,Group Stage,C,Brazil vs Morocco,home,Brazil,0.439,1.6667,0.5789,real,unknown,-0.1399,,-0.2683,,0.0,0.0,0.0,0.0
 59,2026-06-25,Group Stage,D,USA vs Turkey,away,Turkey,0.2748,2.65,0.3625,real,unknown,-0.0877,,-0.2718,,0.0,0.0,0.0,0.0
 71,2026-06-27,Group Stage,J,Jordan vs Argentina,away,Argentina,0.6107,1.1905,0.8218,real,unknown,-0.2111,,-0.273,,0.0,0.0,0.0,0.0
 14,2026-06-15,Group Stage,G,Belgium vs Egypt,home,Belgium,0.4548,1.5882,0.6069,real,unknown,-0.1521,,-0.2777,,0.0,0.0,0.0,0.0
