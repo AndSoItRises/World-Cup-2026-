@@ -38,7 +38,7 @@ match_id,match,date,n_books,best_home_decimal,best_draw_decimal,best_away_decima
 62,Senegal vs Iraq,2026-06-26,1,1.408,4.8,8.0,unknown,unknown,unknown,1.0435,False,0.0,False
 59,USA vs Turkey,2026-06-25,1,2.55,3.65,2.65,unknown,unknown,unknown,1.0435,False,0.0,False
 38,Belgium vs Iran,2026-06-21,1,1.408,4.8,8.0,unknown,unknown,unknown,1.0435,False,0.0,False
-5,Qatar vs Switzerland,2026-06-13,2,14.0,6.5,1.222,DraftKings,DraftKings,unknown,1.0435,False,0.0,False
+5,Qatar vs Switzerland,2026-06-13,2,14.0,6.5,1.222,DraftKings,DraftKings,DraftKings,1.0435,False,0.0,False
 37,Spain vs Saudi Arabia,2026-06-21,1,1.1,11.0,23.0,unknown,unknown,unknown,1.0435,False,0.0,False
 35,Ecuador vs Curacao,2026-06-20,1,1.2,7.5,13.0,unknown,unknown,unknown,1.0436,False,0.0,False
 46,England vs Ghana,2026-06-23,1,1.312,5.5,10.0,unknown,unknown,unknown,1.0437,False,0.0,False
