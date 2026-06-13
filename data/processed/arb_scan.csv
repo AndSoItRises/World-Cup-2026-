@@ -1,4 +1,5 @@
 match_id,match,date,n_books,best_home_decimal,best_draw_decimal,best_away_decimal,best_home_book,best_draw_book,best_away_book,inv_sum,arb,arb_roi_pct,near_arb
+4,USA vs Paraguay,2026-06-12,2,2.1,3.2,4.1,unknown,DraftKings,DraftKings,1.0326,False,0.0,False
 26,Switzerland vs Bosnia and Herzegovina,2026-06-18,1,1.606,4.2,5.75,unknown,unknown,unknown,1.0346,False,0.0,False
 68,Croatia vs Ghana,2026-06-27,1,1.645,3.95,5.75,unknown,unknown,unknown,1.0349,False,0.0,False
 33,Netherlands vs Sweden,2026-06-20,1,1.645,4.2,5.25,unknown,unknown,unknown,1.0364,False,0.0,False
@@ -10,11 +11,10 @@ match_id,match,date,n_books,best_home_decimal,best_draw_decimal,best_away_decima
 56,Curacao vs Ivory Coast,2026-06-25,1,13.0,7.0,1.222,unknown,unknown,unknown,1.038,False,0.0,False
 12,Tunisia vs Sweden,2026-06-14,1,4.3,3.55,1.909,unknown,unknown,unknown,1.0381,False,0.0,False
 41,Argentina vs Austria,2026-06-22,1,1.645,3.9,5.75,unknown,unknown,unknown,1.0382,False,0.0,False
-31,Brazil vs Haiti,2026-06-19,1,1.083,13.0,26.0,unknown,unknown,unknown,1.0385,False,0.0,False
 42,France vs Iraq,2026-06-22,1,1.125,9.0,26.0,unknown,unknown,unknown,1.0385,False,0.0,False
+31,Brazil vs Haiti,2026-06-19,1,1.083,13.0,26.0,unknown,unknown,unknown,1.0385,False,0.0,False
 19,Argentina vs Algeria,2026-06-16,1,1.408,4.6,9.0,unknown,unknown,unknown,1.0386,False,0.0,False
 2,South Korea vs Czechia,2026-06-11,1,2.65,3.05,3.0,unknown,unknown,unknown,1.0386,False,0.0,False
-4,USA vs Paraguay,2026-06-12,2,2.1,3.2,4.0,DraftKings,unknown,DraftKings,1.0387,False,0.0,False
 3,Canada vs Bosnia and Herzegovina,2026-06-12,2,1.87,3.55,4.5,DraftKings,unknown,DraftKings,1.0388,False,0.0,False
 69,Colombia vs Portugal,2026-06-27,1,3.5,3.35,2.2,unknown,unknown,unknown,1.0388,False,0.0,False
 55,Ecuador vs Germany,2026-06-25,1,4.8,3.9,1.741,unknown,unknown,unknown,1.0392,False,0.0,False
