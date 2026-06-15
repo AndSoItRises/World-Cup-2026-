@@ -74,7 +74,15 @@ STANDING CAVEATS (do not delete)
 
 def load(name, proc=True):
     p = (DATA_PROC if proc else DATA_RAW) / name
-    return pd.read_csv(p) if p.exists() else pd.DataFrame()
+    if not p.exists():
+        return pd.DataFrame()
+    # An empty-but-present file (e.g. line_movement.csv on a no-movement cycle)
+    # must NOT crash the whole build — degrade to an empty frame. Otherwise a
+    # single 0-byte input freezes the dashboard while CSVs keep committing.
+    try:
+        return pd.read_csv(p)
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame()
 
 
 def build_payload() -> dict:
