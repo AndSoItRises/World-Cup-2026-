@@ -14,7 +14,7 @@ match_id,date,stage,home_team,away_team,p_home,p_draw,p_away,model_pick,mkt_home
 13,2026-06-15,Group Stage,Spain,Cape Verde,0.7345,0.1937,0.0718,home,0.9018,0.0708,0.0274,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.1937,1.6414,0.0708,2.6479
 14,2026-06-15,Group Stage,Belgium,Egypt,0.4548,0.2929,0.2524,home,0.5849,0.2417,0.1735,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.2929,1.2279,0.2417,1.4201
 15,2026-06-15,Group Stage,Saudi Arabia,Uruguay,0.2366,0.318,0.4454,away,0.1128,0.2088,0.6785,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.318,1.1457,0.2088,1.5664
-16,2026-06-15,Group Stage,Iran,New Zealand,0.4933,0.199,0.3077,home,0.5084,0.2768,0.2148,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
+16,2026-06-15,Group Stage,Iran,New Zealand,0.4933,0.199,0.3077,home,0.5084,0.2768,0.2148,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.199,1.6145,0.2768,1.2845
 17,2026-06-16,Group Stage,France,Senegal,0.5282,0.2227,0.2491,home,0.6628,0.2078,0.1295,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 18,2026-06-16,Group Stage,Norway,Iraq,0.4085,0.2748,0.3167,home,0.8079,0.1312,0.0609,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 19,2026-06-16,Group Stage,Argentina,Algeria,0.5733,0.2125,0.2142,home,0.6938,0.2056,0.1005,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
