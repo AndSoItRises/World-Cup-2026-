@@ -15,9 +15,9 @@ match_id,date,stage,home_team,away_team,p_home,p_draw,p_away,model_pick,mkt_home
 14,2026-06-15,Group Stage,Belgium,Egypt,0.4548,0.2929,0.2524,home,0.5849,0.2417,0.1735,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.2929,1.2279,0.2417,1.4201
 15,2026-06-15,Group Stage,Saudi Arabia,Uruguay,0.2366,0.318,0.4454,away,0.1128,0.2088,0.6785,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.318,1.1457,0.2088,1.5664
 16,2026-06-15,Group Stage,Iran,New Zealand,0.4933,0.199,0.3077,home,0.5084,0.2768,0.2148,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.199,1.6145,0.2768,1.2845
-17,2026-06-16,Group Stage,France,Senegal,0.5282,0.2227,0.2491,home,0.6628,0.2078,0.1295,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
-18,2026-06-16,Group Stage,Norway,Iraq,0.4085,0.2748,0.3167,home,0.8079,0.1312,0.0609,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
-19,2026-06-16,Group Stage,Argentina,Algeria,0.5733,0.2125,0.2142,home,0.6938,0.2056,0.1005,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
+17,2026-06-16,Group Stage,France,Senegal,0.5282,0.2227,0.2491,home,0.6628,0.2078,0.1295,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.5282,0.6383,0.6628,0.4113
+18,2026-06-16,Group Stage,Norway,Iraq,0.4085,0.2748,0.3167,home,0.8079,0.1312,0.0609,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.4085,0.8953,0.8079,0.2133
+19,2026-06-16,Group Stage,Argentina,Algeria,0.5733,0.2125,0.2142,home,0.6938,0.2056,0.1005,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.5733,0.5563,0.6938,0.3656
 20,2026-06-16,Group Stage,Austria,Jordan,0.4591,0.2375,0.3034,home,0.7374,0.1691,0.0935,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 21,2026-06-17,Group Stage,Portugal,DR Congo,0.608,0.2536,0.1384,home,0.7618,0.16,0.0783,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 22,2026-06-17,Group Stage,England,Croatia,0.5587,0.2692,0.1721,home,0.5633,0.2437,0.193,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
