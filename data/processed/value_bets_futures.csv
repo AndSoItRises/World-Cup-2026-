@@ -1,49 +1,49 @@
 market,selection,model_prob,american_odds,decimal_odds,market_implied,market_source,edge,edge_flag,ev,ev_flag,kelly_full,kelly_quarter,recommended_stake_pct,recommended_stake_usd,tail_risk
-tournament_winner,New Zealand,0.0101,150000,1501.0,0.0001,real,0.01,,14.1601,STRONG,0.0094,0.0024,0.0024,2.36,True
-tournament_winner,Iran,0.0136,70000,701.0,0.0003,real,0.0133,,8.5336,STRONG,0.0122,0.003,0.003,3.05,True
-tournament_winner,Korea Republic,0.0189,40000,401.0,0.0008,real,0.0181,,6.5789,STRONG,0.0164,0.0041,0.0041,4.11,True
-tournament_winner,Australia,0.0116,60000,601.0,0.0004,real,0.0112,,5.9716,STRONG,0.01,0.0025,0.0025,2.49,True
-tournament_winner,Mexico,0.0723,8000,81.0,0.009,real,0.0633,STRONG,4.8563,STRONG,0.0607,0.0152,0.0152,15.18,False
-tournament_winner,Panama,0.0051,100000,1001.0,0.0001,real,0.005,,4.1051,STRONG,0.0041,0.001,0.001,1.03,True
-tournament_winner,Uzbekistan,0.0022,150000,1501.0,0.0001,real,0.0021,,2.3022,STRONG,0.0015,0.0004,0.0004,0.38,True
-tournament_winner,Canada,0.013,20000,201.0,0.0026,real,0.0104,,1.613,STRONG,0.0081,0.002,0.002,2.02,True
-tournament_winner,Japan,0.0386,6500,66.0,0.0115,real,0.0271,,1.5476,STRONG,0.0238,0.006,0.006,5.95,False
-tournament_winner,USA,0.0402,6000,61.0,0.0126,real,0.0276,,1.4522,STRONG,0.0242,0.0061,0.0061,6.05,False
-tournament_winner,Côte d'Ivoire,0.0085,25000,251.0,0.0018,real,0.0067,,1.1335,STRONG,0.0045,0.0011,0.0011,1.13,True
+tournament_winner,New Zealand,0.012,150000,1501.0,0.0001,real,0.0119,,17.012,STRONG,0.0113,0.0028,0.0028,2.84,True
+tournament_winner,Iran,0.0152,70000,701.0,0.0003,real,0.0149,,9.6552,STRONG,0.0138,0.0034,0.0034,3.45,True
+tournament_winner,Australia,0.0157,60000,601.0,0.0004,real,0.0153,,8.4357,STRONG,0.0141,0.0035,0.0035,3.51,True
+tournament_winner,Korea Republic,0.0174,40000,401.0,0.0008,real,0.0166,,5.9774,STRONG,0.0149,0.0037,0.0037,3.74,True
+tournament_winner,Mexico,0.0695,8000,81.0,0.009,real,0.0605,STRONG,4.6295,STRONG,0.0579,0.0145,0.0145,14.47,False
+tournament_winner,Uzbekistan,0.0024,150000,1501.0,0.0001,real,0.0023,,2.6024,STRONG,0.0017,0.0004,0.0004,0.43,True
+tournament_winner,Canada,0.0141,20000,201.0,0.0026,real,0.0115,,1.8341,STRONG,0.0092,0.0023,0.0023,2.29,True
+tournament_winner,Panama,0.0028,100000,1001.0,0.0001,real,0.0027,,1.8028,STRONG,0.0018,0.0005,0.0005,0.45,True
+tournament_winner,Japan,0.0411,6500,66.0,0.0115,real,0.0296,,1.7126,STRONG,0.0263,0.0066,0.0066,6.59,False
+tournament_winner,Côte d'Ivoire,0.0104,25000,251.0,0.0018,real,0.0086,,1.6104,STRONG,0.0064,0.0016,0.0016,1.61,True
+tournament_winner,USA,0.0387,6000,61.0,0.0126,real,0.0261,,1.3607,STRONG,0.0227,0.0057,0.0057,5.67,False
 tournament_winner,Saudi Arabia,0.0016,100000,1001.0,0.0001,real,0.0015,,0.6016,STRONG,0.0006,0.0002,0.0002,0.15,True
-tournament_winner,Morocco,0.0199,5000,51.0,0.0156,real,0.0043,,0.0149,value,0.0003,0.0001,0.0001,0.07,True
-tournament_winner,Spain,0.1776,450,5.5,0.1654,real,0.0122,,-0.0232,,0.0,0.0,0.0,0.0,False
-tournament_winner,Argentina,0.09,900,10.0,0.0897,real,0.0003,,-0.1,,0.0,0.0,0.0,0.0,False
-tournament_winner,Germany,0.0588,1400,15.0,0.0589,real,-0.0001,,-0.118,,0.0,0.0,0.0,0.0,False
-tournament_winner,Netherlands,0.0402,2000,21.0,0.0413,real,-0.0011,,-0.1558,,0.0,0.0,0.0,0.0,False
-tournament_winner,Croatia,0.009,9000,91.0,0.0077,real,0.0013,,-0.181,,0.0,0.0,0.0,0.0,True
-tournament_winner,Senegal,0.0087,9000,91.0,0.0077,real,0.001,,-0.2083,,0.0,0.0,0.0,0.0,True
-tournament_winner,England,0.097,700,8.0,0.1129,real,-0.0159,,-0.224,,0.0,0.0,0.0,0.0,False
-tournament_winner,Algeria,0.0019,35000,351.0,0.001,real,0.0009,,-0.3331,,0.0,0.0,0.0,0.0,True
-tournament_winner,France,0.1116,475,5.75,0.1581,real,-0.0465,,-0.3583,,0.0,0.0,0.0,0.0,False
-tournament_winner,Brazil,0.0593,950,10.5,0.0853,real,-0.026,,-0.3773,,0.0,0.0,0.0,0.0,False
-tournament_winner,Belgium,0.0127,4000,41.0,0.0199,real,-0.0072,,-0.4793,,0.0,0.0,0.0,0.0,True
+tournament_winner,Morocco,0.0218,5000,51.0,0.0156,real,0.0062,,0.1118,STRONG,0.0022,0.0006,0.0006,0.56,False
+tournament_winner,Spain,0.1824,450,5.5,0.1654,real,0.017,,0.0032,value,0.0007,0.0002,0.0002,0.18,False
+tournament_winner,Jordan,0.0004,250000,2501.0,0.0,real,0.0004,,0.0004,value,0.0,0.0,0.0,0.0,True
+tournament_winner,Argentina,0.0947,900,10.0,0.0897,real,0.005,,-0.053,,0.0,0.0,0.0,0.0,False
+tournament_winner,Netherlands,0.0434,2000,21.0,0.0413,real,0.0021,,-0.0886,,0.0,0.0,0.0,0.0,False
+tournament_winner,Germany,0.0529,1400,15.0,0.0589,real,-0.006,,-0.2065,,0.0,0.0,0.0,0.0,False
+tournament_winner,Algeria,0.0022,35000,351.0,0.001,real,0.0012,,-0.2278,,0.0,0.0,0.0,0.0,True
+tournament_winner,England,0.092,700,8.0,0.1129,real,-0.0209,,-0.264,,0.0,0.0,0.0,0.0,False
+tournament_winner,Croatia,0.008,9000,91.0,0.0077,real,0.0003,,-0.272,,0.0,0.0,0.0,0.0,True
+tournament_winner,Senegal,0.0078,9000,91.0,0.0077,real,0.0001,,-0.2902,,0.0,0.0,0.0,0.0,True
+tournament_winner,France,0.1089,475,5.75,0.1581,real,-0.0492,,-0.3738,,0.0,0.0,0.0,0.0,False
+tournament_winner,Austria,0.004,15000,151.0,0.0039,real,0.0001,,-0.396,,0.0,0.0,0.0,0.0,True
+tournament_winner,Congo DR,0.0006,100000,1001.0,0.0001,real,0.0005,,-0.3994,,0.0,0.0,0.0,0.0,True
+tournament_winner,Qatar,0.0004,150000,1501.0,0.0001,real,0.0003,,-0.3996,,0.0,0.0,0.0,0.0,True
+tournament_winner,Brazil,0.056,950,10.5,0.0853,real,-0.0293,,-0.412,,0.0,0.0,0.0,0.0,False
+tournament_winner,Switzerland,0.008,6500,66.0,0.0115,real,-0.0035,,-0.472,,0.0,0.0,0.0,0.0,True
 tournament_winner,Uruguay,0.0077,6500,66.0,0.0115,real,-0.0038,,-0.4918,,0.0,0.0,0.0,0.0,True
-tournament_winner,Jordan,0.0002,250000,2501.0,0.0,real,0.0002,,-0.4998,,0.0,0.0,0.0,0.0,True
-tournament_winner,Austria,0.0033,15000,151.0,0.0039,real,-0.0006,,-0.5017,,0.0,0.0,0.0,0.0,True
-tournament_winner,Switzerland,0.0065,6500,66.0,0.0115,real,-0.005,,-0.571,,0.0,0.0,0.0,0.0,True
-tournament_winner,Egypt,0.0012,30000,301.0,0.0014,real,-0.0002,,-0.6388,,0.0,0.0,0.0,0.0,True
-tournament_winner,Portugal,0.038,850,9.5,0.0946,real,-0.0566,,-0.639,,0.0,0.0,0.0,0.0,False
-tournament_winner,Congo DR,0.0003,100000,1001.0,0.0001,real,0.0002,,-0.6997,,0.0,0.0,0.0,0.0,True
-tournament_winner,Qatar,0.0002,150000,1501.0,0.0001,real,0.0001,,-0.6998,,0.0,0.0,0.0,0.0,True
-tournament_winner,Colombia,0.0068,4000,41.0,0.0199,real,-0.0131,,-0.7212,,0.0,0.0,0.0,0.0,True
+tournament_winner,Belgium,0.0117,4000,41.0,0.0199,real,-0.0082,,-0.5203,,0.0,0.0,0.0,0.0,True
+tournament_winner,Egypt,0.0013,30000,301.0,0.0014,real,-0.0001,,-0.6087,,0.0,0.0,0.0,0.0,True
+tournament_winner,Norway,0.0086,3500,36.0,0.023,real,-0.0144,,-0.6904,,0.0,0.0,0.0,0.0,True
+tournament_winner,Portugal,0.0324,850,9.5,0.0946,real,-0.0622,,-0.6922,,0.0,0.0,0.0,0.0,False
+tournament_winner,Colombia,0.0074,4000,41.0,0.0199,real,-0.0125,,-0.6966,,0.0,0.0,0.0,0.0,True
+tournament_winner,Sweden,0.0024,12000,121.0,0.0053,real,-0.0029,,-0.7096,,0.0,0.0,0.0,0.0,True
 tournament_winner,Haiti,0.0001,250000,2501.0,0.0,real,0.0001,,-0.7499,,0.0,0.0,0.0,0.0,True
-tournament_winner,Ghana,0.0008,30000,301.0,0.0014,real,-0.0006,,-0.7592,,0.0,0.0,0.0,0.0,True
-tournament_winner,Norway,0.0066,3500,36.0,0.023,real,-0.0164,,-0.7624,,0.0,0.0,0.0,0.0,True
-tournament_winner,Sweden,0.0016,12000,121.0,0.0053,real,-0.0037,,-0.8064,,0.0,0.0,0.0,0.0,True
-tournament_winner,Czechia,0.0006,25000,251.0,0.0018,real,-0.0012,,-0.8494,,0.0,0.0,0.0,0.0,True
-tournament_winner,Ecuador,0.0017,8000,81.0,0.009,real,-0.0073,,-0.8623,,0.0,0.0,0.0,0.0,True
+tournament_winner,Scotland,0.0008,20000,201.0,0.0026,real,-0.0018,,-0.8392,,0.0,0.0,0.0,0.0,True
+tournament_winner,Iraq,0.0001,150000,1501.0,0.0001,real,0.0,,-0.8499,,0.0,0.0,0.0,0.0,True
+tournament_winner,Ghana,0.0004,30000,301.0,0.0014,real,-0.001,,-0.8796,,0.0,0.0,0.0,0.0,True
 tournament_winner,Turkey,0.0013,9000,91.0,0.0077,real,-0.0064,,-0.8817,,0.0,0.0,0.0,0.0,True
-tournament_winner,Scotland,0.0005,20000,201.0,0.0026,real,-0.0021,,-0.8995,,0.0,0.0,0.0,0.0,True
-tournament_winner,South Africa,0.0001,100000,1001.0,0.0001,real,0.0,,-0.8999,,0.0,0.0,0.0,0.0,True
+tournament_winner,Ecuador,0.0011,8000,81.0,0.009,real,-0.0079,,-0.9109,,0.0,0.0,0.0,0.0,True
+tournament_winner,Czechia,0.0002,25000,251.0,0.0018,real,-0.0016,,-0.9498,,0.0,0.0,0.0,0.0,True
 tournament_winner,Paraguay,0.0001,30000,301.0,0.0014,real,-0.0013,,-0.9699,,0.0,0.0,0.0,0.0,True
-tournament_winner,Bosnia-Herzegovina,0.0,50000,501.0,0.0006,real,-0.0006,,-1.0,,0.0,0.0,0.0,0.0,True
 tournament_winner,Tunisia,0.0,50000,501.0,0.0006,real,-0.0006,,-1.0,,0.0,0.0,0.0,0.0,True
+tournament_winner,South Africa,0.0,100000,1001.0,0.0001,real,-0.0001,,-1.0,,0.0,0.0,0.0,0.0,True
+tournament_winner,Bosnia-Herzegovina,0.0,50000,501.0,0.0006,real,-0.0006,,-1.0,,0.0,0.0,0.0,0.0,True
 tournament_winner,Cape Verde Islands,0.0,100000,1001.0,0.0001,real,-0.0001,,-1.0,,0.0,0.0,0.0,0.0,True
-tournament_winner,Iraq,0.0,150000,1501.0,0.0001,real,-0.0001,,-1.0,,0.0,0.0,0.0,0.0,True
 tournament_winner,Curaçao,0.0,250000,2501.0,0.0,real,0.0,,-1.0,,0.0,0.0,0.0,0.0,True
