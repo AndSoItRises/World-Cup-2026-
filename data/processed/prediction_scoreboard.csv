@@ -21,7 +21,7 @@ match_id,date,stage,home_team,away_team,p_home,p_draw,p_away,model_pick,mkt_home
 20,2026-06-16,Group Stage,Austria,Jordan,0.4591,0.2375,0.3034,home,0.7374,0.1691,0.0935,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.4591,0.7785,0.7374,0.3046
 21,2026-06-17,Group Stage,Portugal,DR Congo,0.608,0.2536,0.1384,home,0.7618,0.16,0.0783,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.2536,1.372,0.16,1.8326
 22,2026-06-17,Group Stage,England,Croatia,0.5587,0.2692,0.1721,home,0.5633,0.2437,0.193,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.5587,0.5821,0.5633,0.5739
-23,2026-06-17,Group Stage,Ghana,Panama,0.2178,0.3866,0.3956,away,0.4616,0.2771,0.2614,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
+23,2026-06-17,Group Stage,Ghana,Panama,0.2178,0.3866,0.3956,away,0.4616,0.2771,0.2614,pre_result,2026-06-12T17:42:27Z,settled,home,False,0.2178,1.5242,0.4616,0.7731
 24,2026-06-17,Group Stage,Uzbekistan,Colombia,0.2447,0.3357,0.4197,away,0.1064,0.205,0.6886,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 25,2026-06-18,Group Stage,South Africa,Czechia,0.2522,0.3365,0.4113,away,0.2245,0.2799,0.4956,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 26,2026-06-18,Group Stage,Switzerland,Bosnia and Herzegovina,0.6022,0.2609,0.1369,home,0.599,0.2312,0.1698,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
