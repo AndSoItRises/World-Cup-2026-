@@ -27,9 +27,9 @@ match_id,date,stage,home_team,away_team,p_home,p_draw,p_away,model_pick,mkt_home
 26,2026-06-18,Group Stage,Switzerland,Bosnia and Herzegovina,0.6022,0.2609,0.1369,home,0.599,0.2312,0.1698,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.6022,0.5072,0.599,0.5125
 27,2026-06-18,Group Stage,Canada,Qatar,0.6022,0.275,0.1228,home,0.7431,0.1776,0.0794,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.6022,0.5072,0.7431,0.2969
 28,2026-06-18,Group Stage,Mexico,South Korea,0.4837,0.3137,0.2026,home,0.5393,0.2606,0.2001,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.4837,0.7263,0.5393,0.6175
-29,2026-06-19,Group Stage,USA,Australia,0.3976,0.3165,0.2859,home,0.5495,0.2406,0.2099,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
-30,2026-06-19,Group Stage,Scotland,Morocco,0.1641,0.2953,0.5406,away,0.2255,0.2898,0.4847,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
-31,2026-06-19,Group Stage,Brazil,Haiti,0.7067,0.2029,0.0904,home,0.9048,0.0663,0.0289,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
+29,2026-06-19,Group Stage,USA,Australia,0.3976,0.3165,0.2859,home,0.5495,0.2406,0.2099,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.3976,0.9223,0.5495,0.5987
+30,2026-06-19,Group Stage,Scotland,Morocco,0.1641,0.2953,0.5406,away,0.2255,0.2898,0.4847,pre_result,2026-06-12T17:42:27Z,settled,away,True,0.5406,0.6151,0.4847,0.7242
+31,2026-06-19,Group Stage,Brazil,Haiti,0.7067,0.2029,0.0904,home,0.9048,0.0663,0.0289,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.7067,0.3471,0.9048,0.1
 32,2026-06-19,Group Stage,Paraguay,Turkey,0.2295,0.3239,0.4466,away,0.2749,0.2973,0.4277,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 33,2026-06-20,Group Stage,Netherlands,Sweden,0.5633,0.301,0.1357,home,0.5934,0.2269,0.1797,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 34,2026-06-20,Group Stage,Germany,Ivory Coast,0.4593,0.2965,0.2442,home,0.625,0.2139,0.1611,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
