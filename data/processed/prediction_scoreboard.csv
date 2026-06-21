@@ -31,10 +31,10 @@ match_id,date,stage,home_team,away_team,p_home,p_draw,p_away,model_pick,mkt_home
 30,2026-06-19,Group Stage,Scotland,Morocco,0.1641,0.2953,0.5406,away,0.2255,0.2898,0.4847,pre_result,2026-06-12T17:42:27Z,settled,away,True,0.5406,0.6151,0.4847,0.7242
 31,2026-06-19,Group Stage,Brazil,Haiti,0.7067,0.2029,0.0904,home,0.9048,0.0663,0.0289,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.7067,0.3471,0.9048,0.1
 32,2026-06-19,Group Stage,Paraguay,Turkey,0.2295,0.3239,0.4466,away,0.2749,0.2973,0.4277,pre_result,2026-06-12T17:42:27Z,settled,home,False,0.2295,1.4719,0.2749,1.2913
-33,2026-06-20,Group Stage,Netherlands,Sweden,0.5633,0.301,0.1357,home,0.5934,0.2269,0.1797,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
-34,2026-06-20,Group Stage,Germany,Ivory Coast,0.4593,0.2965,0.2442,home,0.625,0.2139,0.1611,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
-35,2026-06-20,Group Stage,Ecuador,Curacao,0.5564,0.2618,0.1818,home,0.8136,0.1209,0.0654,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
-36,2026-06-20,Group Stage,Tunisia,Japan,0.1545,0.2256,0.6199,away,0.1775,0.2564,0.5661,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
+33,2026-06-20,Group Stage,Netherlands,Sweden,0.5633,0.301,0.1357,home,0.5934,0.2269,0.1797,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.5633,0.5739,0.5934,0.5219
+34,2026-06-20,Group Stage,Germany,Ivory Coast,0.4593,0.2965,0.2442,home,0.625,0.2139,0.1611,pre_result,2026-06-12T17:42:27Z,settled,home,True,0.4593,0.7781,0.625,0.47
+35,2026-06-20,Group Stage,Ecuador,Curacao,0.5564,0.2618,0.1818,home,0.8136,0.1209,0.0654,pre_result,2026-06-12T17:42:27Z,settled,draw,False,0.2618,1.3402,0.1209,2.1128
+36,2026-06-20,Group Stage,Tunisia,Japan,0.1545,0.2256,0.6199,away,0.1775,0.2564,0.5661,pre_result,2026-06-12T17:42:27Z,settled,away,True,0.6199,0.4782,0.5661,0.569
 37,2026-06-21,Group Stage,Spain,Saudi Arabia,0.6875,0.1949,0.1176,home,0.8886,0.0787,0.0326,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 38,2026-06-21,Group Stage,Belgium,Iran,0.392,0.2676,0.3404,home,0.6918,0.1952,0.113,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
 39,2026-06-21,Group Stage,Uruguay,Cape Verde,0.6088,0.2623,0.1289,home,0.6743,0.2044,0.1213,pre_result,2026-06-12T17:42:27Z,pending,,,,,,
