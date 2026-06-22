@@ -146,6 +146,15 @@ In rough priority order:
 - **Health coverage = trust.** Before the agentic-loop vision (spec §6), every new output should be
   under `health_check.py` so automation is observable. Cheap to add now, prerequisite later.
 
+**Housekeeping (carry over — flag for Jake)**
+- **Stale git worktree `live-feedback-next5`.** Both Phase-8 commits (13017c4, 7c9c45b) succeeded,
+  but every git write prints `failed to delete '.git/worktrees/live-feedback-next5': Permission
+  denied`. It's a leftover/locked worktree from an earlier session — harmless to commits, but it
+  should be cleaned up. Next session, try: `git worktree list` then `git worktree remove
+  live-feedback-next5 --force` (or `git worktree prune`); if the dir is locked, close any process
+  holding it (an old editor/agent) and delete `.git/worktrees/live-feedback-next5` manually.
+  Do this BEFORE any feature-branch work so the tree is clean.
+
 ---
 
 ## 5. Exact run commands (next session quick-start)
