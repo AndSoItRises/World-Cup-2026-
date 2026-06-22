@@ -52,6 +52,9 @@ if ($newResult) {
 & $py -m src.models.bet_sim        *>&1 | Select-Object -Last 2 | Add-Content $log
 & $py -m src.models.desk_call      *>&1 | Select-Object -Last 2 | Add-Content $log
 & $py -m src.models.clv_tracker    *>&1 | Select-Object -Last 2 | Add-Content $log
+# Single settler (DL-17): settle_bets owns status/pnl, running AFTER clv_tracker so
+# it has the last word on settlement (clv_tracker keeps CLV + ledger duties).
+& $py -m src.models.settle_bets    *>&1 | Select-Object -Last 2 | Add-Content $log
 & $py -m src.models.prediction_tracker *>&1 | Select-Object -Last 2 | Add-Content $log
 
 # 5. Push only on a meaningful change. These are the tracked outputs that, when they
@@ -80,5 +83,13 @@ if ($newResult -or $dirty) {
 } else {
     L "no material change - skipped rebuild/push (odds jitter only)"
 }
+
+# Monitor (DL-17): flag if anything is broken. Writes model_health.json (dashboard
+# Model-Health panel reads it); logs a loud WARN line if status != HEALTHY so it
+# stands out in refresh.log. Non-fatal — the cycle still completes.
+& $py -m src.models.health_check *>&1 | Select-Object -Last 12 | Add-Content $log
+$health = $LASTEXITCODE
+if ($health -ne 0) { L "WARN !!! PIPELINE HEALTH BROKEN (health_check exit=$health) — see model_health.json" }
+else { L "health check OK" }
 
 L "==== refresh cycle end ===="

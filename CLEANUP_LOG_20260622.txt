@@ -1,0 +1,87 @@
+﻿
+=== ARCHIVING OLD CONTEXT VERSIONS ===
+  ARCHIVED: CONTEXT_V2.md
+  ARCHIVED: CONTEXT_V3.md
+  ARCHIVED: CONTEXT_V4.md
+  ARCHIVED: CONTEXT_V5.md
+
+=== ACTIVE SCRIPTS ===
+  Scripts found in scripts/:
+    fable_research_memo.py
+    fetch_odds_task.ps1
+    ^ MOVED TO _active_scripts (matches live/update pattern)
+    refresh_all.ps1
+    ^ MOVED TO _active_scripts (matches live/update pattern)
+    register_refresh_task.ps1
+    ^ MOVED TO _active_scripts (matches live/update pattern)
+
+=== MERGING EVO WC 2026 (QNT) INTO ARCHIVE ===
+  MERGED: EVO WC 2026 (QNT) â†’ _archive\EVO_WC_2026_QNT
+
+=== MOVING STRAY FILES ===
+  MOVED: CONTEXT_QUANT_STACK.md â†’ World Cup 2026 Model root
+
+=== CLEANING DOCUMENTS ROOT ===
+  MOVED: CV.docx â†’ Professional
+  MOVED: RBA Teams Background 2021_2.png â†’ Professional
+
+=== CLEANING DOWNLOADS ===
+  DELETED: Obsidian-1.12.7.exe (281.8 MB)
+  DELETED: FidelityTraderPlus.msix (240.1 MB)
+  DELETED: VSCodeUserSetup-x64-1.124.2.exe (176.4 MB)
+  DELETED: Webull Desktop_9.10.0_900010011_global_x64signed_fp7umh3xlsea.exe (161.3 MB)
+  DELETED: SetupACR.exe (134.1 MB)
+  DELETED: Spotify - Music and Podcasts Installer.exe (1.2 MB)
+  DELETED: Microsoft.Services.Store.winmd (0 MB)
+  DELETED: quant_dashboard.html (0.3 MB)
+  DELETED: quant_dashboard (1).html (0.4 MB)
+  DELETED: quant_dashboard (2).html (0.4 MB)
+  DELETED: quant_dashboard (3).html (0.4 MB)
+  DELETED: quant_dashboard (4).html (0.4 MB)
+  DELETED: bracket_simulator.html (0 MB)
+  DELETED: bracket_simulator (1).html (0 MB)
+  DELETED: Patrick_Watler_Resume.docx (0 MB)
+  Downloads freed: 997 MB
+  MOVED: Security Agreement (1).pdf â†’ Professional
+  MOVED: Security Agreement - Signed.pdf â†’ Professional
+
+=== CLEARING TEMP ===
+  Freed: 1016 MB from TEMP
+
+=== CLEANING ORGANIZATION FOLDER ===
+  DELETED session file: pc_scan.ps1
+  DELETED session file: pc_cleanup.ps1
+  DELETED session file: scan_claude_projects.ps1
+  DELETED session file: pc_scan_results.txt
+  DELETED session file: full_cleanup.ps1
+
+=== FINAL STATE ===
+  C: Used: 297.6 GB  |  Free: 654 GB
+  Downloads remaining (1 files):
+    Jake Hood Resume_20260520.docx
+
+  World Cup 2026 Model structure:
+    .claude
+    data
+    deploy-vercel
+    logs
+    models
+    notebooks
+    outputs
+    scripts
+    src
+    venv
+    _active_scripts
+    _archive
+    .gitignore
+    CONTEXT_QUANT_STACK.md
+    CONTEXT_QUANT_TRANSITION.md
+    CONTEXT_V6.md
+    DASHBOARD_GUIDE.md
+    HANDOFF.md
+    index.html
+    KEY_INSIGHTS.md
+    PROJECT_SUMMARY.md
+    README.md
+    requirements.txt
+    v3_quantitative_audit.py
