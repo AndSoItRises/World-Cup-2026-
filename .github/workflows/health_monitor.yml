@@ -1,0 +1,33 @@
+name: WC2026 Health Monitor
+
+# Standalone "flag me if anything is broken" alarm (DL-17). READ-ONLY: it does not
+# ingest, settle, or push — it just runs health_check against the committed data and
+# FAILS if the pipeline is BROKEN. A failed scheduled run makes GitHub email the repo
+# owner, so you get pinged with the PC off and WITHOUT depending on the (still-manual)
+# football-data ingest path. Safe to run on a schedule independent of any cutover.
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # every 6 hours
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install minimal deps
+        run: pip install pandas   # health_check only needs pandas
+
+      - name: Health check (fails -> GitHub emails owner)
+        run: python -m src.models.health_check
+
+      # Surface the report in the run summary even when it passes.
+      - name: Show health report
+        if: always()
+        run: cat data/processed/model_health.json
