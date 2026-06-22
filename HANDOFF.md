@@ -145,9 +145,16 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
 9. **Underdog "+0.5 insurance" tracker** (Jake ask, DL-16): for dog picks, track smaller ML +
    a +0.5 (win-or-draw) leg in a SEPARATE ledger. Feasible from existing W/D/L + market 1X2
    data. NOT built — confirm trigger/stake-split/sizing with Jake first.
-10. **Remaining Phase 7 spec** (not started): unit-based picks system + config.json (§2),
+10. ~~**Split decision + health monitor**~~ ✅ DONE 2026-06-22 (DL-17): settle_bets is the single
+    settler (wired after clv_tracker in refresh_all.ps1 + into daily_update.yml); ESPN stays the
+    primary ingest, cloud football-data path is manual-only until the API is verified.
+    `health_check.py` (NEW) writes model_health.json + exits non-zero on BROKEN → fails the
+    Actions workflow → GitHub emails you (PC-off "flag me"); local loop logs a WARN.
+    OPEN: the _active_scripts/_archive repo reorg is uncommitted — commit it deliberately.
+11. **Remaining Phase 7 spec** (not started): unit-based picks system + config.json (§2),
     daily generate_picks.py (§3), live_update orchestration of all steps (§8), backtest_live.py
-    (§5), dashboard V6→V7 upgrades (§6). settle_bets/ingest exist; the rest is open.
+    (§5), dashboard V6→V7 upgrades (§6), +0.5 insurance tracker (item 9). The settlement/ingest/
+    monitor foundation exists; the rest is open.
 
 ## 8. DASHBOARD (outputs/quant_dashboard.html)
 Self-contained, offline, dark terminal theme; mobile/iOS-friendly (open the GitHub

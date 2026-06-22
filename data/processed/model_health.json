@@ -1,0 +1,16 @@
+{
+  "status": "HEALTHY",
+  "checked_at": "2026-06-22T18:39:12Z",
+  "issues": [],
+  "metrics": {
+    "live_results_rows": 40,
+    "fixtures_due": 40,
+    "results_missing": 0,
+    "pending_total": 15,
+    "pending_after_played": 0,
+    "settled_total": 16,
+    "net_pnl_usd": 11.82,
+    "clv_settled": 16,
+    "ledger_settled": 16
+  }
+}

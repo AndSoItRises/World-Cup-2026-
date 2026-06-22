@@ -370,6 +370,41 @@ STILL OPEN before build: decision on the ingest/settlement canonical path (repla
 the local ESPN/clv_tracker loop vs the cloud football-data/settle_bets path) gates the "auto-run"
 wiring. NOT YET BUILT. See HANDOFF §7 queue item 9.
 
+### DL-17 — Split decision (ingest vs settlement) + health-check monitor (2026-06-22)
+Resolved the DL-14/DL-15 overlap between the existing local stack and the new cloud stack,
+split by job (Jake's call):
+- SETTLEMENT — single settler = `settle_bets`. Wired to run AFTER `clv_tracker` in
+  `_active_scripts/refresh_all.ps1` (clv_tracker keeps CLV + ledger; settle_bets has the last
+  word on status/pnl) and added as a step in daily_update.yml. Never run two settlers.
+- INGEST — ESPN (`fetch_live_results`, local 30-min loop) stays PRIMARY. The cloud
+  football-data.org path (daily_update.yml) is set to workflow_dispatch ONLY (schedule commented
+  out) until the API is verified (WC2026 vs WC competition code, free-tier coverage) and Jake
+  chooses to cut over — prevents two pushers fighting wc2026_live_results.csv and a misconfigured
+  API silently blacking out. Re-enable = uncomment the cron block.
+
+MONITOR — `src/models/health_check.py` (NEW): the "flag me if anything is broken" signal.
+Checks, each mapping to a version-update risk:
+  • live-results schema + non-empty (ingest wrote garbage / API blackout)
+  • coverage/staleness — fixtures past their date with no result ingested
+  • pending-after-played — a pick whose match has a result but status=pending (the CRITICAL bug
+    regressing) → ERROR
+  • settlement math — pnl_usd == (decimal-1)*stake on WON, -stake on LOST → ERROR on mismatch
+  • status/pnl consistency — VOID/pending must have pnl 0
+  • ledger consistency — clv_report vs bet_ledger_settled settled-count divergence
+Writes data/processed/model_health.json (status HEALTHY/DEGRADED/BROKEN + issues + metrics; the
+dashboard Model-Health panel reads it). Exit 1 on BROKEN. Wiring of the flag:
+  • daily_update.yml runs it before commit — a non-zero exit FAILS the workflow and GitHub emails
+    the repo owner (no extra infra; works with the PC off). Broken state is never pushed.
+  • refresh_all.ps1 runs it each cycle and logs `WARN !!! PIPELINE HEALTH BROKEN ...` to refresh.log.
+Verified: HEALTHY/exit 0 on current state (40 results, 0 pending-after-played, net +$11.82);
+injected faults (match_id 30→pending, 36→bad pnl) correctly flipped it to BROKEN/exit 1 with the
+exact match_ids, then restore returned HEALTHY/exit 0.
+
+NOTE: the refresh_all.ps1 edit was made to the live file in _active_scripts/ (where a pending
+repo reorg moved it). That reorg (the _active_scripts move, _archive project merge, CONTEXT_V2–5
+archival) is left for Jake to commit deliberately — not swept into this commit, to avoid pushing
+a large archived sub-project into the public repo.
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit
