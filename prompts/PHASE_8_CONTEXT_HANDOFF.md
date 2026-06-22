@@ -6,6 +6,45 @@
 
 ---
 
+## 0. Walkthrough — what we're building, in plain English
+
+**The big idea.** The dashboard today reads like a research notebook — raw tables, lots of tabs,
+insights you have to dig for. Phase 8 turns it into something that feels like a *product*: you
+open it and immediately understand "is this model any good, and what would it do with my money?"
+The two pieces below are the answer to those two questions. This session built their *engines*
+(the Python that crunches the numbers); next session we build the *screens* that show them off.
+
+**Piece 1 — the Track Record ("is the model actually good?").**
+Think of this as the model's report card. For every game where the model thought it had an edge,
+we look at what *actually happened* and tally up the wins and losses — real money math, not a
+simulation. Then we ask a second question: *how* you bet matters as much as *what* you bet, so we
+replay the exact same picks four ways:
+  - **Flat** — same small bet every time (simple, steady).
+  - **Quarter / Half / Full Kelly** — "Kelly" is a formula for the mathematically ideal bet size
+    based on how big the edge is. Full Kelly grows fastest but swings hard; betting a fraction of
+    it (¼, ½) trades some growth for a smoother ride. Each one is explained in plain words on screen.
+  Right now the verdict is: **the model is up ~16.6% so far**, and interestingly the *boring* flat
+  strategy has the steadiest returns. (We were honest about that rather than overselling Kelly.)
+  We also fixed a real gap: the old version only counted games a bookmaker had priced, which was a
+  thin slice. Now it counts *every* game the model liked, using a "fair" price where no book line
+  exists (and clearly labelling those, because fair prices are slightly rosier than a real book).
+
+**Piece 2 — the $500 Bankroll ("what would it do with my money?").**
+The headline number a normal person cares about: *"if I handed this model $500 today, what
+happens?"* It starts at $500 **right now** (it does not get credit for games already finished —
+that would be cheating), and it's **picky**: it only bets games it genuinely likes and passes on
+the rest. Because the knockouts haven't been played yet, today it mostly shows a **projection** —
+a fan of possible outcomes (best case / middle / worst case) — and it will fill in the *real*
+running total as knockout results come in. We track three "how picky" settings side by side:
+only the strongest bets, every bet, and a middle ground.
+
+**What's left (next session).** Wire these engines into the dashboard: a one-glance **verdict
+banner** on the landing page, the **$500 number front and center**, a clean **Track Record**
+screen, and a tidy-up of the tab clutter — all hand-drawn charts so the page stays fast and works
+offline. Nothing gets deleted without your sign-off. The open product calls are in §4.
+
+---
+
 ## 1. What this session accomplished (backend foundation — shipped + committed)
 
 Both headline trackers from Phase 8 §2 are built, run cleanly, and are verified. They are
