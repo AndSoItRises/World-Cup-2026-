@@ -159,6 +159,18 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
     selective bankroll sim; DESK CALLS landing that draws a conclusion; tab audit / product polish;
     fix the bankroll "not enough games" coverage. Plus a future agentic-loop/architecture note. A
     fresh agent can start from that prompt file alone.
+    - ✅ DONE 2026-06-22 (DL-19): **2A Model Performance Tracker** `src/models/model_performance.py`
+      → `model_performance.json` + `_ledger.csv`. Realized P&L over every value game (real + fair-
+      priced, flagged), 4 staking strategies w/ plain-English explainers, verdict line. "Not enough
+      games" FIXED (40 value bets vs old real-only slice). Run: `python -m src.models.model_performance`.
+    - ✅ DONE 2026-06-22 (DL-20): **2B $500-from-today sim** `src/models/bankroll_sim.py`
+      → `bankroll_500.json` + `_ledger.csv`. Frozen start_match_id=41 (no retro-credit), 3 selectivity
+      variants (BET / BET+LEAN / BET+select-LEAN), realized + forward-MC projection cone, state persisted.
+      Run: `python -m src.models.bankroll_sim`.
+    - ⏳ NEXT SESSION (Jake to approve in plan mode — see `prompts/PHASE_8_CONTEXT_HANDOFF.md`):
+      wire both into refresh_all.ps1 + push triggers + health_check coverage; surface on the dashboard
+      (DESK CALLS verdict banner + $500 hero + Track Record tab, inline-SVG, JS desk-mirror sync);
+      tab audit / leaner IA. Product flag: BET-only forward board is thin (1 pick) until knockouts price.
 11. **Remaining Phase 7 spec** (not started): unit-based picks system + config.json (§2),
     daily generate_picks.py (§3), live_update orchestration of all steps (§8), backtest_live.py
     (§5), dashboard V6→V7 upgrades (§6), +0.5 insurance tracker (item 9). The settlement/ingest/

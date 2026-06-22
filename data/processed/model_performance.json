@@ -1,0 +1,1143 @@
+{
+  "config": {
+    "start_bankroll_usd": 1000.0,
+    "unit_size_usd": 15.0,
+    "min_edge": 0.05,
+    "min_model_prob": 0.3,
+    "kelly_cap": 0.05
+  },
+  "universe": {
+    "n_value_bets": 40,
+    "n_settled": 23,
+    "n_open": 17,
+    "n_settled_real_line": 21,
+    "n_settled_fair_line": 2,
+    "clv_alignment_pct": 33.3
+  },
+  "strategies": {
+    "flat": {
+      "final_bankroll": 1166.01,
+      "net_usd": 166.01,
+      "roi_pct": 16.6,
+      "n_bets": 23,
+      "hit_rate": 39.1,
+      "max_drawdown_pct": 6.65,
+      "sharpe": 0.245,
+      "curve": [
+        {
+          "date": "start",
+          "bank": 1000.0
+        },
+        {
+          "date": "2026-06-11",
+          "bank": 1027.04
+        },
+        {
+          "date": "2026-06-12",
+          "bank": 1012.04
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1102.04
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1142.54
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1127.54
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1187.54
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1172.54
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1211.54
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1196.54
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 1249.04
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 1234.04
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1219.04
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1204.04
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1189.04
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1174.04
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1215.29
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1200.29
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1185.29
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1200.29
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1185.29
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1196.01
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1181.01
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1166.01
+        }
+      ],
+      "label": "Flat stake",
+      "explainer": "Bet the exact same amount on every pick (1 unit). Simple and steady \u2014 it ignores how strong each edge is, so it never over-commits, but it also doesn't press the model's best spots.",
+      "clv_alignment_pct": 33.3
+    },
+    "kelly_quarter": {
+      "final_bankroll": 1308.09,
+      "net_usd": 308.09,
+      "roi_pct": 30.81,
+      "n_bets": 23,
+      "hit_rate": 39.1,
+      "max_drawdown_pct": 23.88,
+      "sharpe": 0.174,
+      "curve": [
+        {
+          "date": "start",
+          "bank": 1000.0
+        },
+        {
+          "date": "2026-06-11",
+          "bank": 1063.0
+        },
+        {
+          "date": "2026-06-12",
+          "bank": 1009.85
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1292.66
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1343.8
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1281.71
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1538.05
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1484.65
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1597.84
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1551.34
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 1718.44
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 1666.63
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1583.3
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1504.14
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1446.3
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1389.82
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1480.79
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1472.75
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1428.13
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1457.12
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1427.03
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1449.41
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1376.94
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1308.09
+        }
+      ],
+      "label": "1/4 Kelly",
+      "explainer": "Kelly is the math-optimal bet size for long-run growth, based on how big the edge is and the odds. Quarter-Kelly bets a quarter of that \u2014 deliberately cautious, smoothing out the swings at the cost of a little growth.",
+      "clv_alignment_pct": 33.3
+    },
+    "kelly_half": {
+      "final_bankroll": 1515.42,
+      "net_usd": 515.42,
+      "roi_pct": 51.54,
+      "n_bets": 23,
+      "hit_rate": 39.1,
+      "max_drawdown_pct": 23.64,
+      "sharpe": 0.222,
+      "curve": [
+        {
+          "date": "start",
+          "bank": 1000.0
+        },
+        {
+          "date": "2026-06-11",
+          "bank": 1090.13
+        },
+        {
+          "date": "2026-06-12",
+          "bank": 1035.63
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1346.32
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1452.82
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1380.18
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1656.22
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1573.41
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1777.95
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1689.05
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 1984.64
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 1885.41
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1791.14
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1701.58
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1616.5
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1535.68
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1736.7
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1717.85
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1631.96
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1698.22
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1628.08
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1679.13
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1595.18
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1515.42
+        }
+      ],
+      "label": "1/2 Kelly",
+      "explainer": "Half of the math-optimal bet size. The industry default: most of Kelly's growth with roughly half the volatility. Usually the best risk-adjusted balance.",
+      "clv_alignment_pct": 33.3
+    },
+    "kelly_full": {
+      "final_bankroll": 1592.12,
+      "net_usd": 592.12,
+      "roi_pct": 59.21,
+      "n_bets": 23,
+      "hit_rate": 39.1,
+      "max_drawdown_pct": 23.73,
+      "sharpe": 0.24,
+      "curve": [
+        {
+          "date": "start",
+          "bank": 1000.0
+        },
+        {
+          "date": "2026-06-11",
+          "bank": 1090.13
+        },
+        {
+          "date": "2026-06-12",
+          "bank": 1035.63
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1346.32
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1528.07
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1451.67
+        },
+        {
+          "date": "2026-06-13",
+          "bank": 1742.0
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1654.9
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1870.04
+        },
+        {
+          "date": "2026-06-14",
+          "bank": 1776.53
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 2087.43
+        },
+        {
+          "date": "2026-06-15",
+          "bank": 1983.06
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1883.9
+        },
+        {
+          "date": "2026-06-16",
+          "bank": 1789.71
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1700.22
+        },
+        {
+          "date": "2026-06-17",
+          "bank": 1615.21
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1837.3
+        },
+        {
+          "date": "2026-06-18",
+          "bank": 1797.43
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1707.56
+        },
+        {
+          "date": "2026-06-19",
+          "bank": 1792.94
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1703.29
+        },
+        {
+          "date": "2026-06-20",
+          "bank": 1764.13
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1675.92
+        },
+        {
+          "date": "2026-06-21",
+          "bank": 1592.12
+        }
+      ],
+      "label": "Full Kelly",
+      "explainer": "The full growth-optimal bet size. Maximises long-run compounding IF the model's probabilities are exactly right \u2014 but it's a wild ride, with deep drawdowns, and it punishes any over-confidence in the model.",
+      "clv_alignment_pct": 33.3
+    }
+  },
+  "verdict": "Model is +16.6% realized (flat staking) over 23 value bets so far; Flat stake is the best risk-adjusted strategy to date.",
+  "caveat": "Fair-priced bets (market_source='fair') use de-vigged odds \u2014 research-grade P&L, slightly optimistic vs a real book. Edge is still unproven out-of-sample; this tournament is the test.",
+  "bets": [
+    {
+      "match_id": 2,
+      "date": "2026-06-11",
+      "label": "South Korea vs Czechia",
+      "side": "home",
+      "selection": "South Korea",
+      "model_prob": 0.4467,
+      "market_prob": 0.3568,
+      "edge": 0.0899,
+      "decimal_odds": 2.8027,
+      "market_source": "fair",
+      "kelly_full": 0.1398,
+      "status": "WON",
+      "pnl_unit": 1.8027,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 3,
+      "date": "2026-06-12",
+      "label": "Canada vs Bosnia and Herzegovina",
+      "side": "home",
+      "selection": "Canada",
+      "model_prob": 0.6602,
+      "market_prob": 0.5395,
+      "edge": 0.1207,
+      "decimal_odds": 1.8536,
+      "market_source": "fair",
+      "kelly_full": 0.2621,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 5,
+      "date": "2026-06-13",
+      "label": "Qatar vs Switzerland",
+      "side": "draw",
+      "selection": "Qatar vs Switzerland (draw)",
+      "model_prob": 0.3029,
+      "market_prob": 0.1403,
+      "edge": 0.1626,
+      "decimal_odds": 7.0,
+      "market_source": "real",
+      "kelly_full": 0.1867,
+      "status": "WON",
+      "pnl_unit": 6.0,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 6,
+      "date": "2026-06-13",
+      "label": "Brazil vs Morocco",
+      "side": "draw",
+      "selection": "Brazil vs Morocco (draw)",
+      "model_prob": 0.313,
+      "market_prob": 0.254,
+      "edge": 0.059,
+      "decimal_odds": 3.7,
+      "market_source": "real",
+      "kelly_full": 0.0586,
+      "status": "WON",
+      "pnl_unit": 2.7,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 7,
+      "date": "2026-06-13",
+      "label": "Haiti vs Scotland",
+      "side": "home",
+      "selection": "Haiti",
+      "model_prob": 0.3207,
+      "market_prob": 0.1545,
+      "edge": 0.1662,
+      "decimal_odds": 6.0,
+      "market_source": "real",
+      "kelly_full": 0.1848,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "away"
+    },
+    {
+      "match_id": 8,
+      "date": "2026-06-13",
+      "label": "Australia vs Turkey",
+      "side": "home",
+      "selection": "Australia",
+      "model_prob": 0.3974,
+      "market_prob": 0.1862,
+      "edge": 0.2112,
+      "decimal_odds": 5.0,
+      "market_source": "real",
+      "kelly_full": 0.2467,
+      "status": "WON",
+      "pnl_unit": 4.0,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 10,
+      "date": "2026-06-14",
+      "label": "Netherlands vs Japan",
+      "side": "away",
+      "selection": "Japan",
+      "model_prob": 0.3748,
+      "market_prob": 0.2565,
+      "edge": 0.1183,
+      "decimal_odds": 3.65,
+      "market_source": "real",
+      "kelly_full": 0.1389,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 11,
+      "date": "2026-06-14",
+      "label": "Ivory Coast vs Ecuador",
+      "side": "home",
+      "selection": "Ivory Coast",
+      "model_prob": 0.3625,
+      "market_prob": 0.2661,
+      "edge": 0.0964,
+      "decimal_odds": 3.6,
+      "market_source": "real",
+      "kelly_full": 0.1173,
+      "status": "WON",
+      "pnl_unit": 2.6,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 12,
+      "date": "2026-06-14",
+      "label": "Tunisia vs Sweden",
+      "side": "draw",
+      "selection": "Tunisia vs Sweden (draw)",
+      "model_prob": 0.3653,
+      "market_prob": 0.2788,
+      "edge": 0.0865,
+      "decimal_odds": 3.55,
+      "market_source": "real",
+      "kelly_full": 0.1164,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "away"
+    },
+    {
+      "match_id": 15,
+      "date": "2026-06-15",
+      "label": "Saudi Arabia vs Uruguay",
+      "side": "draw",
+      "selection": "Saudi Arabia vs Uruguay (draw)",
+      "model_prob": 0.318,
+      "market_prob": 0.2088,
+      "edge": 0.1092,
+      "decimal_odds": 4.5,
+      "market_source": "real",
+      "kelly_full": 0.1231,
+      "status": "WON",
+      "pnl_unit": 3.5,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 16,
+      "date": "2026-06-15",
+      "label": "Iran vs New Zealand",
+      "side": "away",
+      "selection": "New Zealand",
+      "model_prob": 0.3077,
+      "market_prob": 0.2148,
+      "edge": 0.0929,
+      "decimal_odds": 4.7,
+      "market_source": "real",
+      "kelly_full": 0.1206,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 18,
+      "date": "2026-06-16",
+      "label": "Norway vs Iraq",
+      "side": "away",
+      "selection": "Iraq",
+      "model_prob": 0.3167,
+      "market_prob": 0.0609,
+      "edge": 0.2558,
+      "decimal_odds": 14.0,
+      "market_source": "real",
+      "kelly_full": 0.2641,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 20,
+      "date": "2026-06-16",
+      "label": "Austria vs Jordan",
+      "side": "away",
+      "selection": "Jordan",
+      "model_prob": 0.3034,
+      "market_prob": 0.0935,
+      "edge": 0.2099,
+      "decimal_odds": 9.0,
+      "market_source": "real",
+      "kelly_full": 0.2163,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 23,
+      "date": "2026-06-17",
+      "label": "Ghana vs Panama",
+      "side": "away",
+      "selection": "Panama",
+      "model_prob": 0.3956,
+      "market_prob": 0.2614,
+      "edge": 0.1342,
+      "decimal_odds": 3.5,
+      "market_source": "real",
+      "kelly_full": 0.1538,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 24,
+      "date": "2026-06-17",
+      "label": "Uzbekistan vs Colombia",
+      "side": "draw",
+      "selection": "Uzbekistan vs Colombia (draw)",
+      "model_prob": 0.3357,
+      "market_prob": 0.205,
+      "edge": 0.1307,
+      "decimal_odds": 4.7,
+      "market_source": "real",
+      "kelly_full": 0.1562,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "away"
+    },
+    {
+      "match_id": 25,
+      "date": "2026-06-18",
+      "label": "South Africa vs Czechia",
+      "side": "draw",
+      "selection": "South Africa vs Czechia (draw)",
+      "model_prob": 0.3365,
+      "market_prob": 0.2799,
+      "edge": 0.0566,
+      "decimal_odds": 3.75,
+      "market_source": "real",
+      "kelly_full": 0.0952,
+      "status": "WON",
+      "pnl_unit": 2.75,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 28,
+      "date": "2026-06-18",
+      "label": "Mexico vs South Korea",
+      "side": "draw",
+      "selection": "Mexico vs South Korea (draw)",
+      "model_prob": 0.3137,
+      "market_prob": 0.2606,
+      "edge": 0.0531,
+      "decimal_odds": 3.35,
+      "market_source": "real",
+      "kelly_full": 0.0217,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 29,
+      "date": "2026-06-19",
+      "label": "USA vs Australia",
+      "side": "draw",
+      "selection": "USA vs Australia (draw)",
+      "model_prob": 0.3165,
+      "market_prob": 0.2406,
+      "edge": 0.0759,
+      "decimal_odds": 4.5,
+      "market_source": "real",
+      "kelly_full": 0.1212,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 30,
+      "date": "2026-06-19",
+      "label": "Scotland vs Morocco",
+      "side": "away",
+      "selection": "Morocco",
+      "model_prob": 0.5406,
+      "market_prob": 0.4847,
+      "edge": 0.0559,
+      "decimal_odds": 2.0,
+      "market_source": "real",
+      "kelly_full": 0.0812,
+      "status": "WON",
+      "pnl_unit": 1.0,
+      "settled": true,
+      "result_side": "away"
+    },
+    {
+      "match_id": 33,
+      "date": "2026-06-20",
+      "label": "Netherlands vs Sweden",
+      "side": "draw",
+      "selection": "Netherlands vs Sweden (draw)",
+      "model_prob": 0.301,
+      "market_prob": 0.2269,
+      "edge": 0.0741,
+      "decimal_odds": 4.2,
+      "market_source": "real",
+      "kelly_full": 0.0826,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "home"
+    },
+    {
+      "match_id": 36,
+      "date": "2026-06-20",
+      "label": "Tunisia vs Japan",
+      "side": "away",
+      "selection": "Japan",
+      "model_prob": 0.6199,
+      "market_prob": 0.5661,
+      "edge": 0.0538,
+      "decimal_odds": 1.7143,
+      "market_source": "real",
+      "kelly_full": 0.0878,
+      "status": "WON",
+      "pnl_unit": 0.7143,
+      "settled": true,
+      "result_side": "away"
+    },
+    {
+      "match_id": 38,
+      "date": "2026-06-21",
+      "label": "Belgium vs Iran",
+      "side": "away",
+      "selection": "Iran",
+      "model_prob": 0.3404,
+      "market_prob": 0.113,
+      "edge": 0.2274,
+      "decimal_odds": 8.0,
+      "market_source": "real",
+      "kelly_full": 0.2462,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "draw"
+    },
+    {
+      "match_id": 40,
+      "date": "2026-06-21",
+      "label": "New Zealand vs Egypt",
+      "side": "draw",
+      "selection": "New Zealand vs Egypt (draw)",
+      "model_prob": 0.4649,
+      "market_prob": 0.248,
+      "edge": 0.2169,
+      "decimal_odds": 3.85,
+      "market_source": "real",
+      "kelly_full": 0.2771,
+      "status": "LOST",
+      "pnl_unit": -1.0,
+      "settled": true,
+      "result_side": "away"
+    },
+    {
+      "match_id": 43,
+      "date": "2026-06-22",
+      "label": "Norway vs Senegal",
+      "side": "away",
+      "selection": "Senegal",
+      "model_prob": 0.4299,
+      "market_prob": 0.2822,
+      "edge": 0.1477,
+      "decimal_odds": 3.4,
+      "market_source": "real",
+      "kelly_full": 0.1924,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 44,
+      "date": "2026-06-22",
+      "label": "Jordan vs Algeria",
+      "side": "draw",
+      "selection": "Jordan vs Algeria (draw)",
+      "model_prob": 0.3099,
+      "market_prob": 0.2198,
+      "edge": 0.0901,
+      "decimal_odds": 4.4,
+      "market_source": "real",
+      "kelly_full": 0.1069,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 47,
+      "date": "2026-06-23",
+      "label": "Panama vs Croatia",
+      "side": "home",
+      "selection": "Panama",
+      "model_prob": 0.3232,
+      "market_prob": 0.1406,
+      "edge": 0.1826,
+      "decimal_odds": 6.5,
+      "market_source": "real",
+      "kelly_full": 0.2001,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 48,
+      "date": "2026-06-23",
+      "label": "Colombia vs DR Congo",
+      "side": "draw",
+      "selection": "Colombia vs DR Congo (draw)",
+      "model_prob": 0.3188,
+      "market_prob": 0.2151,
+      "edge": 0.1037,
+      "decimal_odds": 4.4,
+      "market_source": "real",
+      "kelly_full": 0.1184,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 49,
+      "date": "2026-06-24",
+      "label": "Canada vs Switzerland",
+      "side": "draw",
+      "selection": "Canada vs Switzerland (draw)",
+      "model_prob": 0.3318,
+      "market_prob": 0.2769,
+      "edge": 0.0549,
+      "decimal_odds": 3.45,
+      "market_source": "real",
+      "kelly_full": 0.0591,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 50,
+      "date": "2026-06-24",
+      "label": "Qatar vs Bosnia and Herzegovina",
+      "side": "home",
+      "selection": "Qatar",
+      "model_prob": 0.4231,
+      "market_prob": 0.1424,
+      "edge": 0.2807,
+      "decimal_odds": 5.75,
+      "market_source": "real",
+      "kelly_full": 0.3016,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 52,
+      "date": "2026-06-24",
+      "label": "Morocco vs Haiti",
+      "side": "draw",
+      "selection": "Morocco vs Haiti (draw)",
+      "model_prob": 0.3065,
+      "market_prob": 0.1798,
+      "edge": 0.1267,
+      "decimal_odds": 5.0,
+      "market_source": "real",
+      "kelly_full": 0.1331,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 54,
+      "date": "2026-06-24",
+      "label": "South Korea vs South Africa",
+      "side": "home",
+      "selection": "South Korea",
+      "model_prob": 0.6278,
+      "market_prob": 0.4943,
+      "edge": 0.1335,
+      "decimal_odds": 1.6061,
+      "market_source": "real",
+      "kelly_full": 0.0137,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 56,
+      "date": "2026-06-25",
+      "label": "Curacao vs Ivory Coast",
+      "side": "draw",
+      "selection": "Curacao vs Ivory Coast (draw)",
+      "model_prob": 0.3055,
+      "market_prob": 0.1422,
+      "edge": 0.1633,
+      "decimal_odds": 7.0,
+      "market_source": "real",
+      "kelly_full": 0.1898,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 58,
+      "date": "2026-06-25",
+      "label": "Japan vs Sweden",
+      "side": "draw",
+      "selection": "Japan vs Sweden (draw)",
+      "model_prob": 0.357,
+      "market_prob": 0.2746,
+      "edge": 0.0824,
+      "decimal_odds": 3.45,
+      "market_source": "real",
+      "kelly_full": 0.0946,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 59,
+      "date": "2026-06-25",
+      "label": "USA vs Turkey",
+      "side": "home",
+      "selection": "USA",
+      "model_prob": 0.4344,
+      "market_prob": 0.3769,
+      "edge": 0.0575,
+      "decimal_odds": 2.5,
+      "market_source": "real",
+      "kelly_full": 0.0573,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 60,
+      "date": "2026-06-25",
+      "label": "Paraguay vs Australia",
+      "side": "away",
+      "selection": "Australia",
+      "model_prob": 0.4557,
+      "market_prob": 0.2633,
+      "edge": 0.1924,
+      "decimal_odds": 3.7,
+      "market_source": "real",
+      "kelly_full": 0.2541,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 64,
+      "date": "2026-06-26",
+      "label": "Cape Verde vs Saudi Arabia",
+      "side": "away",
+      "selection": "Saudi Arabia",
+      "model_prob": 0.5049,
+      "market_prob": 0.3364,
+      "edge": 0.1685,
+      "decimal_odds": 2.7,
+      "market_source": "real",
+      "kelly_full": 0.2137,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 65,
+      "date": "2026-06-26",
+      "label": "New Zealand vs Belgium",
+      "side": "draw",
+      "selection": "New Zealand vs Belgium (draw)",
+      "model_prob": 0.3423,
+      "market_prob": 0.1552,
+      "edge": 0.1871,
+      "decimal_odds": 6.0,
+      "market_source": "real",
+      "kelly_full": 0.2108,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 66,
+      "date": "2026-06-26",
+      "label": "Egypt vs Iran",
+      "side": "away",
+      "selection": "Iran",
+      "model_prob": 0.3996,
+      "market_prob": 0.2624,
+      "edge": 0.1372,
+      "decimal_odds": 3.65,
+      "market_source": "real",
+      "kelly_full": 0.173,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 70,
+      "date": "2026-06-27",
+      "label": "Uzbekistan vs DR Congo",
+      "side": "home",
+      "selection": "Uzbekistan",
+      "model_prob": 0.3961,
+      "market_prob": 0.3039,
+      "edge": 0.0922,
+      "decimal_odds": 3.15,
+      "market_source": "real",
+      "kelly_full": 0.1152,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    },
+    {
+      "match_id": 72,
+      "date": "2026-06-27",
+      "label": "Algeria vs Austria",
+      "side": "home",
+      "selection": "Algeria",
+      "model_prob": 0.3822,
+      "market_prob": 0.2592,
+      "edge": 0.123,
+      "decimal_odds": 3.75,
+      "market_source": "real",
+      "kelly_full": 0.1575,
+      "status": "pending",
+      "pnl_unit": 0.0,
+      "settled": false,
+      "result_side": ""
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+variant,match_id,date,label,selection,side,verdict,score,model_prob,decimal_odds,kelly_full,kelly_fraction_used,status,result_side,settled
+bet_only,43,2026-06-22,Norway vs Senegal,Senegal (away),away,BET,8.0,0.4299,3.4,0.1924,0.05,pending,,False
+bet_lean,43,2026-06-22,Norway vs Senegal,Senegal (away),away,BET,8.0,0.4299,3.4,0.1924,0.05,pending,,False
+bet_lean,47,2026-06-23,Panama vs Croatia,Panama (home),home,LEAN,3.0,0.3232,6.5,0.2001,0.05,pending,,False
+bet_lean,49,2026-06-24,Canada vs Switzerland,Canada (home),home,LEAN,3.2,0.3262,3.5,0.0567,0.0283,pending,,False
+bet_lean,50,2026-06-24,Qatar vs Bosnia and Herzegovina,Qatar (home),home,LEAN,4.0,0.4231,5.75,0.3016,0.05,pending,,False
+bet_lean,53,2026-06-24,Mexico vs Czechia,Mexico (home),home,LEAN,5.56,0.5874,1.8333,0.0923,0.0461,pending,,False
+bet_lean,54,2026-06-24,South Korea vs South Africa,South Korea (home),home,LEAN,5.28,0.6278,1.6061,0.0137,0.0069,pending,,False
+bet_lean,58,2026-06-25,Japan vs Sweden,Japan (home),home,LEAN,4.26,0.4965,2.1,0.0388,0.0194,pending,,False
+bet_lean,60,2026-06-25,Paraguay vs Australia,Australia (away),away,LEAN,4.0,0.4557,3.7,0.2541,0.05,pending,,False
+bet_lean,63,2026-06-26,Uruguay vs Spain,Spain (away),away,LEAN,3.59,0.6186,1.6452,0.0275,0.0137,pending,,False
+bet_lean,64,2026-06-26,Cape Verde vs Saudi Arabia,Saudi Arabia (away),away,LEAN,4.0,0.5049,2.7,0.2137,0.05,pending,,False
+bet_lean,65,2026-06-26,New Zealand vs Belgium,New Zealand (home),home,LEAN,5.0,0.2745,10.0,0.1939,0.05,pending,,False
+bet_lean,66,2026-06-26,Egypt vs Iran,Iran (away),away,LEAN,4.0,0.3996,3.65,0.173,0.05,pending,,False
+bet_lean,67,2026-06-27,Panama vs England,Panama (home),home,LEAN,3.0,0.2132,8.5,0.1083,0.05,pending,,False
+bet_lean,70,2026-06-27,Uzbekistan vs DR Congo,Uzbekistan (home),home,LEAN,3.53,0.3961,3.15,0.1152,0.05,pending,,False
+bet_lean,72,2026-06-27,Algeria vs Austria,Algeria (home),home,LEAN,4.0,0.3822,3.75,0.1575,0.05,pending,,False
+bet_select_lean,43,2026-06-22,Norway vs Senegal,Senegal (away),away,BET,8.0,0.4299,3.4,0.1924,0.05,pending,,False
+bet_select_lean,53,2026-06-24,Mexico vs Czechia,Mexico (home),home,LEAN,5.56,0.5874,1.8333,0.0923,0.0461,pending,,False
+bet_select_lean,54,2026-06-24,South Korea vs South Africa,South Korea (home),home,LEAN,5.28,0.6278,1.6061,0.0137,0.0069,pending,,False
+bet_select_lean,65,2026-06-26,New Zealand vs Belgium,New Zealand (home),home,LEAN,5.0,0.2745,10.0,0.1939,0.05,pending,,False

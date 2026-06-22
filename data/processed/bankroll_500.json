@@ -1,0 +1,613 @@
+{
+  "config": {
+    "start_bankroll_usd": 500.0,
+    "as_of": "2026-06-21",
+    "start_match_id": 41,
+    "kelly_fraction": 0.5,
+    "kelly_cap": 0.05,
+    "select_lean_cut": 4.5,
+    "mc_paths": 2000,
+    "projection_default_on": true
+  },
+  "headline_variant": "bet_only",
+  "variants": {
+    "bet_only": {
+      "label": "BET only",
+      "explainer": "Only the desk's strongest calls (verdict BET). Fewest bets, highest average conviction \u2014 the model passes on everything it isn't sure about.",
+      "n_picks": 1,
+      "n_open": 1,
+      "realized": {
+        "curve": [
+          {
+            "date": "today",
+            "bank": 500.0
+          }
+        ],
+        "current_value": 500.0,
+        "n_settled": 0,
+        "n_wins": 0,
+        "realized_roi_pct": 0.0
+      },
+      "projection": {
+        "enabled": true,
+        "n_open": 1,
+        "cone": [
+          {
+            "step": 0,
+            "date": "today",
+            "p5": 500.0,
+            "p50": 500.0,
+            "p95": 500.0
+          },
+          {
+            "step": 1,
+            "date": "2026-06-22",
+            "p5": 475.0,
+            "p50": 475.0,
+            "p95": 560.0
+          }
+        ],
+        "final": {
+          "p5": 475.0,
+          "p50": 475.0,
+          "p95": 560.0
+        },
+        "prob_profit_pct": 41.5
+      },
+      "picks": [
+        {
+          "variant": "bet_only",
+          "match_id": 43,
+          "date": "2026-06-22",
+          "label": "Norway vs Senegal",
+          "selection": "Senegal (away)",
+          "side": "away",
+          "verdict": "BET",
+          "score": 8.0,
+          "model_prob": 0.4299,
+          "decimal_odds": 3.4,
+          "kelly_full": 0.1924,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        }
+      ]
+    },
+    "bet_lean": {
+      "label": "BET + LEAN",
+      "explainer": "Every actionable call \u2014 strong BETs plus softer LEANs. More games on the board, lower average conviction per bet.",
+      "n_picks": 15,
+      "n_open": 15,
+      "realized": {
+        "curve": [
+          {
+            "date": "today",
+            "bank": 500.0
+          }
+        ],
+        "current_value": 500.0,
+        "n_settled": 0,
+        "n_wins": 0,
+        "realized_roi_pct": 0.0
+      },
+      "projection": {
+        "enabled": true,
+        "n_open": 15,
+        "cone": [
+          {
+            "step": 0,
+            "date": "today",
+            "p5": 500.0,
+            "p50": 500.0,
+            "p95": 500.0
+          },
+          {
+            "step": 1,
+            "date": "2026-06-22",
+            "p5": 475.0,
+            "p50": 475.0,
+            "p95": 560.0
+          },
+          {
+            "step": 2,
+            "date": "2026-06-23",
+            "p5": 451.25,
+            "p50": 532.0,
+            "p95": 714.0
+          },
+          {
+            "step": 3,
+            "date": "2026-06-24",
+            "p5": 438.48,
+            "p50": 516.94,
+            "p95": 764.52
+          },
+          {
+            "step": 4,
+            "date": "2026-06-24",
+            "p5": 416.56,
+            "p50": 542.62,
+            "p95": 858.57
+          },
+          {
+            "step": 5,
+            "date": "2026-06-24",
+            "p5": 397.35,
+            "p50": 563.46,
+            "p95": 833.31
+          },
+          {
+            "step": 6,
+            "date": "2026-06-24",
+            "p5": 399.01,
+            "p50": 565.82,
+            "p95": 836.8
+          },
+          {
+            "step": 7,
+            "date": "2026-06-25",
+            "p5": 407.53,
+            "p50": 571.52,
+            "p95": 845.22
+          },
+          {
+            "step": 8,
+            "date": "2026-06-25",
+            "p5": 404.64,
+            "p50": 581.65,
+            "p95": 879.31
+          },
+          {
+            "step": 9,
+            "date": "2026-06-26",
+            "p5": 408.22,
+            "p50": 581.37,
+            "p95": 878.28
+          },
+          {
+            "step": 10,
+            "date": "2026-06-26",
+            "p5": 403.92,
+            "p50": 588.47,
+            "p95": 896.89
+          },
+          {
+            "step": 11,
+            "date": "2026-06-26",
+            "p5": 395.31,
+            "p50": 619.78,
+            "p95": 1110.4
+          },
+          {
+            "step": 12,
+            "date": "2026-06-26",
+            "p5": 399.73,
+            "p50": 637.67,
+            "p95": 1138.13
+          },
+          {
+            "step": 13,
+            "date": "2026-06-27",
+            "p5": 391.42,
+            "p50": 655.69,
+            "p95": 1235.39
+          },
+          {
+            "step": 14,
+            "date": "2026-06-27",
+            "p5": 387.09,
+            "p50": 663.58,
+            "p95": 1268.72
+          },
+          {
+            "step": 15,
+            "date": "2026-06-27",
+            "p5": 384.56,
+            "p50": 674.71,
+            "p95": 1322.94
+          }
+        ],
+        "final": {
+          "p5": 384.56,
+          "p50": 674.71,
+          "p95": 1322.94
+        },
+        "prob_profit_pct": 79.0
+      },
+      "picks": [
+        {
+          "variant": "bet_lean",
+          "match_id": 43,
+          "date": "2026-06-22",
+          "label": "Norway vs Senegal",
+          "selection": "Senegal (away)",
+          "side": "away",
+          "verdict": "BET",
+          "score": 8.0,
+          "model_prob": 0.4299,
+          "decimal_odds": 3.4,
+          "kelly_full": 0.1924,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 47,
+          "date": "2026-06-23",
+          "label": "Panama vs Croatia",
+          "selection": "Panama (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 3.0,
+          "model_prob": 0.3232,
+          "decimal_odds": 6.5,
+          "kelly_full": 0.2001,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 49,
+          "date": "2026-06-24",
+          "label": "Canada vs Switzerland",
+          "selection": "Canada (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 3.2,
+          "model_prob": 0.3262,
+          "decimal_odds": 3.5,
+          "kelly_full": 0.0567,
+          "kelly_fraction_used": 0.0283,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 50,
+          "date": "2026-06-24",
+          "label": "Qatar vs Bosnia and Herzegovina",
+          "selection": "Qatar (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 4.0,
+          "model_prob": 0.4231,
+          "decimal_odds": 5.75,
+          "kelly_full": 0.3016,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 53,
+          "date": "2026-06-24",
+          "label": "Mexico vs Czechia",
+          "selection": "Mexico (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 5.56,
+          "model_prob": 0.5874,
+          "decimal_odds": 1.8333,
+          "kelly_full": 0.0923,
+          "kelly_fraction_used": 0.0461,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 54,
+          "date": "2026-06-24",
+          "label": "South Korea vs South Africa",
+          "selection": "South Korea (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 5.28,
+          "model_prob": 0.6278,
+          "decimal_odds": 1.6061,
+          "kelly_full": 0.0137,
+          "kelly_fraction_used": 0.0069,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 58,
+          "date": "2026-06-25",
+          "label": "Japan vs Sweden",
+          "selection": "Japan (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 4.26,
+          "model_prob": 0.4965,
+          "decimal_odds": 2.1,
+          "kelly_full": 0.0388,
+          "kelly_fraction_used": 0.0194,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 60,
+          "date": "2026-06-25",
+          "label": "Paraguay vs Australia",
+          "selection": "Australia (away)",
+          "side": "away",
+          "verdict": "LEAN",
+          "score": 4.0,
+          "model_prob": 0.4557,
+          "decimal_odds": 3.7,
+          "kelly_full": 0.2541,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 63,
+          "date": "2026-06-26",
+          "label": "Uruguay vs Spain",
+          "selection": "Spain (away)",
+          "side": "away",
+          "verdict": "LEAN",
+          "score": 3.59,
+          "model_prob": 0.6186,
+          "decimal_odds": 1.6452,
+          "kelly_full": 0.0275,
+          "kelly_fraction_used": 0.0137,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 64,
+          "date": "2026-06-26",
+          "label": "Cape Verde vs Saudi Arabia",
+          "selection": "Saudi Arabia (away)",
+          "side": "away",
+          "verdict": "LEAN",
+          "score": 4.0,
+          "model_prob": 0.5049,
+          "decimal_odds": 2.7,
+          "kelly_full": 0.2137,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 65,
+          "date": "2026-06-26",
+          "label": "New Zealand vs Belgium",
+          "selection": "New Zealand (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 5.0,
+          "model_prob": 0.2745,
+          "decimal_odds": 10.0,
+          "kelly_full": 0.1939,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 66,
+          "date": "2026-06-26",
+          "label": "Egypt vs Iran",
+          "selection": "Iran (away)",
+          "side": "away",
+          "verdict": "LEAN",
+          "score": 4.0,
+          "model_prob": 0.3996,
+          "decimal_odds": 3.65,
+          "kelly_full": 0.173,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 67,
+          "date": "2026-06-27",
+          "label": "Panama vs England",
+          "selection": "Panama (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 3.0,
+          "model_prob": 0.2132,
+          "decimal_odds": 8.5,
+          "kelly_full": 0.1083,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 70,
+          "date": "2026-06-27",
+          "label": "Uzbekistan vs DR Congo",
+          "selection": "Uzbekistan (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 3.53,
+          "model_prob": 0.3961,
+          "decimal_odds": 3.15,
+          "kelly_full": 0.1152,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_lean",
+          "match_id": 72,
+          "date": "2026-06-27",
+          "label": "Algeria vs Austria",
+          "selection": "Algeria (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 4.0,
+          "model_prob": 0.3822,
+          "decimal_odds": 3.75,
+          "kelly_full": 0.1575,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        }
+      ]
+    },
+    "bet_select_lean": {
+      "label": "BET + select LEAN",
+      "explainer": "All BETs, plus only the higher-rated LEANs (score \u2265 4.5). A middle ground: more action than BET-only, but it skips the weakest leans.",
+      "n_picks": 4,
+      "n_open": 4,
+      "realized": {
+        "curve": [
+          {
+            "date": "today",
+            "bank": 500.0
+          }
+        ],
+        "current_value": 500.0,
+        "n_settled": 0,
+        "n_wins": 0,
+        "realized_roi_pct": 0.0
+      },
+      "projection": {
+        "enabled": true,
+        "n_open": 4,
+        "cone": [
+          {
+            "step": 0,
+            "date": "today",
+            "p5": 500.0,
+            "p50": 500.0,
+            "p95": 500.0
+          },
+          {
+            "step": 1,
+            "date": "2026-06-22",
+            "p5": 475.0,
+            "p50": 475.0,
+            "p95": 560.0
+          },
+          {
+            "step": 2,
+            "date": "2026-06-24",
+            "p5": 453.1,
+            "p50": 493.25,
+            "p95": 581.51
+          },
+          {
+            "step": 3,
+            "date": "2026-06-24",
+            "p5": 449.98,
+            "p50": 495.31,
+            "p95": 583.94
+          },
+          {
+            "step": 4,
+            "date": "2026-06-26",
+            "p5": 427.48,
+            "p50": 509.6,
+            "p95": 837.38
+          }
+        ],
+        "final": {
+          "p5": 427.48,
+          "p50": 509.6,
+          "p95": 837.38
+        },
+        "prob_profit_pct": 58.6
+      },
+      "picks": [
+        {
+          "variant": "bet_select_lean",
+          "match_id": 43,
+          "date": "2026-06-22",
+          "label": "Norway vs Senegal",
+          "selection": "Senegal (away)",
+          "side": "away",
+          "verdict": "BET",
+          "score": 8.0,
+          "model_prob": 0.4299,
+          "decimal_odds": 3.4,
+          "kelly_full": 0.1924,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_select_lean",
+          "match_id": 53,
+          "date": "2026-06-24",
+          "label": "Mexico vs Czechia",
+          "selection": "Mexico (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 5.56,
+          "model_prob": 0.5874,
+          "decimal_odds": 1.8333,
+          "kelly_full": 0.0923,
+          "kelly_fraction_used": 0.0461,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_select_lean",
+          "match_id": 54,
+          "date": "2026-06-24",
+          "label": "South Korea vs South Africa",
+          "selection": "South Korea (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 5.28,
+          "model_prob": 0.6278,
+          "decimal_odds": 1.6061,
+          "kelly_full": 0.0137,
+          "kelly_fraction_used": 0.0069,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        },
+        {
+          "variant": "bet_select_lean",
+          "match_id": 65,
+          "date": "2026-06-26",
+          "label": "New Zealand vs Belgium",
+          "selection": "New Zealand (home)",
+          "side": "home",
+          "verdict": "LEAN",
+          "score": 5.0,
+          "model_prob": 0.2745,
+          "decimal_odds": 10.0,
+          "kelly_full": 0.1939,
+          "kelly_fraction_used": 0.05,
+          "status": "pending",
+          "result_side": "",
+          "settled": false
+        }
+      ]
+    }
+  },
+  "caveat": "Starts at $500 today \u2014 earlier tournament games are NOT retro-credited. The realized curve is empty until knockout results land; the projection is a forward Monte-Carlo (model probs + desk odds), research-grade where fair odds are used. Selective: the model passes on games it doesn't like."
+}

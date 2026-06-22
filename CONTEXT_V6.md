@@ -433,6 +433,55 @@ loads insurance_summary.json; inline-SVG 3-line equity chart so the dashboard st
 / offline — NO Chart.js CDN; standalone outputs/insurance_tracker.html kept too).
 OPEN: possible vig model for realistic pricing once live book odds for dogs are stored.
 
+### DL-19 — Phase 8, 2A: Model Performance Tracker (realized, multi-strategy) SHIPPED (2026-06-22)
+The old BANKROLL tab (`runBankroll`, 1k-path forward MC) only covered bets with
+`market_source=='real' && ev>=0.05` — a thin slice — and it simulated *hypothetical*
+outcomes, never answering "is the model actually good?" against real results. Built a
+separate REALIZED scorecard. `src/models/model_performance.py` (NEW):
+- Universe = EVERY match the model considered +value, drawn from `prediction_ledger.csv`
+  (model + Shin-fair market 1X2 for every match), taking the single best value side per
+  match gated on config thresholds (min_edge 0.05, min_model_prob 0.30). This FIXES the
+  "not enough games" problem: where a real book line exists (`value_bets.csv`) we price on
+  it and flag `market_source='real'`; otherwise we use the de-vigged fair price and flag
+  `'fair'` — flagged, never silently dropped.
+- Settles each via `settle_bets.load_results` against actual results → per-unit realized P&L.
+- Replays the same picks under FOUR staking strategies — Flat, ¼-Kelly, ½-Kelly, Full-Kelly
+  (all capped 5%) — each reporting ROI%, net $, hit-rate, max drawdown, a per-bet Sharpe-ish
+  ratio, and CLV alignment. Per Jake's ask, EACH strategy carries a plain-English explainer
+  (e.g. "Kelly is the math-optimal bet size … quarter-Kelly bets a quarter of that") for
+  non-quant readers.
+- Outputs `model_performance.json` (+ `model_performance_ledger.csv`) for the dashboard.
+First run: 40 value bets, 23 settled (21 real-line + 2 fair-line — the fair legs are exactly
+the coverage the old real-only filter dropped). Verdict: model **+16.6% realized (flat)** over
+23 bets; flat staking has the best Sharpe (0.245) while Kelly variants grow more (+30–59%) at
+~24% drawdown — an honest, non-cherry-picked result. CAVEAT carried in the JSON: fair-priced
+P&L is research-grade/slightly optimistic; edge still unproven out-of-sample (DL-10).
+OPEN: not yet wired into refresh_all.ps1 or surfaced on the dashboard (next session — Jake to
+approve dashboard/IA in plan mode).
+
+### DL-20 — Phase 8, 2B: MAIN $500-from-today bankroll simulator SHIPPED (2026-06-22)
+The hero number: "if I gave this model $500 TODAY, what happens?" `src/models/bankroll_sim.py`
+(NEW), distinct from 2A (which scores all history):
+- Starts at $500 on a FROZEN cutoff — `start_match_id` = last-played match_id + 1 (= 41 now),
+  persisted in `bankroll_500.json` so it never drifts and earlier games are NOT retro-credited
+  (the spec's hard rule). Caught and fixed a first-cut bug where played desk picks (match_id ≤ 40)
+  were being retro-credited, inflating the "realized" line above $500.
+- SELECTIVE (the model may pass): picks come from `desk_calls.csv` verdicts, tracked as THREE
+  variants per Jake — **BET only**, **BET + LEAN**, **BET + select LEAN** (LEANs scoring ≥ 4.5).
+- Stakes ½-Kelly capped 5% of the CURRENT bankroll; tracks a REALIZED curve as match_id ≥ 41
+  fixtures are played (flat $500 for now — group stage already settled, knockouts ahead) plus a
+  forward Monte-Carlo PROJECTION cone (P5/P50/P95, seed-fixed for stable redraws) priced off the
+  desk's odds + model win probs. Projection ON by default (it IS the whole view until knockouts land).
+- Persists `bankroll_500_ledger.csv` (append-style: fresh picks replace prior versions, prior-only
+  rows kept) + `bankroll_500.json`. Idempotent: re-runs hold start_match_id=41 and 20 ledger rows.
+First run: BET-only = 1 pick (only match 43 Norway–Senegal is a forward BET right now; P50 $475,
+P(profit) 42%); BET+LEAN = 15 picks (P50 $675, 79%); BET+select-LEAN = 4 (P50 $510, 59%).
+PRODUCT FLAG for Jake: the BET-only headline board is thin until more knockout fixtures get priced
+— may want to reconsider which variant is the headline, or surface all three prominently.
+ODDS DECISION (logged, overridable): projection prices off the desk's logged odds (real line where
+present, else fair de-vig). Fair legs make it research-grade/slightly optimistic — flagged in the JSON.
+OPEN: not yet wired into refresh_all.ps1 or the dashboard (next session).
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit

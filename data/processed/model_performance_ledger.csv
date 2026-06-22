@@ -1,0 +1,41 @@
+match_id,date,label,side,selection,model_prob,market_prob,edge,decimal_odds,market_source,kelly_full,status,pnl_unit,settled,result_side
+2,2026-06-11,South Korea vs Czechia,home,South Korea,0.4467,0.3568,0.0899,2.8027,fair,0.1398,WON,1.8027,True,home
+3,2026-06-12,Canada vs Bosnia and Herzegovina,home,Canada,0.6602,0.5395,0.1207,1.8536,fair,0.2621,LOST,-1.0,True,draw
+5,2026-06-13,Qatar vs Switzerland,draw,Qatar vs Switzerland (draw),0.3029,0.1403,0.1626,7.0,real,0.1867,WON,6.0,True,draw
+6,2026-06-13,Brazil vs Morocco,draw,Brazil vs Morocco (draw),0.313,0.254,0.059,3.7,real,0.0586,WON,2.7,True,draw
+7,2026-06-13,Haiti vs Scotland,home,Haiti,0.3207,0.1545,0.1662,6.0,real,0.1848,LOST,-1.0,True,away
+8,2026-06-13,Australia vs Turkey,home,Australia,0.3974,0.1862,0.2112,5.0,real,0.2467,WON,4.0,True,home
+10,2026-06-14,Netherlands vs Japan,away,Japan,0.3748,0.2565,0.1183,3.65,real,0.1389,LOST,-1.0,True,draw
+11,2026-06-14,Ivory Coast vs Ecuador,home,Ivory Coast,0.3625,0.2661,0.0964,3.6,real,0.1173,WON,2.6,True,home
+12,2026-06-14,Tunisia vs Sweden,draw,Tunisia vs Sweden (draw),0.3653,0.2788,0.0865,3.55,real,0.1164,LOST,-1.0,True,away
+15,2026-06-15,Saudi Arabia vs Uruguay,draw,Saudi Arabia vs Uruguay (draw),0.318,0.2088,0.1092,4.5,real,0.1231,WON,3.5,True,draw
+16,2026-06-15,Iran vs New Zealand,away,New Zealand,0.3077,0.2148,0.0929,4.7,real,0.1206,LOST,-1.0,True,draw
+18,2026-06-16,Norway vs Iraq,away,Iraq,0.3167,0.0609,0.2558,14.0,real,0.2641,LOST,-1.0,True,home
+20,2026-06-16,Austria vs Jordan,away,Jordan,0.3034,0.0935,0.2099,9.0,real,0.2163,LOST,-1.0,True,home
+23,2026-06-17,Ghana vs Panama,away,Panama,0.3956,0.2614,0.1342,3.5,real,0.1538,LOST,-1.0,True,home
+24,2026-06-17,Uzbekistan vs Colombia,draw,Uzbekistan vs Colombia (draw),0.3357,0.205,0.1307,4.7,real,0.1562,LOST,-1.0,True,away
+25,2026-06-18,South Africa vs Czechia,draw,South Africa vs Czechia (draw),0.3365,0.2799,0.0566,3.75,real,0.0952,WON,2.75,True,draw
+28,2026-06-18,Mexico vs South Korea,draw,Mexico vs South Korea (draw),0.3137,0.2606,0.0531,3.35,real,0.0217,LOST,-1.0,True,home
+29,2026-06-19,USA vs Australia,draw,USA vs Australia (draw),0.3165,0.2406,0.0759,4.5,real,0.1212,LOST,-1.0,True,home
+30,2026-06-19,Scotland vs Morocco,away,Morocco,0.5406,0.4847,0.0559,2.0,real,0.0812,WON,1.0,True,away
+33,2026-06-20,Netherlands vs Sweden,draw,Netherlands vs Sweden (draw),0.301,0.2269,0.0741,4.2,real,0.0826,LOST,-1.0,True,home
+36,2026-06-20,Tunisia vs Japan,away,Japan,0.6199,0.5661,0.0538,1.7143,real,0.0878,WON,0.7143,True,away
+38,2026-06-21,Belgium vs Iran,away,Iran,0.3404,0.113,0.2274,8.0,real,0.2462,LOST,-1.0,True,draw
+40,2026-06-21,New Zealand vs Egypt,draw,New Zealand vs Egypt (draw),0.4649,0.248,0.2169,3.85,real,0.2771,LOST,-1.0,True,away
+43,2026-06-22,Norway vs Senegal,away,Senegal,0.4299,0.2822,0.1477,3.4,real,0.1924,pending,0.0,False,
+44,2026-06-22,Jordan vs Algeria,draw,Jordan vs Algeria (draw),0.3099,0.2198,0.0901,4.4,real,0.1069,pending,0.0,False,
+47,2026-06-23,Panama vs Croatia,home,Panama,0.3232,0.1406,0.1826,6.5,real,0.2001,pending,0.0,False,
+48,2026-06-23,Colombia vs DR Congo,draw,Colombia vs DR Congo (draw),0.3188,0.2151,0.1037,4.4,real,0.1184,pending,0.0,False,
+49,2026-06-24,Canada vs Switzerland,draw,Canada vs Switzerland (draw),0.3318,0.2769,0.0549,3.45,real,0.0591,pending,0.0,False,
+50,2026-06-24,Qatar vs Bosnia and Herzegovina,home,Qatar,0.4231,0.1424,0.2807,5.75,real,0.3016,pending,0.0,False,
+52,2026-06-24,Morocco vs Haiti,draw,Morocco vs Haiti (draw),0.3065,0.1798,0.1267,5.0,real,0.1331,pending,0.0,False,
+54,2026-06-24,South Korea vs South Africa,home,South Korea,0.6278,0.4943,0.1335,1.6061,real,0.0137,pending,0.0,False,
+56,2026-06-25,Curacao vs Ivory Coast,draw,Curacao vs Ivory Coast (draw),0.3055,0.1422,0.1633,7.0,real,0.1898,pending,0.0,False,
+58,2026-06-25,Japan vs Sweden,draw,Japan vs Sweden (draw),0.357,0.2746,0.0824,3.45,real,0.0946,pending,0.0,False,
+59,2026-06-25,USA vs Turkey,home,USA,0.4344,0.3769,0.0575,2.5,real,0.0573,pending,0.0,False,
+60,2026-06-25,Paraguay vs Australia,away,Australia,0.4557,0.2633,0.1924,3.7,real,0.2541,pending,0.0,False,
+64,2026-06-26,Cape Verde vs Saudi Arabia,away,Saudi Arabia,0.5049,0.3364,0.1685,2.7,real,0.2137,pending,0.0,False,
+65,2026-06-26,New Zealand vs Belgium,draw,New Zealand vs Belgium (draw),0.3423,0.1552,0.1871,6.0,real,0.2108,pending,0.0,False,
+66,2026-06-26,Egypt vs Iran,away,Iran,0.3996,0.2624,0.1372,3.65,real,0.173,pending,0.0,False,
+70,2026-06-27,Uzbekistan vs DR Congo,home,Uzbekistan,0.3961,0.3039,0.0922,3.15,real,0.1152,pending,0.0,False,
+72,2026-06-27,Algeria vs Austria,home,Algeria,0.3822,0.2592,0.123,3.75,real,0.1575,pending,0.0,False,
