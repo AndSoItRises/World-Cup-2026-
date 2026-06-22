@@ -1,5 +1,5 @@
 # WC2026 QUANT MODEL — AGENT HANDOFF (V6)
-Updated: 2026-06-11 · repo: https://github.com/AndSoItRises/World-Cup-2026- · tournament starts 2026-06-11
+Updated: 2026-06-22 (Phase 7 in progress — see DL-14..16) · repo: https://github.com/AndSoItRises/World-Cup-2026- · tournament starts 2026-06-11
 
 This document is sufficient to start work cold. Read it top to bottom, then run the
 SESSION START block. Detailed history lives in CONTEXT_V6.md (decision log DL-01..11)
@@ -132,6 +132,22 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
    bet_sim pattern extends directly; model probs already in tournament_probs_live.csv.
 6. **Bracket P10/P50/P90 bands + re-sim button**: dump per-sim outcomes from
    live_update.py, embed distribution in dashboard panel C.
+
+### Phase 7 (2026-06-22, in progress — full prompt = the agentic Phase 7 spec)
+7. ~~**ingest_results.py + GitHub Actions**~~ ✅ DONE 2026-06-22 (DL-14): cloud results ingest
+   from football-data.org + `.github/workflows/daily_update.yml` (twice-daily + manual).
+   OPEN: reconcile vs the local ESPN `fetch_live_results` + `refresh_all.ps1` task — which is
+   canonical? Verify competition code (`WC2026` vs `WC`) against the live API.
+8. ~~**settle_bets.py**~~ ✅ DONE 2026-06-22 (DL-15): settles pending picks → WON/LOST/VOID +
+   pnl; writes bet_ledger_settled.csv, settlement_log.csv, extends group_standings.csv.
+   OPEN: overlaps clv_tracker.py settlement — replace or coexist? Not yet wired into any
+   orchestrator; run standalone (`python -m src.models.settle_bets`) until decided.
+9. **Underdog "+0.5 insurance" tracker** (Jake ask, DL-16): for dog picks, track smaller ML +
+   a +0.5 (win-or-draw) leg in a SEPARATE ledger. Feasible from existing W/D/L + market 1X2
+   data. NOT built — confirm trigger/stake-split/sizing with Jake first.
+10. **Remaining Phase 7 spec** (not started): unit-based picks system + config.json (§2),
+    daily generate_picks.py (§3), live_update orchestration of all steps (§8), backtest_live.py
+    (§5), dashboard V6→V7 upgrades (§6). settle_bets/ingest exist; the rest is open.
 
 ## 8. DASHBOARD (outputs/quant_dashboard.html)
 Self-contained, offline, dark terminal theme; mobile/iOS-friendly (open the GitHub

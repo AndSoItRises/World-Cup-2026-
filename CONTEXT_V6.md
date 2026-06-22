@@ -286,6 +286,90 @@ full per-match table with ✓/✗. Both honest: post-result rows excluded from h
 numbers, n<40 flagged as too-small, LL comparison labeled diary-grade (the powered
 statistic is CLV — memo §3a).
 
+### DL-14 — Phase 7 Step 1: cloud results ingest (football-data.org) + GitHub Actions (2026-06-22)
+Phase 7 wants the refresh loop to run with NO local machine. Added a parallel cloud ingest
+path that mirrors fetch_live_results' contract but sources football-data.org instead of ESPN:
+- `src/features/team_name_map.py` (NEW): football-data.org full names → fixtures convention
+  (`United States`→`USA`, `Korea Republic`→`South Korea`, `Côte d'Ivoire`→`Ivory Coast`, …),
+  accent-insensitive exact lookup + difflib fuzzy fallback. Targets the FIXTURES convention
+  on purpose (not internal names) so output stays compatible with live_update.load_live(),
+  which applies normalize() afterwards (two-layer naming — see §5 name-audit non-negotiable).
+- `src/models/ingest_results.py` (NEW): GET /v4/competitions/{code}/matches?status=FINISHED
+  (X-Auth-Token), parses 90-min scores (regularTime, fallback fullTime), joins to internal
+  match_id via wc2026_fixtures.csv on (home,away), MERGE-writes wc2026_live_results.csv keyed
+  on match_id (preserves existing/hand-edited rows). `--self-test` runs offline (no network).
+  Verified: 72/72 group fixtures join with API-style names, 0 synthetic ids; empty pull
+  preserves all 40 existing rows; load_live() consumes output unchanged.
+- `.github/workflows/daily_update.yml` (NEW): cron 04:00 + 10:00 UTC + workflow_dispatch,
+  `contents: write`, runs ingest_results → live_update, commits only if `git diff --staged`
+  is non-empty. Reads secret FOOTBALL_DATA_API_KEY (already set in repo).
+
+CARRIED CAVEATS / OPEN DECISIONS (not yet resolved with Jake):
+- TWO ingestors now target wc2026_live_results.csv: fetch_live_results.py (ESPN, local 30-min
+  task, DL-12) and ingest_results.py (football-data.org, GitHub Actions). They must not fight.
+  Decision pending: does the cloud path REPLACE the local task, or is one canonical?
+- Competition code defaulted to `WC2026` per the Phase 7 prompt; football-data.org has
+  historically used `WC`. Overridable via env FOOTBALL_DATA_COMPETITION. UNVERIFIED against the
+  live API (key not present in this dev shell) — confirm before relying on the cron.
+- Workflow pins Python 3.13 (NOT the prompt's 3.10): requirements.txt pins numpy 2.4 / pandas
+  3.0, which need ≥3.11; 3.10 would fail pip install. Matches the local venv.
+
+### DL-15 — Phase 7 Step 2: settle_bets.py — the settlement fix (2026-06-22)
+Phase 7's CRITICAL bug: picks sat at status=pending/pnl=0 after their match was played.
+`src/models/settle_bets.py` (NEW) reconciles pending picks against wc2026_live_results.csv:
+join by match_id (date+teams fuzzy fallback), set WON/LOST/VOID, pnl = (taken_decimal-1)*stake
+on WON, -stake on LOST. 1X2 settled on the 90-min score (a draw loses a home/away ML),
+matching how live_update records results. Outputs: clv_report.csv updated IN PLACE (only
+status/pnl_usd of newly-settled rows; CLV data preserved); bet_ledger_settled.csv
+(= bet_ledger.csv + status/pnl_usd, original untouched); settlement_log.csv (append-only
+audit, one row per settlement, timestamped); group_standings.csv EXTENDED with actual
+played/pts/gf/ga/gd (probability columns kept; fixtures names normalized to internal to join).
+Idempotent — bet_ledger.csv has no status column, so prior settlements are re-seeded from
+bet_ledger_settled.csv each run (caught the audit log growing 29→45 before the fix; now stable).
+First run settled 13 pending picks (4 WON / 9 LOST, net +$11.02); formula cross-checked against
+the 3 pre-existing settled rows (match_id 2/4/3 → 9.96/10.19/-19.35 exact). Future picks
+(match_id>40) correctly stay pending.
+
+CARRIED CAVEAT: this OVERLAPS clv_tracker.py, which already writes/settles bet_ledger.csv +
+clv_report.csv (DL-10/DL-11). settle_bets.py is currently a standalone fix; it is NOT yet wired
+into refresh_all.ps1 or live_update orchestration. Decision pending with Jake: does settle_bets
+REPLACE clv_tracker's settlement, or run alongside it? Until resolved, run settle_bets manually
+and do not double-settle.
+
+### DL-16 — QUEUED (Jake ask, 2026-06-22): underdog "+0.5 insurance" companion tracker
+Jake: when the model picks an underdog over a superior team (e.g. Senegal over Argentina),
+also track a smaller-stake Senegal ML PLUS a Senegal +0.5 (wins if Senegal wins OR draws —
+i.e. it cashes whenever the favorite does NOT win). Captures the draw outcome the straight ML
+loses. CONFIRMED FEASIBLE from existing data with no new odds source: wc2026_predictions.csv /
+prediction_ledger.csv carry full p_home/p_draw/p_away AND market mkt_home/mkt_draw/mkt_away, so
++0.5 model-cover = p_team + p_draw, market +0.5 implied = mkt_team + mkt_draw, edge = the diff,
+fair decimal = 1/cover. Settlement reuses settle_bets' 90-min result_side: WIN if result_side ∈
+{team, draw}, else LOSE.
+
+DESIGN CONFIRMED with Jake (2026-06-22):
+- TRIGGER (config-driven, edge-gated — only recommend a leg with positive edge): big-dog tier
+  `market_implied_win ≤ 0.30` → ML + +0.5 insurance; toss-up tier `0.30 < implied < 0.50` →
+  track BOTH ML and +0.5 as separate recommendations; favorites → no insurance leg.
+- SIZING = JOINT multi-outcome Kelly, NOT independent per-leg (ML and +0.5 share the `win`
+  state; independent Kelly double-counts it and over-stakes). Solve f₁,f₂ maximizing
+  p_w·ln(1+f₁(d₁-1)+f₂(d₂-1)) + p_d·ln(1-f₁+f₂(d₂-1)) + p_l·ln(1-f₁-f₂) (concave, scipy),
+  then apply the project's existing ½-Kelly fraction + 5% per-event cap. Rationale: harvests
+  the model's full W/D/L disagreement AND de-variances it (the "consistently profitable" ask).
+- TRACKING: 3 separate ledgers/streams (ML-only, +0.5-only, combined joint-Kelly strategy) for
+  honest risk-adjusted attribution (Sharpe / max-drawdown A/B), unified into ONE dashboard panel
+  (three overlaid equity curves). Separate technically, single digestible visualization.
+- Config defaults (config.json): big_dog_threshold=0.30, tossup_band=[0.30,0.50],
+  kelly_fraction=0.5, cap=0.05.
+- HONEST CAVEAT: components (double chance, Kelly) are textbook; the defensible IP is the
+  system — a calibrated W/D/L distribution that measurably disagrees with the market (DL-10)
+  + correlated multi-outcome Kelly to express it, proven by realized CLV. It only monetizes an
+  edge if the dog edge is REAL, which DL-10/§6.3 say is still unproven (decided by this
+  tournament). The +0.5 layer de-variances an edge; it does not create one.
+
+STILL OPEN before build: decision on the ingest/settlement canonical path (replace vs coexist —
+the local ESPN/clv_tracker loop vs the cloud football-data/settle_bets path) gates the "auto-run"
+wiring. NOT YET BUILT. See HANDOFF §7 queue item 9.
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit
