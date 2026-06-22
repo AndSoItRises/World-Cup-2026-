@@ -154,6 +154,11 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
     `health_check.py` (NEW) writes model_health.json + exits non-zero on BROKEN → fails the
     Actions workflow → GitHub emails you (PC-off "flag me"); local loop logs a WARN.
     OPEN: the _active_scripts/_archive repo reorg is uncommitted — commit it deliberately.
+12. **PHASE 8 — product-grade desk + dual bankroll trackers** (spec: `prompts/PHASE_8_QUANT_DESK_PRODUCT.md`):
+    realized model-performance tracker (every value game, multi-strategy) + a MAIN $500-from-today
+    selective bankroll sim; DESK CALLS landing that draws a conclusion; tab audit / product polish;
+    fix the bankroll "not enough games" coverage. Plus a future agentic-loop/architecture note. A
+    fresh agent can start from that prompt file alone.
 11. **Remaining Phase 7 spec** (not started): unit-based picks system + config.json (§2),
     daily generate_picks.py (§3), live_update orchestration of all steps (§8), backtest_live.py
     (§5), dashboard V6→V7 upgrades (§6), +0.5 insurance tracker (item 9). The settlement/ingest/
