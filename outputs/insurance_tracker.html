@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WC2026 — Underdog +0.5 Insurance Tracker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#0c0f14;--card:#151a22;--ln:#222b38;--tx:#e6edf3;--mut:#8b98a8;
+        --grn:#3fb950;--red:#f85149;--yel:#d29922;--blu:#58a6ff;--vio:#a371f7}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+       font:15px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:18px}
+  h1{font-size:21px;margin:0 0 2px} h2{font-size:16px;margin:26px 0 10px;color:var(--blu)}
+  .sub{color:var(--mut);font-size:13px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+  .explain{font-size:14px}.explain b{color:var(--tx)} .explain code{background:#0a0d12;padding:1px 5px;border-radius:4px;color:var(--vio)}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:620px){.kpis{grid-template-columns:1fr}}
+  .kpi{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:12px}
+  .kpi .lab{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .kpi .big{font-size:26px;font-weight:700;margin:4px 0}
+  .kpi .row{font-size:12px;color:var(--mut)}
+  .pos{color:var(--grn)} .neg{color:var(--red)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:7px 8px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}
+  th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase}
+  .badge{padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+  .b-dog{background:rgba(163,113,247,.15);color:var(--vio)} .b-toss{background:rgba(210,153,34,.15);color:var(--yel)}
+  .won{color:var(--grn);font-weight:700}.lost{color:var(--red);font-weight:700}.pend{color:var(--mut)}
+  .rat{color:var(--mut);font-size:12px;white-space:normal}
+  .note{color:var(--mut);font-size:12px;border-left:3px solid var(--yel);padding:6px 10px;margin-top:8px}
+  .wrap{overflow-x:auto}
+</style>
+</head>
+<body>
+<h1>Underdog <span style="color:var(--vio)">+0.5</span> Insurance Tracker</h1>
+<div class="sub" id="sub"></div>
+
+<div class="card explain">
+  <b>What this is.</b> When the model backs an underdog (say <b>Senegal over Argentina</b>),
+  we place two bets on the same game:
+  <ul style="margin:8px 0">
+    <li><b>ML</b> — Senegal to <b>win</b> (pays only if Senegal wins).</li>
+    <li><b>+0.5</b> — Senegal to <b>win or draw</b> — it cashes whenever Argentina
+        does <b>not</b> win. This is the "insurance": it catches the draw the moneyline throws away.</li>
+  </ul>
+  Both bets share the "Senegal wins" outcome, so they're <b>correlated</b>. We size them
+  <b>together</b> with <b>joint Kelly</b> (not separately — that would over-bet the shared win),
+  then apply the desk's usual <code>½-Kelly</code> + <code>5% cap</code>.
+  <div style="margin-top:8px">We track <b>three</b> bankrolls so we can see, honestly, whether the
+  insurance helps: <b>ML-only</b>, <b>+0.5-only</b>, and <b>Combined</b> (what we'd actually run).</div>
+</div>
+
+<h2>Bankroll — 3 strategies compared</h2>
+<div class="kpis" id="kpis"></div>
+<div class="card"><canvas id="chart" height="150"></canvas></div>
+
+<h2>Recommendations</h2>
+<div class="wrap"><table id="tbl">
+  <thead><tr>
+    <th>Date</th><th>Pick</th><th>vs</th><th>Tier</th><th>Mkt&nbsp;win</th>
+    <th>Edge&nbsp;ML</th><th>Edge&nbsp;+0.5</th><th>Odds&nbsp;ML</th><th>Odds&nbsp;+0.5</th>
+    <th>Stake&nbsp;ML</th><th>Stake&nbsp;+0.5</th><th>ML</th><th>+0.5</th><th>Why</th>
+  </tr></thead><tbody></tbody>
+</table></div>
+
+<div class="note" id="caveat"></div>
+
+<script>
+const DATA = {"config": {"big_dog": 0.3, "tossup_hi": 0.5, "min_leg_edge": 0.02, "kelly_fraction": 0.5, "cap": 0.05, "bank0": 100.0}, "n_recommendations": 17, "n_settled": 6, "n_open": 11, "streams": {"ml_only": {"label": "ML only", "final_bankroll": 151.23, "roi_pct": 51.23, "n_bets": 5, "win_rate": 80.0, "max_drawdown_pct": 5.0, "curve": [{"date": "start", "bank": 100.0}, {"date": "2026-06-11", "bank": 109.01}, {"date": "2026-06-13", "bank": 132.84}, {"date": "2026-06-14", "bank": 151.15}, {"date": "2026-06-17", "bank": 143.6}, {"date": "2026-06-19", "bank": 151.23}, {"date": "2026-06-19", "bank": 151.23}]}, "plus_half": {"label": "+0.5 only", "final_bankroll": 103.34, "roi_pct": 3.34, "n_bets": 6, "win_rate": 66.7, "max_drawdown_pct": 8.44, "curve": [{"date": "start", "bank": 100.0}, {"date": "2026-06-11", "bank": 102.62}, {"date": "2026-06-13", "bank": 109.29}, {"date": "2026-06-14", "bank": 112.86}, {"date": "2026-06-17", "bank": 107.22}, {"date": "2026-06-19", "bank": 108.78}, {"date": "2026-06-19", "bank": 103.34}]}, "combined": {"label": "Combined (joint Kelly)", "final_bankroll": 152.23, "roi_pct": 52.23, "n_bets": 6, "win_rate": 66.7, "max_drawdown_pct": 7.72, "curve": [{"date": "start", "bank": 100.0}, {"date": "2026-06-11", "bank": 110.21}, {"date": "2026-06-13", "bank": 141.45}, {"date": "2026-06-14", "bank": 164.96}, {"date": "2026-06-17", "bank": 154.18}, {"date": "2026-06-19", "bank": 160.24}, {"date": "2026-06-19", "bank": 152.23}]}}, "open_recs": [{"match_id": 43, "date": "2026-06-22", "selection": "Senegal (away)", "opponent": "Norway", "tier": "BIG DOG", "market_implied_win": 0.2822, "model_win": 0.4299, "model_cover": 0.7109, "edge_ml": 0.1477, "edge_dc": 0.1626, "decimal_ml": 3.5436, "decimal_dc": 1.8238, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 43% win vs 28% priced) + +0.5 5.0% of bank (model 71% not-lose vs 55% priced)"}, {"match_id": 50, "date": "2026-06-24", "selection": "Qatar (home)", "opponent": "Bosnia and Herzegovina", "tier": "BIG DOG", "market_implied_win": 0.1424, "model_win": 0.4231, "model_cover": 0.7324, "edge_ml": 0.2807, "edge_dc": 0.3525, "decimal_ml": 7.0225, "decimal_dc": 2.6323, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 42% win vs 14% priced) + +0.5 5.0% of bank (model 73% not-lose vs 38% priced)"}, {"match_id": 54, "date": "2026-06-24", "selection": "South Korea (home)", "opponent": "South Africa", "tier": "TOSS-UP", "market_implied_win": 0.4943, "model_win": 0.6278, "model_cover": 0.8841, "edge_ml": 0.1335, "edge_dc": 0.1193, "decimal_ml": 2.0231, "decimal_dc": 1.3075, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 63% win vs 49% priced) + +0.5 5.0% of bank (model 88% not-lose vs 76% priced)"}, {"match_id": 58, "date": "2026-06-25", "selection": "Japan (home)", "opponent": "Sweden", "tier": "TOSS-UP", "market_implied_win": 0.4588, "model_win": 0.4965, "model_cover": 0.8535, "edge_ml": 0.0377, "edge_dc": 0.1201, "decimal_ml": 2.1796, "decimal_dc": 1.3635, "f_ml": 0.0, "f_dc": 0.05, "f_ml_solo": 0.0348, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "+0.5 5.0% of bank (model 85% not-lose vs 73% priced)"}, {"match_id": 59, "date": "2026-06-25", "selection": "USA (home)", "opponent": "Turkey", "tier": "TOSS-UP", "market_implied_win": 0.3769, "model_win": 0.4344, "model_cover": 0.7251, "edge_ml": 0.0575, "edge_dc": 0.0805, "decimal_ml": 2.6532, "decimal_dc": 1.5513, "f_ml": 0.0125, "f_dc": 0.05, "f_ml_solo": 0.0461, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 1.3% of bank (model 43% win vs 38% priced) + +0.5 5.0% of bank (model 73% not-lose vs 64% priced)"}, {"match_id": 60, "date": "2026-06-25", "selection": "Australia (away)", "opponent": "Paraguay", "tier": "BIG DOG", "market_implied_win": 0.2633, "model_win": 0.4557, "model_cover": 0.7726, "edge_ml": 0.1924, "edge_dc": 0.2211, "decimal_ml": 3.7979, "decimal_dc": 1.8132, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 46% win vs 26% priced) + +0.5 5.0% of bank (model 77% not-lose vs 55% priced)"}, {"match_id": 64, "date": "2026-06-26", "selection": "Saudi Arabia (away)", "opponent": "Cape Verde", "tier": "TOSS-UP", "market_implied_win": 0.3364, "model_win": 0.5049, "model_cover": 0.8125, "edge_ml": 0.1685, "edge_dc": 0.1824, "decimal_ml": 2.9727, "decimal_dc": 1.587, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 50% win vs 34% priced) + +0.5 5.0% of bank (model 81% not-lose vs 63% priced)"}, {"match_id": 66, "date": "2026-06-26", "selection": "Iran (away)", "opponent": "Egypt", "tier": "BIG DOG", "market_implied_win": 0.2624, "model_win": 0.3996, "model_cover": 0.7921, "edge_ml": 0.1372, "edge_dc": 0.2139, "decimal_ml": 3.811, "decimal_dc": 1.7295, "f_ml": 0.0367, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 3.7% of bank (model 40% win vs 26% priced) + +0.5 5.0% of bank (model 79% not-lose vs 58% priced)"}, {"match_id": 69, "date": "2026-06-27", "selection": "Portugal (away)", "opponent": "Colombia", "tier": "TOSS-UP", "market_implied_win": 0.4406, "model_win": 0.4374, "model_cover": 0.7625, "edge_ml": -0.0032, "edge_dc": 0.0359, "decimal_ml": 2.2696, "decimal_dc": 1.3763, "f_ml": 0.0, "f_dc": 0.05, "f_ml_solo": 0.0, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "+0.5 5.0% of bank (model 76% not-lose vs 73% priced)"}, {"match_id": 70, "date": "2026-06-27", "selection": "Uzbekistan (home)", "opponent": "DR Congo", "tier": "TOSS-UP", "market_implied_win": 0.3039, "model_win": 0.3961, "model_cover": 0.7355, "edge_ml": 0.0922, "edge_dc": 0.1464, "decimal_ml": 3.2906, "decimal_dc": 1.6975, "f_ml": 0.0174, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 1.7% of bank (model 40% win vs 30% priced) + +0.5 5.0% of bank (model 74% not-lose vs 59% priced)"}, {"match_id": 72, "date": "2026-06-27", "selection": "Algeria (home)", "opponent": "Austria", "tier": "BIG DOG", "market_implied_win": 0.2592, "model_win": 0.3822, "model_cover": 0.6866, "edge_ml": 0.123, "edge_dc": 0.1226, "decimal_ml": 3.858, "decimal_dc": 1.773, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 38% win vs 26% priced) + +0.5 5.0% of bank (model 69% not-lose vs 56% priced)"}], "ledger": [{"match_id": 2, "date": "2026-06-11", "selection": "South Korea (home)", "opponent": "Czechia", "tier": "TOSS-UP", "market_implied_win": 0.3568, "model_win": 0.4467, "model_cover": 0.751, "edge_ml": 0.0899, "edge_dc": 0.0947, "decimal_ml": 2.8027, "decimal_dc": 1.5237, "f_ml": 0.0421, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "WON", "status_dc": "WON", "result_side": "home", "settled": true, "rationale": "ML 4.2% of bank (model 45% win vs 36% priced) + +0.5 5.0% of bank (model 75% not-lose vs 66% priced)"}, {"match_id": 8, "date": "2026-06-13", "selection": "Australia (home)", "opponent": "Turkey", "tier": "BIG DOG", "market_implied_win": 0.1862, "model_win": 0.3974, "model_cover": 0.6859, "edge_ml": 0.2112, "edge_dc": 0.2511, "decimal_ml": 5.3706, "decimal_dc": 2.2999, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "WON", "status_dc": "WON", "result_side": "home", "settled": true, "rationale": "ML 5.0% of bank (model 40% win vs 19% priced) + +0.5 5.0% of bank (model 69% not-lose vs 43% priced)"}, {"match_id": 11, "date": "2026-06-14", "selection": "Ivory Coast (home)", "opponent": "Ecuador", "tier": "BIG DOG", "market_implied_win": 0.2661, "model_win": 0.3625, "model_cover": 0.683, "edge_ml": 0.0964, "edge_dc": 0.0783, "decimal_ml": 3.758, "decimal_dc": 1.6537, "f_ml": 0.05, "f_dc": 0.0433, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "WON", "status_dc": "WON", "result_side": "home", "settled": true, "rationale": "ML 5.0% of bank (model 36% win vs 27% priced) + +0.5 4.3% of bank (model 68% not-lose vs 60% priced)"}, {"match_id": 23, "date": "2026-06-17", "selection": "Panama (away)", "opponent": "Ghana", "tier": "BIG DOG", "market_implied_win": 0.2614, "model_win": 0.3956, "model_cover": 0.7822, "edge_ml": 0.1342, "edge_dc": 0.2437, "decimal_ml": 3.8256, "decimal_dc": 1.857, "f_ml": 0.0154, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "LOST", "status_dc": "LOST", "result_side": "home", "settled": true, "rationale": "ML 1.5% of bank (model 40% win vs 26% priced) + +0.5 5.0% of bank (model 78% not-lose vs 54% priced)"}, {"match_id": 30, "date": "2026-06-19", "selection": "Morocco (away)", "opponent": "Scotland", "tier": "TOSS-UP", "market_implied_win": 0.4847, "model_win": 0.5406, "model_cover": 0.8359, "edge_ml": 0.0559, "edge_dc": 0.0614, "decimal_ml": 2.0631, "decimal_dc": 1.2912, "f_ml": 0.0233, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "WON", "status_dc": "WON", "result_side": "away", "settled": true, "rationale": "ML 2.3% of bank (model 54% win vs 48% priced) + +0.5 5.0% of bank (model 84% not-lose vs 77% priced)"}, {"match_id": 32, "date": "2026-06-19", "selection": "Turkey (away)", "opponent": "Paraguay", "tier": "TOSS-UP", "market_implied_win": 0.4277, "model_win": 0.4466, "model_cover": 0.7705, "edge_ml": 0.0189, "edge_dc": 0.0455, "decimal_ml": 2.3381, "decimal_dc": 1.3793, "f_ml": 0.0, "f_dc": 0.05, "f_ml_solo": 0.0, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "LOST", "result_side": "home", "settled": true, "rationale": "+0.5 5.0% of bank (model 77% not-lose vs 72% priced)"}, {"match_id": 43, "date": "2026-06-22", "selection": "Senegal (away)", "opponent": "Norway", "tier": "BIG DOG", "market_implied_win": 0.2822, "model_win": 0.4299, "model_cover": 0.7109, "edge_ml": 0.1477, "edge_dc": 0.1626, "decimal_ml": 3.5436, "decimal_dc": 1.8238, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 43% win vs 28% priced) + +0.5 5.0% of bank (model 71% not-lose vs 55% priced)"}, {"match_id": 50, "date": "2026-06-24", "selection": "Qatar (home)", "opponent": "Bosnia and Herzegovina", "tier": "BIG DOG", "market_implied_win": 0.1424, "model_win": 0.4231, "model_cover": 0.7324, "edge_ml": 0.2807, "edge_dc": 0.3525, "decimal_ml": 7.0225, "decimal_dc": 2.6323, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 42% win vs 14% priced) + +0.5 5.0% of bank (model 73% not-lose vs 38% priced)"}, {"match_id": 54, "date": "2026-06-24", "selection": "South Korea (home)", "opponent": "South Africa", "tier": "TOSS-UP", "market_implied_win": 0.4943, "model_win": 0.6278, "model_cover": 0.8841, "edge_ml": 0.1335, "edge_dc": 0.1193, "decimal_ml": 2.0231, "decimal_dc": 1.3075, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 63% win vs 49% priced) + +0.5 5.0% of bank (model 88% not-lose vs 76% priced)"}, {"match_id": 58, "date": "2026-06-25", "selection": "Japan (home)", "opponent": "Sweden", "tier": "TOSS-UP", "market_implied_win": 0.4588, "model_win": 0.4965, "model_cover": 0.8535, "edge_ml": 0.0377, "edge_dc": 0.1201, "decimal_ml": 2.1796, "decimal_dc": 1.3635, "f_ml": 0.0, "f_dc": 0.05, "f_ml_solo": 0.0348, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "+0.5 5.0% of bank (model 85% not-lose vs 73% priced)"}, {"match_id": 59, "date": "2026-06-25", "selection": "USA (home)", "opponent": "Turkey", "tier": "TOSS-UP", "market_implied_win": 0.3769, "model_win": 0.4344, "model_cover": 0.7251, "edge_ml": 0.0575, "edge_dc": 0.0805, "decimal_ml": 2.6532, "decimal_dc": 1.5513, "f_ml": 0.0125, "f_dc": 0.05, "f_ml_solo": 0.0461, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 1.3% of bank (model 43% win vs 38% priced) + +0.5 5.0% of bank (model 73% not-lose vs 64% priced)"}, {"match_id": 60, "date": "2026-06-25", "selection": "Australia (away)", "opponent": "Paraguay", "tier": "BIG DOG", "market_implied_win": 0.2633, "model_win": 0.4557, "model_cover": 0.7726, "edge_ml": 0.1924, "edge_dc": 0.2211, "decimal_ml": 3.7979, "decimal_dc": 1.8132, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 46% win vs 26% priced) + +0.5 5.0% of bank (model 77% not-lose vs 55% priced)"}, {"match_id": 64, "date": "2026-06-26", "selection": "Saudi Arabia (away)", "opponent": "Cape Verde", "tier": "TOSS-UP", "market_implied_win": 0.3364, "model_win": 0.5049, "model_cover": 0.8125, "edge_ml": 0.1685, "edge_dc": 0.1824, "decimal_ml": 2.9727, "decimal_dc": 1.587, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 50% win vs 34% priced) + +0.5 5.0% of bank (model 81% not-lose vs 63% priced)"}, {"match_id": 66, "date": "2026-06-26", "selection": "Iran (away)", "opponent": "Egypt", "tier": "BIG DOG", "market_implied_win": 0.2624, "model_win": 0.3996, "model_cover": 0.7921, "edge_ml": 0.1372, "edge_dc": 0.2139, "decimal_ml": 3.811, "decimal_dc": 1.7295, "f_ml": 0.0367, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 3.7% of bank (model 40% win vs 26% priced) + +0.5 5.0% of bank (model 79% not-lose vs 58% priced)"}, {"match_id": 69, "date": "2026-06-27", "selection": "Portugal (away)", "opponent": "Colombia", "tier": "TOSS-UP", "market_implied_win": 0.4406, "model_win": 0.4374, "model_cover": 0.7625, "edge_ml": -0.0032, "edge_dc": 0.0359, "decimal_ml": 2.2696, "decimal_dc": 1.3763, "f_ml": 0.0, "f_dc": 0.05, "f_ml_solo": 0.0, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "+0.5 5.0% of bank (model 76% not-lose vs 73% priced)"}, {"match_id": 70, "date": "2026-06-27", "selection": "Uzbekistan (home)", "opponent": "DR Congo", "tier": "TOSS-UP", "market_implied_win": 0.3039, "model_win": 0.3961, "model_cover": 0.7355, "edge_ml": 0.0922, "edge_dc": 0.1464, "decimal_ml": 3.2906, "decimal_dc": 1.6975, "f_ml": 0.0174, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 1.7% of bank (model 40% win vs 30% priced) + +0.5 5.0% of bank (model 74% not-lose vs 59% priced)"}, {"match_id": 72, "date": "2026-06-27", "selection": "Algeria (home)", "opponent": "Austria", "tier": "BIG DOG", "market_implied_win": 0.2592, "model_win": 0.3822, "model_cover": 0.6866, "edge_ml": 0.123, "edge_dc": 0.1226, "decimal_ml": 3.858, "decimal_dc": 1.773, "f_ml": 0.05, "f_dc": 0.05, "f_ml_solo": 0.05, "f_dc_solo": 0.05, "status_ml": "", "status_dc": "", "result_side": "", "settled": false, "rationale": "ML 5.0% of bank (model 38% win vs 26% priced) + +0.5 5.0% of bank (model 69% not-lose vs 56% priced)"}]};
+const f = (x,d=1)=>Number(x).toFixed(d);
+const pct = x => (x*100).toFixed(1)+'%';
+const cls = v => v>=0?'pos':'neg';
+
+// subtitle
+document.getElementById('sub').textContent =
+  `${DATA.n_recommendations} recommendations · ${DATA.n_settled} settled · ${DATA.n_open} open`
+  + ` · starting bankroll ${DATA.config.bank0} units · ½-Kelly, ${(DATA.config.cap*100)}% cap per leg`;
+
+// KPI cards
+const order=['ml_only','plus_half','combined'];
+document.getElementById('kpis').innerHTML = order.map(k=>{
+  const s=DATA.streams[k];
+  return `<div class="kpi">
+     <div class="lab">${s.label}</div>
+     <div class="big ${cls(s.roi_pct)}">${s.roi_pct>=0?'+':''}${f(s.roi_pct)}%</div>
+     <div class="row">bank ${f(s.final_bankroll)} u · ${s.n_bets} bets · ${f(s.win_rate)}% win</div>
+     <div class="row">max drawdown ${f(s.max_drawdown_pct)}%</div>
+   </div>`;
+}).join('');
+
+// equity chart (align all curves on the combined stream's settlement order)
+const base = DATA.streams.combined.curve.map(p=>p.date);
+const mk = (k,color)=>({label:DATA.streams[k].label,
+   data:DATA.streams[k].curve.map(p=>p.bank),
+   borderColor:color,backgroundColor:color,tension:.2,pointRadius:2,borderWidth:2});
+new Chart(document.getElementById('chart'),{type:'line',
+  data:{labels:base,datasets:[mk('ml_only','#58a6ff'),mk('plus_half','#a371f7'),mk('combined','#3fb950')]},
+  options:{responsive:true,plugins:{legend:{labels:{color:'#e6edf3'}}},
+    scales:{x:{ticks:{color:'#8b98a8'},grid:{color:'#1d2530'}},
+            y:{ticks:{color:'#8b98a8'},grid:{color:'#1d2530'},title:{display:true,text:'bankroll (units)',color:'#8b98a8'}}}}});
+
+// recommendation table — settled first, then open; newest dates near top within group
+const rows=[...DATA.ledger].sort((a,b)=> (b.settled-a.settled) || a.date.localeCompare(b.date) || a.match_id-b.match_id);
+const st = (v)=> v==='WON'?'<span class="won">WON</span>': v==='LOST'?'<span class="lost">LOST</span>':'<span class="pend">—</span>';
+const stake = fr => fr>0 ? (fr*100).toFixed(1)+'%' : '—';
+document.querySelector('#tbl tbody').innerHTML = rows.map(r=>{
+  const badge = r.tier==='BIG DOG'?'<span class="badge b-dog">BIG DOG</span>':'<span class="badge b-toss">TOSS-UP</span>';
+  const settledMark = r.settled? '' : ' style="opacity:.72"';
+  return `<tr${settledMark}>
+    <td>${r.date}</td><td>${r.selection}</td><td>${r.opponent}</td><td>${badge}</td>
+    <td>${pct(r.market_implied_win)}</td>
+    <td class="${cls(r.edge_ml)}">${r.edge_ml>=0?'+':''}${pct(r.edge_ml)}</td>
+    <td class="${cls(r.edge_dc)}">${r.edge_dc>=0?'+':''}${pct(r.edge_dc)}</td>
+    <td>${f(r.decimal_ml,2)}</td><td>${f(r.decimal_dc,2)}</td>
+    <td>${stake(r.f_ml)}</td><td>${stake(r.f_dc)}</td>
+    <td>${st(r.status_ml)}</td><td>${st(r.status_dc)}</td>
+    <td class="rat">${r.rationale}</td>
+  </tr>`;
+}).join('');
+
+document.getElementById('caveat').innerHTML =
+  '<b>Read honestly:</b> odds are de-vigged (fair) market prices, so P&amp;L is research-grade and '
+  + 'slightly optimistic vs a real book. Sample is tiny. The strategy only makes money if the model\'s '
+  + 'underdog edge is real — still unproven (CONTEXT_V6 DL-10), being decided by this tournament. '
+  + 'The +0.5 leg de-variances an edge; it does not create one.';
+</script>
+</body>
+</html>

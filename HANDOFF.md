@@ -142,9 +142,12 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
    pnl; writes bet_ledger_settled.csv, settlement_log.csv, extends group_standings.csv.
    OPEN: overlaps clv_tracker.py settlement — replace or coexist? Not yet wired into any
    orchestrator; run standalone (`python -m src.models.settle_bets`) until decided.
-9. **Underdog "+0.5 insurance" tracker** (Jake ask, DL-16): for dog picks, track smaller ML +
-   a +0.5 (win-or-draw) leg in a SEPARATE ledger. Feasible from existing W/D/L + market 1X2
-   data. NOT built — confirm trigger/stake-split/sizing with Jake first.
+9. ~~**Underdog "+0.5 insurance" tracker**~~ ✅ DONE 2026-06-22 (DL-18): joint-Kelly ML + +0.5
+   legs for dog picks, 3 bankroll streams (ML-only/+0.5-only/combined), settled via settle_bets.
+   `insurance_sizing.py` + `insurance_tracker.py` + `build_insurance_html.py` →
+   `outputs/insurance_tracker.html` (standalone, plain-English, 3 equity curves). Auto-runs in
+   refresh_all.ps1. OPEN: link it as a tab in the main dashboard; consider a vig model for
+   realistic pricing once live dog book-odds are stored.
 10. ~~**Split decision + health monitor**~~ ✅ DONE 2026-06-22 (DL-17): settle_bets is the single
     settler (wired after clv_tracker in refresh_all.ps1 + into daily_update.yml); ESPN stays the
     primary ingest, cloud football-data path is manual-only until the API is verified.

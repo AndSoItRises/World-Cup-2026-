@@ -1,0 +1,18 @@
+{
+  "unit_size_usd": 15.0,
+  "model_version": "v4_frozen+v6_calibrator",
+  "thresholds": {
+    "min_edge": 0.05,
+    "min_model_prob": 0.30
+  },
+  "insurance": {
+    "enabled": true,
+    "_comment": "Underdog +0.5 (win-or-draw) insurance tracker — see CONTEXT_V6 DL-16/DL-18",
+    "big_dog_threshold": 0.30,
+    "tossup_band": [0.30, 0.50],
+    "min_leg_edge": 0.02,
+    "kelly_fraction": 0.5,
+    "per_leg_cap": 0.05,
+    "starting_bankroll_units": 100.0
+  }
+}

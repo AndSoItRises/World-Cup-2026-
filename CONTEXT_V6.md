@@ -405,6 +405,32 @@ repo reorg moved it). That reorg (the _active_scripts move, _archive project mer
 archival) is left for Jake to commit deliberately — not swept into this commit, to avoid pushing
 a large archived sub-project into the public repo.
 
+### DL-18 — Underdog +0.5 insurance tracker SHIPPED (Jake ask, 2026-06-22)
+Built the DL-16 design. For each model underdog pick, track ML (team win) + a +0.5
+(team win-or-draw — cashes whenever the favorite does not win), sized JOINTLY (correlated
+Kelly), settled against results, with three bankroll streams (ML-only / +0.5-only / combined)
+for honest attribution. Files:
+- `data/processed/config.json` (NEW): unit_size_usd + insurance block (big_dog_threshold 0.30,
+  tossup_band [0.30,0.50], min_leg_edge 0.02, kelly_fraction 0.5, per_leg_cap 0.05, bank0 100).
+- `src/models/insurance_sizing.py` (NEW): joint multi-outcome Kelly via scipy (maximizes
+  expected log-growth over win/draw/loss for the two correlated legs), plus solo_kelly for the
+  benchmark streams and an explain() rationale. Worked example confirms joint sizing CUTS the ML
+  stake (2.0% vs 4.1% solo) because +0.5 already covers part of the win — the over-bet fix.
+- `src/models/insurance_tracker.py` (NEW): reads prediction_ledger.csv (model + Shin-fair market
+  1X2), derives +0.5 from mkt_team+mkt_draw, tiers/edge-gates, sizes, settles via settle_bets'
+  result_side, compounds 3 bankrolls → insurance_ledger.csv + insurance_summary.json.
+- `src/models/build_insurance_html.py` (NEW) → `outputs/insurance_tracker.html`: self-contained,
+  mobile-friendly, plain-English explainer + 3 KPI cards + 3 overlaid equity curves (Chart.js CDN)
+  + tier-badged recommendation table with rationale. "Cognitive and accessible" per the ask.
+- Wired into refresh_all.ps1 (auto-run after settle_bets + prediction_tracker); insurance_summary.json
+  added to the push triggers.
+First run: 17 recs (6 settled). All 6 settlements verified against actual scores (incl. match_id 32
+correctly dropping the ML leg — edge 1.9% < 2% gate — and keeping +0.5). CAVEAT surfaced everywhere:
+fair (de-vigged) odds → research-grade P&L; tiny sample; the dogs settled so far mostly WON outright
+so +0.5 insurance hasn't paid yet (its value is in draws). Edge realness still per DL-10.
+OPEN: link/embed the page as a tab in the main quant_dashboard.html (currently standalone).
+Possible vig model for realistic pricing once live book odds for dogs are stored.
+
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,
   USA +2.9pp, Spain +1.9pp (EV +0.014 at 5.50 — thin), Morocco +0.9pp. Iran/Korea/Canada sit

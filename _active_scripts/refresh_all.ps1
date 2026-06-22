@@ -56,6 +56,11 @@ if ($newResult) {
 # it has the last word on settlement (clv_tracker keeps CLV + ledger duties).
 & $py -m src.models.settle_bets    *>&1 | Select-Object -Last 2 | Add-Content $log
 & $py -m src.models.prediction_tracker *>&1 | Select-Object -Last 2 | Add-Content $log
+# Underdog +0.5 insurance tracker (DL-18): recommend + settle ML/+0.5 legs, then
+# rebuild its accessible standalone page. Runs after settle_bets + prediction_tracker
+# (it reads results + prediction_ledger).
+& $py -m src.models.insurance_tracker    *>&1 | Select-Object -Last 3 | Add-Content $log
+& $py -m src.models.build_insurance_html *>&1 | Select-Object -Last 1 | Add-Content $log
 
 # 5. Push only on a meaningful change. These are the tracked outputs that, when they
 #    move, mean the dashboard actually says something different. (line_movement.csv /
@@ -66,7 +71,8 @@ $trigger = @(
     "data/processed/value_bets_futures.csv",
     "data/processed/wc2026_predictions.csv",
     "data/processed/tournament_probs_live.csv",
-    "data/processed/prediction_scoreboard.csv"
+    "data/processed/prediction_scoreboard.csv",
+    "data/processed/insurance_summary.json"
 )
 $dirty = git status --porcelain -- $trigger
 if ($newResult -or $dirty) {
