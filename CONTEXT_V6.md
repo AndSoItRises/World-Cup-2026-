@@ -428,8 +428,10 @@ First run: 17 recs (6 settled). All 6 settlements verified against actual scores
 correctly dropping the ML leg — edge 1.9% < 2% gate — and keeping +0.5). CAVEAT surfaced everywhere:
 fair (de-vigged) odds → research-grade P&L; tiny sample; the dogs settled so far mostly WON outright
 so +0.5 insurance hasn't paid yet (its value is in draws). Edge realness still per DL-10.
-OPEN: link/embed the page as a tab in the main quant_dashboard.html (currently standalone).
-Possible vig model for realistic pricing once live book odds for dogs are stored.
+Also wired as an INSURANCE tab in the main quant_dashboard.html (build_dashboard.py: payload
+loads insurance_summary.json; inline-SVG 3-line equity chart so the dashboard stays self-contained
+/ offline — NO Chart.js CDN; standalone outputs/insurance_tracker.html kept too).
+OPEN: possible vig model for realistic pricing once live book odds for dogs are stored.
 
 ## Phase 1 Results (2026-06-10, pre-tournament — real futures odds, 17.5% vig, Shin de-vig)
 - Credible (non-tail) positive-EV futures: Mexico +6.2pp edge (≤ known bias!), Japan +4.7pp,

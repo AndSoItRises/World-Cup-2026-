@@ -85,6 +85,16 @@ def load(name, proc=True):
         return pd.DataFrame()
 
 
+def _load_json(name, proc=True):
+    p = (DATA_PROC if proc else DATA_RAW) / name
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
 def build_payload() -> dict:
     fixtures = load("wc2026_fixtures.csv", proc=False)
     results = load("wc2026_live_results.csv", proc=False)
@@ -106,6 +116,7 @@ def build_payload() -> dict:
         "tourney": load("tournament_probs_live.csv").to_dict("records"),
         "movement": load("line_movement.csv").to_dict("records"),
         "clv": load("clv_report.csv").fillna("").to_dict("records"),
+        "insurance": _load_json("insurance_summary.json"),
         "scoreboard": load("prediction_scoreboard.csv").fillna("").to_dict("records"),
         "arb": load("arb_scan.csv").to_dict("records"),
         "results": results.to_dict("records"),
@@ -339,6 +350,22 @@ nav button{min-height:34px}
   <div class="scroll" style="max-height:62vh"><table id="clv-table"></table></div>
 </div>
 
+<div class="tab" id="tab-insurance">
+  <h2>Underdog +0.5 Insurance</h2>
+  <div class="note">
+    When the model backs a dog (e.g. <b>Senegal over Argentina</b>) we track two correlated bets:
+    <b>ML</b> (team to win) and <b>+0.5</b> (team to <b>win or draw</b> — cashes whenever the favorite
+    doesn't win, catching the draw the ML throws away). They're sized <b>together</b> with joint Kelly
+    (sizing them separately would over-bet the shared win), then ½-Kelly + 5% cap. Three bankrolls are
+    tracked so we can see whether the insurance actually helps: <b>ML-only</b>, <b>+0.5-only</b>,
+    <b>Combined</b>.
+  </div>
+  <div id="ins-kpi" style="margin:10px 0"></div>
+  <div class="card"><div id="ins-chart"></div></div>
+  <div class="scroll" style="max-height:55vh"><table id="ins-table"></table></div>
+  <div class="cav" id="ins-cav"></div>
+</div>
+
 <div class="tab" id="tab-uncertainty">
   <h2>Uncertainty</h2>
   <h3>Aleatoric — how unpredictable is the match itself (3-way entropy)</h3>
@@ -366,7 +393,7 @@ const cls = x => x>0.0001?'pos':(x<-0.0001?'neg':'fl');
 /* ── nav ── */
 const TABS = [['desk','DESK CALLS'],['scanner','SCANNER'],['matches','MATCHES'],['groups','GROUPS'],
  ['bracket','BRACKET'],['scatter','DIVERGENCE'],['bankroll','BANKROLL'],
- ['monitor','MOVEMENT+ARB'],['clv','CLV'],['uncertainty','UNCERTAINTY'],['notes','NOTES']];
+ ['monitor','MOVEMENT+ARB'],['clv','CLV'],['insurance','INSURANCE'],['uncertainty','UNCERTAINTY'],['notes','NOTES']];
 const nav = document.getElementById('nav');
 TABS.forEach(([id,label],i)=>{
   const b=document.createElement('button');b.textContent=label;b.dataset.t=id;
@@ -377,6 +404,71 @@ TABS.forEach(([id,label],i)=>{
 document.getElementById('meta-sub').textContent =
   `${D.meta.model} · ${D.meta.accuracy} · de-vig: ${D.meta.devig} · built ${D.meta.built_at}`;
 document.getElementById('notes-pre').textContent = D.nextSteps;
+
+/* ── INSURANCE tab — 3 bankroll streams, inline-SVG equity chart (self-contained) ── */
+function drawInsurance(){
+  const ins = D.insurance;
+  const kEl=document.getElementById('ins-kpi'), cEl=document.getElementById('ins-chart'),
+        tEl=document.getElementById('ins-table'), vEl=document.getElementById('ins-cav');
+  if(!ins||!ins.streams){ if(kEl) kEl.innerHTML='<span class="note">No insurance data yet — run insurance_tracker.</span>'; return; }
+  const order=[['ml_only','#4dc3ff'],['plus_half','#ffb347'],['combined','#3ddc84']];
+
+  // KPI strip
+  kEl.innerHTML = order.map(([k])=>{const s=ins.streams[k];
+     const c=s.roi_pct>=0?'pos':'neg';
+     return `<span class="kpi"><b class="${c}">${s.roi_pct>=0?'+':''}${(+s.roi_pct).toFixed(1)}%</b>`
+       +`<span>${s.label} · ${(+s.final_bankroll).toFixed(1)}u · ${s.n_bets} bets · ${(+s.win_rate).toFixed(0)}% win · DD ${(+s.max_drawdown_pct).toFixed(1)}%</span></span>`;}).join('');
+
+  // SVG equity chart
+  const series=order.map(([k,c])=>({c,label:ins.streams[k].label,v:ins.streams[k].curve.map(p=>+p.bank)}));
+  const n=Math.max(...series.map(s=>s.v.length));
+  const all=series.flatMap(s=>s.v); let lo=Math.min(...all,100), hi=Math.max(...all,100);
+  const pad=(hi-lo)*0.08||5; lo-=pad; hi+=pad;
+  const W=Math.min(900,Math.max(420,n*70)), H=300, L=46,R=14,T=14,B=26;
+  const X=i=> L+(W-L-R)*(n<=1?0:i/(n-1));
+  const Y=v=> T+(H-T-B)*(1-(v-lo)/(hi-lo||1));
+  let s=`<svg width="${W}" height="${H}" style="background:var(--panel);border:1px solid var(--line)">`;
+  // baseline at start bankroll
+  const b0=ins.config&&ins.config.bank0?ins.config.bank0:100;
+  s+=`<line x1="${L}" y1="${Y(b0)}" x2="${W-R}" y2="${Y(b0)}" stroke="#2a3040" stroke-dasharray="4 4"/>`;
+  s+=`<text x="${L-4}" y="${Y(b0)+3}" fill="#6b7488" font-size="10" text-anchor="end">${b0}</text>`;
+  s+=`<text x="${L-4}" y="${Y(hi)+8}" fill="#6b7488" font-size="10" text-anchor="end">${hi.toFixed(0)}</text>`;
+  s+=`<text x="${L-4}" y="${Y(lo)}" fill="#6b7488" font-size="10" text-anchor="end">${lo.toFixed(0)}</text>`;
+  series.forEach(se=>{
+    const pts=se.v.map((v,i)=>`${X(i)},${Y(v)}`).join(' ');
+    s+=`<polyline points="${pts}" fill="none" stroke="${se.c}" stroke-width="2"/>`;
+    se.v.forEach((v,i)=>{ s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="2" fill="${se.c}"/>`; });
+  });
+  // legend
+  series.forEach((se,i)=>{ const lx=L+8+i*150;
+    s+=`<rect x="${lx}" y="${T}" width="10" height="10" fill="${se.c}"/>`
+      +`<text x="${lx+14}" y="${T+9}" fill="#c8d0e0" font-size="10">${se.label}</text>`; });
+  cEl.innerHTML=s+'</svg>';
+
+  // recommendations table — settled first, then open
+  const rows=[...(ins.ledger||[])].sort((a,b)=>(b.settled-a.settled)||String(a.date).localeCompare(b.date)||a.match_id-b.match_id);
+  const stt=v=> v==='WON'?'<span class="pos">WON</span>':v==='LOST'?'<span class="neg">LOST</span>':'<span class="fl">—</span>';
+  const stk=f=> f>0?(f*100).toFixed(1)+'%':'—';
+  const pp=x=>(x>=0?'+':'')+(100*x).toFixed(1)+'pp';
+  let h='<tr><th>Date</th><th>Pick</th><th>vs</th><th>Tier</th><th>Mkt win</th><th>Edge ML</th>'
+    +'<th>Edge +0.5</th><th>Odds ML</th><th>Odds +0.5</th><th>Stk ML</th><th>Stk +0.5</th>'
+    +'<th>ML</th><th>+0.5</th><th>Why</th></tr>';
+  h+=rows.map(r=>{const tier=r.tier==='BIG DOG'?'<span class="flag tail">BIG DOG</span>':'<span class="flag value">TOSS-UP</span>';
+    const op=r.settled?'':' style="opacity:.6"';
+    return `<tr${op}><td>${r.date}</td><td>${r.selection}</td><td>${r.opponent}</td><td>${tier}</td>`
+      +`<td>${fmtP(r.market_implied_win)}</td><td class="${cls(r.edge_ml)}">${pp(r.edge_ml)}</td>`
+      +`<td class="${cls(r.edge_dc)}">${pp(r.edge_dc)}</td><td>${(+r.decimal_ml).toFixed(2)}</td>`
+      +`<td>${(+r.decimal_dc).toFixed(2)}</td><td>${stk(r.f_ml)}</td><td>${stk(r.f_dc)}</td>`
+      +`<td>${stt(r.status_ml)}</td><td>${stt(r.status_dc)}</td>`
+      +`<td style="text-align:left;color:#8b98a8">${r.rationale||''}</td></tr>`;}).join('');
+  tEl.innerHTML=h;
+
+  vEl.innerHTML='Read honestly: odds are de-vigged (fair) market prices → research-grade P&amp;L, '
+    +'slightly optimistic vs a real book. Sample is tiny, and the +0.5 only pays when dogs DRAW '
+    +'(so far they\'ve mostly won outright). Works only if the model\'s dog edge is real — still '
+    +'unproven (DL-10). The +0.5 de-variances an edge; it doesn\'t create one.';
+}
+drawInsurance();
 
 /* ── next 5 games — model board (re-rendered by drawDesk so live odds
       recomputes flow through) ── */

@@ -146,8 +146,8 @@ Key data: `data/raw/wc2026_fixtures.csv` (match_id is THE key everywhere),
    legs for dog picks, 3 bankroll streams (ML-only/+0.5-only/combined), settled via settle_bets.
    `insurance_sizing.py` + `insurance_tracker.py` + `build_insurance_html.py` →
    `outputs/insurance_tracker.html` (standalone, plain-English, 3 equity curves). Auto-runs in
-   refresh_all.ps1. OPEN: link it as a tab in the main dashboard; consider a vig model for
-   realistic pricing once live dog book-odds are stored.
+   refresh_all.ps1, and wired as an INSURANCE tab in quant_dashboard.html (inline-SVG chart,
+   self-contained). OPEN: consider a vig model for realistic pricing once live dog book-odds stored.
 10. ~~**Split decision + health monitor**~~ ✅ DONE 2026-06-22 (DL-17): settle_bets is the single
     settler (wired after clv_tracker in refresh_all.ps1 + into daily_update.yml); ESPN stays the
     primary ingest, cloud football-data path is manual-only until the API is verified.
