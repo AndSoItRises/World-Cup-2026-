@@ -102,6 +102,55 @@ nav button{min-height:34px}
   .kpi{margin-right:14px}.kpi b{font-size:13px}
   .deskcard .stake{margin-left:0;width:100%}
 }
+/* ── next up slate (Phase 10) ── */
+.dim{color:var(--dim)}
+.slate-controls{display:flex;gap:18px;align-items:center;margin:8px 0 12px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-left:4px;vertical-align:middle}
+.seg button{background:var(--panel);border:0;border-left:1px solid var(--line);color:var(--dim);padding:4px 12px;cursor:pointer;font-family:var(--mono);font-size:12px}
+.seg button:first-child{border-left:0}
+.seg button.on{color:#fff;background:#0c2330}
+.nucard{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--dim);padding:12px 14px;margin-bottom:12px}
+.nucard.bet{border-left-color:var(--grn)}
+.nucard.lean{border-left-color:var(--cyn)}
+.nucard.pass{border-left-color:var(--dim)}
+.nuhead{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}
+.numatch{color:#fff;font-size:14px;font-weight:bold}
+.nuko{color:var(--dim);font-size:11px;margin-left:auto;text-align:right}
+.callhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#0c1018;border:1px solid var(--line);border-radius:3px;padding:8px 10px;margin-bottom:10px}
+.callhead.bet{border-color:var(--grn)}
+.callhead.lean{border-color:var(--cyn)}
+.callsel{color:#fff;font-size:15px;font-weight:bold}
+.callodds{color:var(--tx);font-size:13px}
+.callstake{color:var(--grn);font-size:16px;font-weight:bold;margin-left:auto}
+.callscore{color:var(--dim);font-size:11px}
+.callreason{color:var(--amb);font-size:12px}
+.vb.pass{background:#161208;color:var(--amb);border:1px solid var(--amb)}
+.bar3{position:relative;height:16px;background:#1c2330;border-radius:2px;overflow:hidden;margin:4px 0}
+.bar3 i{position:absolute;height:100%;top:0}
+.bar3 i.fairtick{width:0;border-left:2px solid #fff;opacity:.8}
+.nulegend{font-size:11px;color:var(--tx);margin:2px 0 8px}
+.nulegend .dim{color:var(--dim)}
+.nupick{font-size:11.5px;color:#aab4c8;border-left:2px solid var(--line);padding:4px 10px;margin:6px 0;line-height:1.5}
+.nuchips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{font-size:10px;padding:2px 7px;border:1px solid var(--line);border-radius:10px;color:var(--dim)}
+.chip-up{color:var(--grn);border-color:var(--grn)}
+.chip-dn{color:var(--red);border-color:var(--red)}
+.chip-warn{color:var(--amb);border-color:var(--amb)}
+.chip-ins{color:var(--cyn);border-color:var(--cyn)}
+.nureasons{list-style:none;margin:6px 0}
+.nureasons li{font-size:11.5px;line-height:1.55;color:#aab4c8}
+.nureasons li.plus:before{content:"+ ";color:var(--grn)}
+.nuins{margin:8px 0;font-size:11px;line-height:1.9}
+.nuins .dim{color:var(--dim);display:block;margin-top:2px}
+.nufoot{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.mplink{color:var(--cyn);font-size:11px;text-decoration:none}
+.mplink:hover{text-decoration:underline}
+.n5row{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid var(--line)}
+.n5row:last-child{border-bottom:0}
+.n5m{color:#fff;font-weight:bold;font-size:12px;min-width:210px}
+.n5ko{color:var(--dim);font-size:10px}
+.n5call{margin-left:auto;font-size:12px}
+.n5call .dim{color:var(--dim)}
 </style></head><body>
 <header>
   <h1>WC2026 QUANT DESK</h1>
@@ -121,6 +170,16 @@ nav button{min-height:34px}
 <nav id="nav"></nav>
 <main>
 
+<div class="tab" id="tab-next">
+  <h2>Next Up &mdash; the slate, action first <span class="freshness" id="next-fresh"></span></h2>
+  <div class="note">What is playing next, what the desk would actually bet (or that it passes), the stake, and how strong the edge is &mdash; the call leads, the reasoning follows. Kickoff counts down live; in-play games show the score. Recomputes on &#10227; LIVE ODDS.</div>
+  <div class="slate-controls" id="slate-controls">
+    <label>show <span class="seg" id="slate-seg"><button data-n="3">3</button><button data-n="5" class="on">5</button><button data-n="10">10</button></span></label>
+    <label><input type="checkbox" id="slate-today"> today only</label>
+  </div>
+  <div id="next-slate"></div>
+</div>
+
 <div class="tab" id="tab-desk">
   <h2>Desk Calls — what we'd actually bet, and why <span class="freshness" id="desk-fresh"></span></h2>
   <details class="card" style="border-left:3px solid var(--cyn)">
@@ -138,11 +197,9 @@ nav button{min-height:34px}
     the live DraftKings number.</div>
   </details>
   <div class="card" style="border-left:3px solid var(--grn)">
-    <h3>Next 5 games — what the model says</h3>
+    <h3>Next up &mdash; the desk's next calls <a class="mplink" href="#next" style="font-weight:normal">full slate &rarr;</a></h3>
     <div id="next5"></div>
-    <div class="note">desk score = conviction after every documented-bias haircut
-    (BET ≥ 6 · LEAN ≥ 3 · under 3 = PASS) · cyan bar = model prob, amber tick = market
-    fair · recomputes with ⟳ LIVE ODDS.</div>
+    <div class="note">Action first &mdash; the chip is the desk's call (BET &ge; 6 &middot; LEAN &ge; 3 &middot; under 3 = PASS) and the stake. The full slate &mdash; probabilities, a live kickoff countdown and the reasoning &mdash; lives in the <b>NEXT UP</b> tab. Recomputes with &#10227; LIVE ODDS.</div>
   </div>
   <div class="note" id="desk-live-note"></div>
   <div id="desk-kpis" style="margin:10px 0"></div>
@@ -308,9 +365,11 @@ const fmtP = x => (100*x).toFixed(1)+'%';
 const fmtPP = x => (x>=0?'+':'')+(100*x).toFixed(1)+'pp';
 const cls = x => x>0.0001?'pos':(x<-0.0001?'neg':'fl');
 let liveStatus={}, kickoffByMid={}, lastFetchMs=null, nextRefreshMs=null, currentProfile='conservative';
+let _deskRows=[],_nuLast={},_nuReady=false;
+const SIDE_COL={home:'#4dc3ff',draw:'#ffb347',away:'#3ddc84'};
 
 /* ── nav ── */
-const TABS = [['desk','DESK CALLS'],['scanner','STRATEGIES'],['matches','MATCH PROJECTIONS'],['groups','GROUP TRACKER'],
+const TABS = [['next','NEXT UP'],['desk','DESK CALLS'],['scanner','STRATEGIES'],['matches','MATCH PROJECTIONS'],['groups','GROUP TRACKER'],
  ['bracket','BRACKET SIM'],['scatter','MODEL VS MARKET'],['bankroll','BANKROLL SIM'],
  ['monitor','LINE MOVEMENT'],['clv','TRACK RECORD'],['insurance','UNDERDOG INSURANCE'],['uncertainty','MATCH UNCERTAINTY'],['notes','AGENT HANDOFF']];
 const nav = document.getElementById('nav');
@@ -414,36 +473,17 @@ function drawNext5(rows){
   const done=new Set(D.results.map(r=>+r.match_id));
   const up=D.implied.filter(m=>!done.has(+m.match_id))
     .sort((a,b)=>String(a.date).localeCompare(String(b.date))||(+a.match_id-+b.match_id))
-    .slice(0,5);
+    .slice(0,3);
   el.innerHTML=up.map(m=>{
-    const sides=['home','draw','away'].map(s=>{
-      const b=D.bets.find(x=>x.match_id===m.match_id&&x.outcome===s)||{};
-      return {s,name:s==='draw'?'Draw':(s==='home'?m.home_team:m.away_team),
-        p:+b.model_prob||0,fair:+m[s+'_fair_prob']||0,edge:+b.edge||0};});
-    const pick=[...sides].sort((a,b)=>b.p-a.p)[0];
     const calls=rows.filter(r=>r.kind==='match'&&+r.match_id===+m.match_id);
     const act=calls.filter(r=>r.verdict!=='PASS').sort((a,b)=>b.score-a.score)[0];
     const top=act||[...calls].sort((a,b)=>b.score-a.score)[0];
-    const verdictHtml=act
-      ?`<span class="vb ${act.verdict.toLowerCase()}">${act.verdict}</span>
-        <b style="color:#fff">${act.selection}</b> @ ${(+act.decimal_odds).toFixed(2)}
-        · desk score <b>${(+act.score).toFixed(1)}</b>
-        · stake <b class="pos">$${(+act.stake_usd).toFixed(0)}</b>`
-      :`<span style="color:var(--dim)">PASS — ${top?String(top.cautions||top.why)
-          .split(' | ')[0]:'no priced edge'}</span>`;
-    const bars=sides.map(x=>
-      `<div style="display:flex;gap:8px;align-items:center">
-        <span style="width:130px;overflow:hidden;white-space:nowrap">${x.name}</span>
-        <span style="flex:1">${bar(x.p,x.fair)}</span>
-        <span style="width:50px">${fmtP(x.p)}</span>
-        <span class="${cls(x.edge)}" style="width:58px">${fmtPP(x.edge)}</span></div>`).join('');
-    return `<div class="card" style="margin-bottom:8px">
-      <h3>#${m.match_id} ${m.home_team} vs ${m.away_team}
-        <span style="color:var(--dim);font-weight:normal">· ${koLabel(m)}</span></h3>
-      ${bars}
-      <div style="margin-top:6px;font-size:12px">model pick: <b>${pick.name}</b>
-        (${fmtP(pick.p)} vs fair ${fmtP(pick.fair)}) &nbsp;·&nbsp; ${verdictHtml}</div>
-    </div>`;
+    const call=act
+      ?'<span class="vb '+act.verdict.toLowerCase()+'">'+act.verdict+'</span> <b>'+act.selection+'</b> @ '+(+act.decimal_odds).toFixed(2)+' <b class="pos">$'+(+act.stake_usd).toFixed(0)+'</b>'
+      :'<span class="vb pass">PASS</span> <span class="dim">'+(top?String(top.cautions||top.why).split(' | ')[0]:'no priced edge')+'</span>';
+    return '<div class="n5row"><span class="n5m">#'+m.match_id+' '+m.home_team+' v '+m.away_team+'</span>'+
+      '<span class="n5ko" data-ko="'+m.match_id+'">'+koLabel(m)+'</span>'+
+      '<span class="n5call">'+call+'</span></div>';
   }).join('')||'<div class="note">no upcoming matches with prices</div>';
 }
 
@@ -451,7 +491,7 @@ function drawNext5(rows){
       recompute on live lines (model probs stay fixed; re-sim is the
       local Python pipeline) ── */
 function drawDesk(rows,liveNote){
-  drawNext5(rows);
+  _deskRows=rows;drawNext5(rows);if(_nuReady)drawNextUp(rows);
   const picks=rows.filter(r=>r.verdict!=='PASS')
     .sort((a,b)=>(a.verdict.localeCompare(b.verdict))||(b.score-a.score));
   const passes=rows.filter(r=>r.verdict==='PASS');
@@ -780,10 +820,124 @@ setInterval(function(){
   document.querySelectorAll('.freshness').forEach(el=>el.textContent=txt);
   const cd=document.getElementById('refresh-countdown');
   if(cd&&nextRefreshMs){const s=Math.max(0,Math.round((nextRefreshMs-Date.now())/1000));cd.textContent='· next in '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  document.querySelectorAll('[data-ko]').forEach(function(el){
+    var mid=el.getAttribute('data-ko');
+    var m=D.implied.find(function(x){return String(x.match_id)===String(mid);});
+    if(m)el.innerHTML=koLabel(m);});
 },1000);
 
 renderHero();
 drawStrategies(currentProfile);
+
+/* ── NEXT UP slate (Phase 10) — action-first match cards ── */
+function _slateN(){try{return +localStorage.getItem('wc26.slateN')||5;}catch(e){return 5;}}
+function _slateToday(){try{return localStorage.getItem('wc26.slateToday')==='1';}catch(e){return false;}}
+function _insByMid(mid){const led=((D.insurance||{}).ledger)||[];return led.find(r=>+r.match_id===+mid);}
+function bar3(sides){
+  const sum=sides.reduce((a,x)=>a+(+x.p||0),0)||1;let acc=0,segs='';
+  sides.forEach(x=>{const w=100*(+x.p||0)/sum;
+    segs+='<i style="left:'+acc+'%;width:'+w+'%;background:'+x.col+'"></i>';acc+=w;});
+  const fsum=sides.reduce((a,x)=>a+(+x.fair||0),0)||1;let facc=0,ticks='';
+  for(let i=0;i<sides.length-1;i++){facc+=100*(+sides[i].fair||0)/fsum;
+    ticks+='<i class="fairtick" style="left:'+facc+'%"></i>';}
+  return '<div class="bar3" title="bars = model probability; white ticks = market-fair split">'+segs+ticks+'</div>';
+}
+function _pickNote(pick,act){
+  if(!pick||!(+pick.p))return '';
+  if(act){
+    if(act.outcome===pick.s)return '';
+    const pn=pick.s==='draw'?'a draw':pick.name;
+    return '<div class="nupick">Model’s most likely outcome is <b>'+pn+'</b> ('+fmtP(pick.p)+'), but the desk bets <b>'+act.selection+'</b> — that is where the edge survives every bias haircut'+(pick.s==='draw'?'; the draw upweight is documented model bias, corrected at inference':'')+'.</div>';
+  }
+  const pn=pick.s==='draw'?'Draw':pick.name;
+  return '<div class="nupick">Model leans <b>'+pn+'</b> '+fmtP(pick.p)+', but the desk <b>passes</b>'+(pick.s==='draw'?' — draw upweight is documented model bias (ELO compression), corrected at inference':' — no priced edge survives the bias haircuts')+'.</div>';
+}
+function _nuChips(m,r){
+  const chips=[];
+  if(r&&r.outcome){
+    const mv=liveMove[m.match_id+'|'+r.outcome]||embMove(m.match_id,r.outcome);
+    if(mv&&mv.significant){const tw=mv.toward;
+      chips.push('<span class="chip '+(tw?'chip-up':'chip-dn')+'">'+(tw?'▲':'▼')+' line '+mv.open.toFixed(2)+'→'+mv.now.toFixed(2)+' '+(tw?'toward':'against')+' model</span>');}
+  }
+  const ent=entropyOf(m.match_id);
+  if(ent>=1.4)chips.push('<span class="chip chip-warn">⚠ size-down · entropy '+ent.toFixed(2)+' bits</span>');
+  const ins=_insByMid(m.match_id);
+  if(ins&&r&&+r.market_implied<0.40)chips.push('<span class="chip chip-ins">+0.5 insurance available</span>');
+  return chips.length?'<div class="nuchips">'+chips.join('')+'</div>':'';
+}
+function nextUpCard(m,rows){
+  const sides=['home','draw','away'].map(s=>{
+    const b=D.bets.find(x=>x.match_id===m.match_id&&x.outcome===s)||{};
+    return {s:s,name:s==='draw'?'Draw':(s==='home'?m.home_team:m.away_team),
+      p:+b.model_prob||0,fair:+m[s+'_fair_prob']||0,edge:+b.edge||0,col:SIDE_COL[s]};});
+  const pick=[...sides].sort((a,b)=>b.p-a.p)[0];
+  const calls=rows.filter(r=>r.kind==='match'&&+r.match_id===+m.match_id);
+  const act=calls.filter(r=>r.verdict!=='PASS').sort((a,b)=>b.score-a.score)[0];
+  const top=act||[...calls].sort((a,b)=>b.score-a.score)[0];
+  let head;
+  if(act){
+    head='<div class="callhead '+act.verdict.toLowerCase()+'">'+
+      '<span class="vb '+act.verdict.toLowerCase()+'">'+act.verdict+'</span>'+
+      '<span class="callsel">'+act.selection+'</span>'+
+      '<span class="callodds">@ '+(+act.decimal_odds).toFixed(2)+'</span>'+
+      '<span class="callstake">$'+(+act.stake_usd).toFixed(0)+'</span>'+
+      '<span class="callscore">desk score '+(+act.score).toFixed(1)+'</span></div>';
+  }else{
+    const reason=top?String(top.cautions||top.why).split(' | ')[0]:'no priced edge';
+    head='<div class="callhead pass"><span class="vb pass">PASS</span><span class="callreason">'+reason+'</span></div>';
+  }
+  const legend=sides.map(x=>'<span style="color:'+x.col+'">●</span> '+x.name+' <b>'+fmtP(x.p)+'</b> <span class="dim">('+fmtP(x.fair)+' mkt)</span>').join(' &nbsp;·&nbsp; ');
+  const reasons=act?rationale(act).map(w=>'<li class="plus">'+w+'</li>').join(''):'';
+  const ins=_insByMid(m.match_id);
+  let insHtml='';
+  if(ins&&act&&+act.market_implied<0.40){
+    insHtml='<div class="nuins"><span class="ins-leg">ML @ '+(+ins.decimal_ml||0).toFixed(2)+' · edge '+fmtPP(+ins.edge_ml||0)+'</span><span class="ins-leg">+0.5 @ '+(+ins.decimal_dc||0).toFixed(2)+' · edge '+fmtPP(+ins.edge_dc||0)+'</span><span class="dim">The +0.5 also cashes on a draw — it catches the value the moneyline throws away.</span></div>';
+  }
+  const detail=act?'<details><summary>full model detail</summary>'+deskCardHtml(act)+'</details>':'';
+  return '<div class="nucard '+(act?act.verdict.toLowerCase():'pass')+'" id="nu-card-'+m.match_id+'">'+
+    '<div class="nuhead"><span class="numatch">#'+m.match_id+' '+m.home_team+' vs '+m.away_team+'</span>'+
+    '<span class="nuko" data-ko="'+m.match_id+'">'+koLabel(m)+'</span></div>'+
+    head+bar3(sides)+'<div class="nulegend">'+legend+'</div>'+
+    _pickNote(pick,act)+_nuChips(m,act||top)+
+    (reasons?'<ul class="nureasons">'+reasons+'</ul>':'')+insHtml+
+    '<div class="nufoot">'+detail+'<a class="mplink" href="#matches">full projection →</a></div></div>';
+}
+function _slateSig(m,rows){
+  const calls=rows.filter(r=>r.kind==='match'&&+r.match_id===+m.match_id);
+  const act=calls.filter(r=>r.verdict!=='PASS').sort((a,b)=>b.score-a.score)[0];
+  const eg=['home','draw','away'].map(s=>{const b=D.bets.find(x=>x.match_id===m.match_id&&x.outcome===s)||{};return (+b.edge||0).toFixed(3);}).join(',');
+  return (act?act.verdict+act.selection+(+act.decimal_odds).toFixed(2)+(+act.stake_usd).toFixed(0):'pass')+'|'+eg;
+}
+function drawNextUp(rows){
+  rows=rows||_deskRows||[];
+  const el=document.getElementById('next-slate');if(!el)return;
+  const done=new Set(D.results.map(r=>+r.match_id));
+  let up=D.implied.filter(m=>!done.has(+m.match_id))
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date))||(+a.match_id-+b.match_id));
+  const todayOnly=_slateToday();
+  if(todayOnly){const today=new Date().toISOString().slice(0,10);up=up.filter(m=>m.date===today);}
+  up=up.slice(0,_slateN());
+  const changed=[];
+  up.forEach(m=>{const sig=_slateSig(m,rows);
+    if(_nuLast[m.match_id]!==undefined&&_nuLast[m.match_id]!==sig)changed.push(m.match_id);
+    _nuLast[m.match_id]=sig;});
+  el.innerHTML=up.length?up.map(m=>nextUpCard(m,rows)).join('')
+    :'<div class="note">No upcoming matches'+(todayOnly?' today — untick “today only” to see the next slate':' with prices')+'.</div>';
+  changed.forEach(mid=>_flash(document.getElementById('nu-card-'+mid)));
+}
+(function(){
+  const seg=document.getElementById('slate-seg');
+  if(seg){const n=_slateN();
+    seg.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',+b.dataset.n===n);
+      b.onclick=()=>{try{localStorage.setItem('wc26.slateN',b.dataset.n);}catch(e){}
+        seg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+        drawNextUp(_deskRows);};});}
+  const td=document.getElementById('slate-today');
+  if(td){td.checked=_slateToday();
+    td.onchange=()=>{try{localStorage.setItem('wc26.slateToday',td.checked?'1':'0');}catch(e){}drawNextUp(_deskRows);};}
+})();
+_nuReady=true;drawNextUp(_deskRows);
+/* ── end NEXT UP slate ── */
 /* ── end hero + strategies ── */
 
 

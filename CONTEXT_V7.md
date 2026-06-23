@@ -34,6 +34,43 @@ Read/Edit tools exceed their token cap. Edit it with anchored Python string tran
 
 ---
 
+## 1b. What changed (Phase 10 — "Next Up" slate overhaul)
+
+Pure front-end again (`outputs/quant_dashboard.html`). The next-slate of games was promoted from a
+buried secondary card into the page's actionable centerpiece.
+
+- **New first tab `NEXT UP`** (`#tab-next`, first in the `TABS` array → the default landing tab for new
+  visitors). Each match is an **action-first card**: a prominent BET / LEAN / PASS headline (chip +
+  selection + odds + **stake** + desk score), *then* the justification. PASS states say the reason plainly.
+- **Pick-vs-call confusion resolved.** When the model's highest-probability outcome differs from what the
+  desk actually bets (or when the desk passes), a secondary `.nupick` line explains it — e.g. "model leans
+  Draw 34%, but the desk passes — draw upweight is documented model bias, corrected at inference."
+- **One stacked 3-way bar** (`bar3()`, home=cyan / draw=amber / away=green) with the market-fair split
+  overlaid as white ticks, plus a legend of model% (mkt% in parens). Replaces the three separate `bar()` rows
+  (kept only for the MATCH PROJECTIONS tab).
+- **Live ticking countdown.** The existing 1-second `setInterval` now also refreshes every `[data-ko]` span
+  via `koLabel(m)`, so "kicks off in…" ticks down and in-play score/clock updates without a full re-render.
+- **Context chips:** line-movement arrow (toward/against model, from `liveMove`/`embMove`), an entropy
+  "size-down" flag at ≥1.4 bits (matches `rationale()`'s threshold, not the desk's 1.5 haircut — they agree
+  on the card), and a "+0.5 insurance available" chip for backed underdogs.
+- **+0.5 insurance inline** (`.nuins`) when the backed side is a dog with a `D.insurance.ledger` match —
+  ML + +0.5 legs surfaced with the "also cashes on a draw" framing.
+- **Plain-language reasons** reuse `rationale(r)`; **full detail** reuses `deskCardHtml(r)` in a `<details>`;
+  a `full projection →` link jumps to the MATCH PROJECTIONS card (`href="#matches"` via the hashchange route).
+- **Slate controls** persist to `wc26.slateN` (3/5/10) and `wc26.slateToday` (today-only). **Flash-on-update:**
+  `drawNextUp` diffs a per-match signature (call + edges) and `_flash()`es only cards whose odds/edge changed
+  after `liveRefresh()`.
+- **DESK tab** keeps a **compact** mirror (top-3 one-line rows, `#next5`) that links to the full NEXT UP tab.
+
+Wiring / ordering note (matters if you touch it): `drawNextUp` and its helpers transitively use consts
+defined late in the file (`GLOSS`, `liveMove`, `SIDE_COL`…). To avoid a TDZ crash, the initial
+`drawDesk(D.desk)` is gated by a `_nuReady` flag (false until the end of the script) and only `drawNext5`
+runs on that first pass; the real `drawNextUp(_deskRows)` fires once at the very end after everything is
+defined. `drawDesk` sets `_deskRows` and drives both renderers on every live refresh. Validated with
+esprima-python (skip the `const D` preamble, `.replace('??','||')`) — backup parses clean too.
+
+---
+
 ## 2. Data architecture ceiling (important for future "live" work)
 
 **Everything is baked at build time** into `const D = {...}` by `src/models/build_dashboard.py`. The ONLY
