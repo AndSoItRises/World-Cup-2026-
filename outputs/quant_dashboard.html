@@ -16,7 +16,7 @@ white-space:nowrap;padding:6px 0;position:relative}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
 #ticker span{margin-right:34px}
 .up{color:var(--grn)}.dn{color:var(--red)}.fl{color:var(--dim)}
-nav{display:flex;gap:2px;padding:8px 12px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+nav{display:flex;gap:2px;padding:8px 12px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:25;background:var(--bg)}
 nav button{background:var(--panel);border:1px solid var(--line);color:var(--dim);
 padding:6px 12px;cursor:pointer;font-family:var(--mono);font-size:12px}
 nav button.on{color:#fff;border-color:var(--cyn)}
@@ -64,11 +64,38 @@ padding:12px 14px;margin-bottom:10px}
 .deskcard li{font-size:11.5px;line-height:1.55;color:#aab4c8}
 .deskcard li.plus:before{content:"+ ";color:var(--grn)}
 .deskcard li.minus:before{content:"! ";color:var(--amb)}
+/* ── hero ── */
+#hero{padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0d1119,#0b0e14)}
+#hero .hwrap{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-end;max-width:1500px;margin:0 auto}
+.hstat{min-width:140px}
+.hstat .hlbl{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.hstat .hnum{color:#fff;font-size:30px;font-weight:bold;line-height:1.1}
+.hstat .hsub{color:var(--dim);font-size:10px}
+.hstat .hnum.pos{color:var(--grn)}.hstat .hnum.neg{color:var(--red)}
+#hero-spark{margin-left:auto}
+#hero-verdict{flex-basis:100%;color:var(--tx);font-size:12px;margin-top:4px;border-top:1px solid var(--line);padding-top:8px}
+#hero-updated{color:var(--dim);font-size:10px}
+@keyframes flash{0%{background-color:rgba(77,195,255,.45)}100%{background-color:transparent}}
+.flash{animation:flash .8s ease-out}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.live-dot{color:var(--red);animation:pulse 1.2s infinite;font-weight:bold}
+.ftbadge{color:var(--dim);font-weight:bold}
+#profile-sel{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.profile-btn{background:var(--panel);border:1px solid var(--line);color:var(--dim);padding:8px 14px;cursor:pointer;font-family:var(--mono);font-size:12px;font-weight:bold}
+.profile-btn.on{color:#fff;border-color:var(--cyn);background:#0c2330}
+.ins-leg{display:inline-block;border:1px solid var(--line);padding:2px 6px;margin-right:6px;font-size:11px;border-radius:2px}
+.gloss{border-bottom:1px dotted var(--dim);cursor:help}
+.gloss sup{color:var(--cyn);font-size:9px}
+#disclaimer{position:sticky;bottom:0;background:#070a10;border-top:1px solid var(--line);color:var(--dim);font-size:10px;text-align:center;padding:5px 8px;z-index:30}
+details>summary{cursor:pointer;color:var(--cyn);font-size:12px}
+.freshness{color:var(--dim);font-size:10px;font-weight:normal;margin-left:8px}
+#refresh-countdown{color:var(--cyn);font-size:10px;margin-left:6px}
+button:focus-visible,.profile-btn:focus-visible,nav button:focus-visible{outline:2px solid var(--cyn);outline-offset:1px}
 /* iOS / mobile: momentum scrolling, no auto text inflation, fluid tables */
 html{-webkit-text-size-adjust:100%}
 .scroll{-webkit-overflow-scrolling:touch;overflow:auto}
 nav button{min-height:34px}
-@media(max-width:760px){
+@media(max-width:900px){
   main{padding:8px}header{padding:8px 10px;gap:8px}
   .cards{grid-template-columns:1fr}
   table{font-size:11px}th,td{padding:4px 5px}
@@ -80,29 +107,36 @@ nav button{min-height:34px}
   <h1>WC2026 QUANT DESK</h1>
   <span class="sub" id="meta-sub"></span>
   <button class="act" onclick="liveRefresh()">⟳ LIVE ODDS</button>
-  <label style="margin:0"><input type="checkbox" id="auto-live"> auto 4m</label>
+  <label style="margin:0"><input type="checkbox" id="auto-live"> auto-refresh</label><span id="refresh-countdown"></span>
   <span id="live-status"></span>
 </header>
 <div id="ticker-wrap"><div id="ticker"></div></div>
+<section id="hero"><div class="hwrap">
+  <div class="hstat"><div class="hlbl">Hit Rate</div><div class="hnum" id="h-hit">–</div><div class="hsub" id="h-hit-sub"></div></div>
+  <div class="hstat"><div class="hlbl">Simulated ROI</div><div class="hnum" id="h-roi">–</div><div class="hsub" id="h-roi-sub">¼-Kelly · $1,000 bank</div></div>
+  <div class="hstat"><div class="hlbl">Open Exposure</div><div class="hnum" id="h-exp">–</div><div class="hsub" id="h-exp-sub"></div></div>
+  <div class="hstat" id="hero-spark"><div class="hlbl">Cumulative P&amp;L</div><div id="h-spark"></div></div>
+  <div id="hero-verdict"><span id="h-verdict"></span> · <span id="hero-updated"></span></div>
+</div></section>
 <nav id="nav"></nav>
 <main>
 
 <div class="tab" id="tab-desk">
-  <h2>Desk Calls — what we'd actually bet, and why</h2>
-  <div class="card" style="border-left:3px solid var(--cyn)">
-    <h3>How to use this desk</h3>
+  <h2>Desk Calls — what we'd actually bet, and why <span class="freshness" id="desk-fresh"></span></h2>
+  <details class="card" style="border-left:3px solid var(--cyn)">
+    <summary>How to use this desk</summary>
     <div class="note" style="margin:4px 0">
     <b style="color:var(--grn)">BET</b> = the model's edge survives every documented-bias haircut ·
     <b style="color:var(--cyn)">LEAN</b> = positive but thinner — half conviction ·
     PASS = explained below, not hidden.<br>
     Stakes are ¼-Kelly (5% per-bet cap, 25% whole-book cap) on a $1,000 bankroll — scale to yours.<br>
-    Hunting on your own? <b>SCANNER</b> = every +EV price right now ·
-    <b>GROUPS / BRACKET</b> = advancement &amp; winner odds vs fair price ·
-    <b>MOVEMENT+ARB</b> = where the lines are going and where arbitrage would show ·
-    <b>CLV</b> = the desk's scorecard vs closing lines (the honest test of edge).<br>
+    Hunting on your own? <b>STRATEGIES</b> = curated plays by profile + every +EV price ·
+    <b>GROUP TRACKER / BRACKET SIM</b> = advancement &amp; winner odds vs fair price ·
+    <b>LINE MOVEMENT</b> = where the lines are going since the open ·
+    <b>TRACK RECORD</b> = the desk's scorecard vs closing lines (the honest test of edge).<br>
     Press <b>⟳ LIVE ODDS</b> (or tick auto) — odds, EV and these verdicts recompute on
     the live DraftKings number.</div>
-  </div>
+  </details>
   <div class="card" style="border-left:3px solid var(--grn)">
     <h3>Next 5 games — what the model says</h3>
     <div id="next5"></div>
@@ -113,7 +147,9 @@ nav button{min-height:34px}
   <div class="note" id="desk-live-note"></div>
   <div id="desk-kpis" style="margin:10px 0"></div>
   <div id="desk-cards"></div>
-  <div class="card"><h3 id="desk-pass-head"></h3><div class="note" id="desk-pass-note"></div></div>
+  <div class="card"><h3 id="desk-pass-head"></h3><div class="note" id="desk-pass-note"></div>
+    <button class="profile-btn" id="desk-pass-toggle" style="margin-top:8px"></button>
+    <div id="desk-pass-cards" style="display:none;margin-top:10px"></div></div>
   <div class="card">
     <h3>Model record — every prediction stored, scored when it settles</h3>
     <div id="record-kpis" style="margin:6px 0"></div>
@@ -132,21 +168,35 @@ nav button{min-height:34px}
 </div>
 
 <div class="tab" id="tab-scanner">
-  <h2>Value Bet Scanner — match 1X2</h2>
-  <label><input type="checkbox" id="sc-evpos" checked> EV &gt; 0 only</label>
-  <label><input type="checkbox" id="sc-nodraw" checked> hide draw bets (model bias)</label>
-  <label><input type="checkbox" id="sc-fav"> favorites only (fair ≥ 40%)</label>
-  <div class="cav">Draw probs are upweighted 1.75× by design and ELO compresses
-  lopsided ties — draw/underdog "edges" are mostly documented model bias, not
-  market error. Edge is unproven out-of-sample (V5 DL-05). Stakes: ¼-Kelly, 5% cap.</div>
-  <div class="scroll" style="max-height:60vh"><table id="sc-table"></table></div>
-  <h2 style="margin-top:20px">Tournament Winner Futures</h2>
-  <label><input type="checkbox" id="fu-tail" checked> hide tail-risk (model &lt; 2%)</label>
-  <div class="scroll" style="max-height:40vh"><table id="fu-table"></table></div>
+  <h2>Strategies — curated plays by profile <span class="freshness" id="strat-fresh"></span></h2>
+  <div class="note">Pick a profile — each is a filter over the desk's own calls, with plain-language reasoning.
+  Draw probabilities are the V6-calibrated numbers (the calibrator already shrinks draws ×0.871 to match the
+  realized rate); the old 1.75× inflation is corrected at inference, never shown raw.</div>
+  <div id="profile-sel">
+    <button class="profile-btn on" data-p="conservative">CONSERVATIVE</button>
+    <button class="profile-btn" data-p="value">VALUE HUNTER</button>
+    <button class="profile-btn" data-p="insurance">+0.5 INSURANCE</button>
+  </div>
+  <div class="note" id="profile-desc"></div>
+  <div id="strategy-cards"></div>
+  <details style="margin-top:14px">
+    <summary>Raw scanner — every +EV price &amp; futures</summary>
+    <div style="margin-top:8px">
+    <label><input type="checkbox" id="sc-evpos" checked> EV &gt; 0 only</label>
+    <label><input type="checkbox" id="sc-nodraw" checked> hide draw bets (model bias)</label>
+    <label><input type="checkbox" id="sc-fav"> favorites only (fair ≥ 40%)</label>
+    <div class="cav">Draw / underdog "edges" are mostly documented model bias (ELO compression; draws already
+    V6-bias-corrected ×0.871), not market error. Edge unproven out-of-sample (V5 DL-05). Stakes: ¼-Kelly, 5% cap.</div>
+    <div class="scroll" style="max-height:55vh"><table id="sc-table"></table></div>
+    <h3 style="margin-top:16px">Tournament Winner Futures</h3>
+    <label><input type="checkbox" id="fu-tail" checked> hide tail-risk (model &lt; 2%)</label>
+    <div class="scroll" style="max-height:40vh"><table id="fu-table"></table></div>
+    </div>
+  </details>
 </div>
 
 <div class="tab" id="tab-matches">
-  <h2>Match Projections — model vs market</h2>
+  <h2>Match Projections — model vs market <span class="freshness" id="mp-fresh"></span></h2>
   <label>group <select id="mp-group"></select></label>
   <div class="cards" id="mp-cards"></div>
 </div>
@@ -194,20 +244,16 @@ nav button{min-height:34px}
 </div>
 
 <div class="tab" id="tab-monitor">
-  <h2>Line Movement (open → current) + Arb Scan</h2>
+  <h2>Line Movement — open → current <span class="freshness" id="mv-fresh"></span></h2>
   <div class="kpi"><b id="mv-sig">–</b><span>significant moves</span></div>
   <div class="kpi"><b id="mv-toward">–</b><span>toward model</span></div>
   <div class="kpi"><b id="mv-against">–</b><span>against model</span></div>
-  <div class="kpi"><b id="arb-n">–</b><span>true arbs</span></div>
-  <div class="kpi"><b id="arb-books">–</b><span>books feeding</span></div>
-  <div class="note">moves toward model = the line travelled in the model's direction
-  since open (sharps agreeing); against = market hardening the other way.</div>
-  <div class="card">
-    <h3>Where is the arbitrage?</h3>
-    <div class="note" id="arb-answer"></div>
-    <div class="scroll" style="max-height:30vh"><table id="arb-table"></table></div>
-  </div>
-  <div class="scroll" style="max-height:65vh"><table id="mv-table"></table></div>
+  <div class="note">moves toward model = the line travelled in the model's direction since open
+  (sharps agreeing); against = market hardening the other way. Press ⟳ LIVE ODDS to capture
+  movement off the opening number.</div>
+  <div id="mv-empty" class="note" style="display:none">No significant line moves since open yet —
+  check back after the next odds refresh.</div>
+  <div class="scroll" style="max-height:70vh"><table id="mv-table"></table></div>
 </div>
 
 <div class="tab" id="tab-clv">
@@ -261,18 +307,37 @@ const D = {"meta": {"built_at": "2026-06-22 20:06 UTC", "model": "V4 ensemble (X
 const fmtP = x => (100*x).toFixed(1)+'%';
 const fmtPP = x => (x>=0?'+':'')+(100*x).toFixed(1)+'pp';
 const cls = x => x>0.0001?'pos':(x<-0.0001?'neg':'fl');
+let liveStatus={}, kickoffByMid={}, lastFetchMs=null, nextRefreshMs=null, currentProfile='conservative';
 
 /* ── nav ── */
-const TABS = [['desk','DESK CALLS'],['scanner','SCANNER'],['matches','MATCHES'],['groups','GROUPS'],
- ['bracket','BRACKET'],['scatter','DIVERGENCE'],['bankroll','BANKROLL'],
- ['monitor','MOVEMENT+ARB'],['clv','CLV'],['insurance','INSURANCE'],['uncertainty','UNCERTAINTY'],['notes','NOTES']];
+const TABS = [['desk','DESK CALLS'],['scanner','STRATEGIES'],['matches','MATCH PROJECTIONS'],['groups','GROUP TRACKER'],
+ ['bracket','BRACKET SIM'],['scatter','MODEL VS MARKET'],['bankroll','BANKROLL SIM'],
+ ['monitor','LINE MOVEMENT'],['clv','TRACK RECORD'],['insurance','UNDERDOG INSURANCE'],['uncertainty','MATCH UNCERTAINTY'],['notes','AGENT HANDOFF']];
 const nav = document.getElementById('nav');
-TABS.forEach(([id,label],i)=>{
+nav.setAttribute('role','tablist');
+const tabBtns={};
+function setTab(id,store){
+  if(!document.getElementById('tab-'+id))id=TABS[0][0];
+  document.querySelectorAll('nav button').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-selected','false');x.tabIndex=-1;});
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  const b=tabBtns[id];if(b){b.classList.add('on');b.setAttribute('aria-selected','true');b.tabIndex=0;}
+  document.getElementById('tab-'+id).classList.add('on');
+  if(store!==false){try{localStorage.setItem('wc26.tab',id);}catch(e){}
+    if(location.hash.slice(1)!==id)location.hash=id;}
+}
+TABS.forEach(([id,label])=>{
   const b=document.createElement('button');b.textContent=label;b.dataset.t=id;
-  b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');document.getElementById('tab-'+id).classList.add('on');};
-  nav.appendChild(b);if(i===0)b.click();});
+  b.setAttribute('role','tab');b.id='navbtn-'+id;b.tabIndex=-1;
+  b.onclick=()=>setTab(id);tabBtns[id]=b;nav.appendChild(b);});
+let _startTab=(location.hash.slice(1))||((()=>{try{return localStorage.getItem('wc26.tab');}catch(e){return null;}})())||TABS[0][0];
+setTab(_startTab,false);
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&document.getElementById('tab-'+h))setTab(h,false);});
+nav.addEventListener('keydown',e=>{
+  const ids=TABS.map(t=>t[0]);let cur=ids.findIndex(x=>tabBtns[x].classList.contains('on'));
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();cur=(cur+(e.key==='ArrowRight'?1:ids.length-1)+ids.length)%ids.length;tabBtns[ids[cur]].focus();setTab(ids[cur]);}});
+document.addEventListener('keydown',e=>{
+  if(e.target.matches('input,select,textarea'))return;
+  if(e.key>='1'&&e.key<='9'){const idx=+e.key-1;if(TABS[idx]){tabBtns[TABS[idx][0]].focus();setTab(TABS[idx][0]);}}});
 document.getElementById('meta-sub').textContent =
   `${D.meta.model} · ${D.meta.accuracy} · de-vig: ${D.meta.devig} · built ${D.meta.built_at}`;
 document.getElementById('notes-pre').textContent = D.nextSteps;
@@ -374,7 +439,7 @@ function drawNext5(rows){
         <span class="${cls(x.edge)}" style="width:58px">${fmtPP(x.edge)}</span></div>`).join('');
     return `<div class="card" style="margin-bottom:8px">
       <h3>#${m.match_id} ${m.home_team} vs ${m.away_team}
-        <span style="color:var(--dim);font-weight:normal">· ${m.date}</span></h3>
+        <span style="color:var(--dim);font-weight:normal">· ${koLabel(m)}</span></h3>
       ${bars}
       <div style="margin-top:6px;font-size:12px">model pick: <b>${pick.name}</b>
         (${fmtP(pick.p)} vs fair ${fmtP(pick.fair)}) &nbsp;·&nbsp; ${verdictHtml}</div>
@@ -421,7 +486,16 @@ function drawDesk(rows,liveNote){
   document.getElementById('desk-pass-note').innerHTML=Object.entries(reasons)
     .sort((a,b)=>b[1]-a[1]).slice(0,6)
     .map(([k,v])=>`${v}× ${k}`).join('<br>')+
-    '<br><br>Full detail per bet: SCANNER tab (uncheck the filters to see everything).';
+    '<br><br>Full detail per bet: STRATEGIES tab → Raw scanner (uncheck the filters to see everything).';
+  const passToggle=document.getElementById('desk-pass-toggle'),passCards=document.getElementById('desk-pass-cards');
+  if(passToggle&&passCards){
+    let shown=(()=>{try{return localStorage.getItem('wc26.showpass')==='1';}catch(e){return false;}})();
+    const apply=()=>{passToggle.textContent=(shown?'Hide':'Show')+' PASS calls ('+passes.length+')';
+      passCards.style.display=shown?'block':'none';
+      passCards.innerHTML=shown?passes.map(deskCardHtml).join(''):'';};
+    apply();
+    passToggle.onclick=()=>{shown=!shown;try{localStorage.setItem('wc26.showpass',shown?'1':'0');}catch(e){}apply();};
+  }
 }
 drawDesk(D.desk);
 
@@ -566,6 +640,153 @@ function drawFutures(){
 }
 document.getElementById('fu-tail').onchange=drawFutures;drawFutures();
 
+/* ── hero glance panel + strategies (appended; helpers fmtP/fmtPP/cls/D already defined) ── */
+const _bank0=1000;
+function _settledClv(){return (D.clv||[]).filter(r=>r.status&&r.status!=='pending');}
+function _flash(el){if(!el)return;el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
+function setTip(label,text){document.querySelectorAll('#hero .hlbl').forEach(el=>{if(el.textContent.trim()===label)el.title=text;});}
+function sparkline(settled){
+  const W=170,H=34,p=2;
+  if(!settled.length)return '<svg width="'+W+'" height="'+H+'" role="img" aria-label="no settled bets"><line x1="0" y1="'+(H/2)+'" x2="'+W+'" y2="'+(H/2)+'" stroke="#2a3346"/><text x="4" y="'+(H/2-4)+'" fill="#6b7488" font-size="9">Awaiting first results.</text></svg>';
+  const ord=[...settled].sort((a,b)=>String(a.logged_at||a.date).localeCompare(String(b.logged_at||b.date)));
+  let cum=0;const pts=ord.map(r=>{cum+=(+r.pnl_usd||0);return cum;});
+  const xs=[0].concat(pts);const lo=Math.min(0,Math.min.apply(null,xs)),hi=Math.max(0,Math.max.apply(null,xs));const rng=(hi-lo)||1;
+  const X=i=>p+(W-2*p)*(xs.length<=1?0:i/(xs.length-1));
+  const Y=v=>H-p-(H-2*p)*((v-lo)/rng);
+  const d=xs.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  const last=pts[pts.length-1];const col=last>=0?'#3ddc84':'#ff5566';const zeroY=Y(0).toFixed(1);
+  return '<svg width="'+W+'" height="'+H+'" role="img" aria-label="cumulative P&L sparkline"><line x1="0" y1="'+zeroY+'" x2="'+W+'" y2="'+zeroY+'" stroke="#2a3346" stroke-dasharray="2 2"/><path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
+}
+function renderHero(doFlash){
+  const settled=_settledClv();const n=settled.length;
+  const won=settled.filter(r=>r.status==='WON').length;
+  const pnl=settled.reduce((s,r)=>s+(+r.pnl_usd||0),0);
+  const roi=pnl/_bank0*100;
+  const open=(D.clv||[]).filter(r=>r.status==='pending'&&(r.verdict==='BET'||r.verdict==='LEAN'));
+  const exp=open.reduce((s,r)=>s+(+r.stake_usd||0),0);
+  const hit=document.getElementById('h-hit'),hsub=document.getElementById('h-hit-sub');
+  if(n<5){hit.textContent='n='+n;hit.className='hnum';hsub.textContent='insufficient sample (need n≥5)';}
+  else{const hr=100*won/n;hit.textContent=hr.toFixed(1)+'%';hit.className='hnum '+(hr>=50?'pos':'neg');hsub.textContent=won+' / '+n+' settled';}
+  const roiEl=document.getElementById('h-roi');
+  roiEl.textContent=(n?(roi>=0?'+':'')+roi.toFixed(1)+'%':'–');
+  roiEl.className='hnum '+(n?(roi>=0?'pos':'neg'):'');
+  document.getElementById('h-roi-sub').textContent='realized P&L $'+pnl.toFixed(0)+' · ¼-Kelly · $1,000 bank';
+  document.getElementById('h-exp').textContent='$'+exp.toFixed(0);
+  document.getElementById('h-exp-sub').textContent=open.length+' open BET/LEAN call'+(open.length===1?'':'s');
+  let v;
+  if(n<40)v=n+' bets settled — edge unproven at this sample size (need n≥40 for reliability)';
+  else if(roi>=0&&n>=10)v='Model is +'+roi.toFixed(1)+'% ROI over '+n+' settled bets — early signal is positive';
+  else if(roi<0)v='Model is '+roi.toFixed(1)+'% ROI over '+n+' bets — negative early variance, not statistically meaningful yet';
+  else v=n+' bets settled';
+  document.getElementById('h-verdict').textContent=v;
+  document.getElementById('h-spark').innerHTML=sparkline(settled);
+  setTip('Hit Rate','Bets won ÷ bets settled — realized results, not the 62% model accuracy.');
+  setTip('Simulated ROI','Realized running ¼-Kelly P&L as % of the $1,000 paper bankroll. "Simulated" = paper-traded, not real money.');
+  setTip('Open Exposure','Total $ staked on unsettled BET / LEAN calls.');
+  if(doFlash){['h-hit','h-roi','h-exp'].forEach(id=>_flash(document.getElementById(id)));}
+}
+
+/* strategies */
+const GLOSS={EV:'Expected value per $1 staked.',Kelly:'Bet-sizing rule; quarter-Kelly bets a quarter of the math-optimal fraction.',entropy:'How unpredictable the 3-way result is, in bits; 1.585 = a perfect coin-flip.',CLV:'Closing line value — whether we beat the final price.',edge:'Model probability minus the Shin-de-vigged market probability.'};
+function gtip(term){return '<span class="gloss" title="'+(GLOSS[term]||'')+'">'+term+'<sup>?</sup></span>';}
+function _hasFlag(r,re){return re.test(String(r.why||'')+' '+String(r.cautions||''));}
+function _entropy(r){const m=String(r.cautions||'').match(/entropy ([0-9.]+) bits/);return m?+m[1]:null;}
+const PROFILES={
+  conservative:{desc:'BET-rated favorites where the model is most trustworthy and the line has already moved our way.',
+    filter:r=>r.verdict==='BET'&&+r.model_prob>=0.55&&+r.market_implied>=0.40&&_hasFlag(r,/TOWARD model/i)},
+  value:{desc:'Underdog value: not a true coin-flip, priced to more than compensate for the risk.',
+    filter:r=>(r.verdict==='BET'||r.verdict==='LEAN')&&+r.market_implied<0.40&&(_entropy(r)===null||_entropy(r)<1.4)&&+r.ev>0.30}
+};
+function rationale(r){
+  const out=[];
+  out.push('Model gives '+fmtP(+r.model_prob)+' vs market '+fmtP(+r.market_implied)+' — '+fmtPP(+r.edge)+' '+gtip('edge')+'.');
+  if(_hasFlag(r,/TOWARD model/i))out.push('Sharp money on our side — the line moved toward the model since open.');
+  if(_hasFlag(r,/AGAINST model/i))out.push('Heads-up: the line has moved against us since open.');
+  const en=_entropy(r);
+  if(en!==null&&en>=1.4)out.push('High-'+gtip('entropy')+' match — stake halved automatically.');
+  else if(en!==null)out.push('Not a coin-flip ('+gtip('entropy')+' '+en.toFixed(2)+' bits), and the price compensates.');
+  if(_hasFlag(r,/CONCACAF/i))out.push('CONCACAF selection — documented model inflation; treat the edge as partly model error.');
+  out.push('EV '+(+r.ev).toFixed(2)+'/unit '+gtip('EV')+' at odds '+(+r.decimal_odds).toFixed(2)+'.');
+  return out;
+}
+function deskCardHtml(r){
+  const why=rationale(r).map(w=>'<li class="plus">'+w+'</li>').join('');
+  const sig=String(r.why||'').split(' | ').concat(String(r.cautions||'').split(' | ')).filter(Boolean).join('; ');
+  const detail='model '+fmtP(+r.model_prob)+' · fair '+fmtP(+r.market_implied)+' · edge '+fmtPP(+r.edge)+' · EV '+(+r.ev).toFixed(3)+' · desk score '+(+r.score).toFixed(1);
+  return '<div class="deskcard'+(r.verdict==='LEAN'?' lean':'')+'">'+
+    '<div class="head"><span class="vb '+r.verdict.toLowerCase()+'">'+r.verdict+'</span>'+
+    '<span class="sel">'+r.selection+'</span>'+
+    '<span style="color:var(--dim)">'+(r.label||'')+(r.date?' · '+r.date:'')+' · '+(+r.decimal_odds).toFixed(2)+'</span>'+
+    '<span class="stake">$'+(+r.stake_usd).toFixed(0)+'</span></div>'+
+    '<ul>'+why+'</ul>'+
+    '<details><summary>full model detail</summary><div class="note">'+detail+'<br>signals: '+sig+'</div></details></div>';
+}
+function insCardHtml(r){
+  const tier=r.tier||'INSURANCE';
+  const ml=(+r.decimal_ml||0).toFixed(2),dc=(+r.decimal_dc||0).toFixed(2);
+  return '<div class="deskcard lean">'+
+    '<div class="head"><span class="vb lean">'+tier+'</span>'+
+    '<span class="sel">'+r.selection+' <span style="color:var(--dim)">v '+(r.opponent||'')+'</span></span>'+
+    '<span style="color:var(--dim)">'+(r.date||'')+'</span></div>'+
+    '<div style="margin:4px 0"><span class="ins-leg">ML @ '+ml+' · edge '+fmtPP(+r.edge_ml||0)+'</span>'+
+    '<span class="ins-leg">+0.5 @ '+dc+' · edge '+fmtPP(+r.edge_dc||0)+'</span></div>'+
+    '<ul><li class="plus">'+(r.rationale||'Live underdog the model backs.')+'</li>'+
+    '<li class="plus">The +0.5 also cashes on a draw — it catches the value the moneyline throws away.</li>'+
+    '<li class="minus">Draws are V6-bias-corrected (×0.871); fair-priced legs are research-grade P&L.</li></ul></div>';
+}
+function drawStrategies(p){
+  const host=document.getElementById('strategy-cards');if(!host)return;
+  const desc=document.getElementById('profile-desc');let cards='';
+  if(p==='insurance'){
+    desc.textContent='Underdog +0.5 insurance — the moneyline plus the draw-catch leg, sized together (joint ½-Kelly, 5% cap).';
+    const led=((D.insurance||{}).ledger)||[];
+    const open=led.filter(r=>!r.settled);
+    cards=(open.length?open:led).map(insCardHtml).join('');
+  }else{
+    const prof=PROFILES[p]||PROFILES.conservative;desc.textContent=prof.desc;
+    const rows=(D.desk||[]).filter(r=>r.kind!=='futures'&&r.verdict!=='PASS').filter(prof.filter).sort((a,b)=>(+b.score||0)-(+a.score||0));
+    cards=rows.map(deskCardHtml).join('');
+  }
+  host.innerHTML=cards||'<div class="note">No active bets match this profile right now — check back after the next odds refresh.</div>';
+}
+document.querySelectorAll('#profile-sel .profile-btn').forEach(b=>{
+  b.onclick=()=>{document.querySelectorAll('#profile-sel .profile-btn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');currentProfile=b.dataset.p;
+    try{localStorage.setItem('wc26.profile',currentProfile);}catch(e){}
+    drawStrategies(currentProfile);};});
+currentProfile=(()=>{try{return localStorage.getItem('wc26.profile');}catch(e){return null;}})()||'conservative';
+(function(){const b=document.querySelector('#profile-sel .profile-btn[data-p="'+currentProfile+'"]');
+  if(b){document.querySelectorAll('#profile-sel .profile-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');}})();
+
+/* kickoff / live-status label used by Next-5 cards */
+function koLabel(m){
+  const st=liveStatus[m.match_id];
+  if(st&&st.state==='in')return '<span class="live-dot">● LIVE</span> '+(st.sh==null?'':st.sh)+'–'+(st.sa==null?'':st.sa)+' '+(st.clock||'');
+  if(st&&st.state==='post')return '<span class="ftbadge">FT</span> '+(st.sh==null?'':st.sh)+'–'+(st.sa==null?'':st.sa);
+  const iso=kickoffByMid[m.match_id];
+  if(iso){const t=Date.parse(iso);if(!isNaN(t)){
+    const d=new Date(t);const loc=d.toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const diff=t-Date.now();
+    if(diff>0){const h=Math.floor(diff/3600000),mn=Math.floor(diff%3600000/60000);return loc+' · kicks off in '+(h?h+'h ':'')+mn+'m';}
+    return loc;}}
+  return m.date;
+}
+
+/* live "updated Xs ago" + refresh countdown tick */
+function fmtAgo(ms){const s=Math.max(0,Math.round((Date.now()-ms)/1000));if(s<60)return s+'s ago';const m=Math.floor(s/60);return m+'m '+(s%60)+'s ago';}
+setInterval(function(){
+  const txt='Updated '+(lastFetchMs?fmtAgo(lastFetchMs):'on build ('+D.meta.built_at+')');
+  const u=document.getElementById('hero-updated');if(u)u.textContent=txt;
+  document.querySelectorAll('.freshness').forEach(el=>el.textContent=txt);
+  const cd=document.getElementById('refresh-countdown');
+  if(cd&&nextRefreshMs){const s=Math.max(0,Math.round((nextRefreshMs-Date.now())/1000));cd.textContent='· next in '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+},1000);
+
+renderHero();
+drawStrategies(currentProfile);
+/* ── end hero + strategies ── */
+
+
 /* ── matches ── */
 const mpSel=document.getElementById('mp-group');
 mpSel.innerHTML='<option value="">all</option>'+
@@ -696,51 +917,24 @@ function runBankroll(){
   document.getElementById('bk-out').innerHTML=s;
 }
 
-/* ── movement + arb ── */
-(function(){
-  const mv=D.movement,sig=mv.filter(r=>r.significant===true||r.significant==='True');
+/* ── line movement (arb scanner removed — single-book feed) ── */
+function drawMovement(){
+  const mv=D.movement||[],sig=mv.filter(r=>r.significant===true||r.significant==='True');
   document.getElementById('mv-sig').textContent=sig.length;
   document.getElementById('mv-toward').textContent=sig.filter(r=>r.direction_vs_model==='toward').length;
   document.getElementById('mv-against').textContent=sig.filter(r=>r.direction_vs_model==='against').length;
-  const arbs=D.arb.filter(r=>r.arb===true||r.arb==='True');
-  document.getElementById('arb-n').textContent=arbs.length;
-  const nBooks=D.arb.length?Math.max(...D.arb.map(r=>r.n_books)):0;
-  document.getElementById('arb-books').textContent=nBooks;
-  // "where is the arbitrage?" — straight answer + the tightest tickets
-  const tight=D.implied.filter(m=>m.market_source==='real').map(m=>{
-    const sum=1/m.home_decimal_odds+1/m.draw_decimal_odds+1/m.away_decimal_odds;
-    return {match:`${m.home_team} vs ${m.away_team}`,date:m.date,sum,
-      gap:(sum-1)*100};}).sort((a,b)=>a.sum-b.sum);
-  document.getElementById('arb-answer').innerHTML=arbs.length?
-    `<b class="pos">${arbs.length} riskless arb${arbs.length>1?'s':''} live</b> — best-line
-     Σ(1/odds) &lt; 100% across books. Stake each outcome ∝ 1/odds and the profit is locked
-     whatever happens. Details in arb_scan.csv.`:
-    `<b>Nowhere yet — and that's the expected answer with ${nBooks||1} book feeding.</b>
-     An arb = best available odds on all 3 outcomes summing below 100% implied. One book never
-     offers that (the vig guarantees Σ &gt; 100%). The tightest ticket right now is
-     <b>${tight.length?tight[0].match:'–'}</b> at Σ ${tight.length?(tight[0].sum*100).toFixed(1):'–'}%
-     — still ${tight.length?tight[0].gap.toFixed(1):'–'}pp short of riskless.
-     Add a second book's lines to wc2026_match_odds.csv (same schema, any source) and the
-     scanner compares best-line across books automatically — that's where arbs appear,
-     typically when books disagree after team news. Until then the money is made on
-     +EV desk calls, not arbs.`;
-  renderTable(document.getElementById('arb-table'),[
-    {k:'match',h:'match (tightest first)',f:r=>r.match},
-    {k:'date',h:'date',f:r=>r.date},
-    {k:'sum',h:'Σ implied',f:r=>(r.sum*100).toFixed(1)+'%'},
-    {k:'gap',h:'gap to arb',f:r=>r.gap.toFixed(1)+'pp',c:r=>r.gap<2?'warn':''},
-  ],tight.slice(0,10));
+  const empty=document.getElementById('mv-empty');if(empty)empty.style.display=mv.length?'none':'block';
   renderTable(document.getElementById('mv-table'),[
     {k:'match',h:'match',f:r=>r.match},{k:'outcome',h:'out',f:r=>r.outcome},
-    {k:'open_decimal',h:'open',f:r=>r.open_decimal.toFixed(2)},
-    {k:'now_decimal',h:'now',f:r=>r.now_decimal.toFixed(2)},
+    {k:'open_decimal',h:'open',f:r=>(+r.open_decimal).toFixed(2)},
+    {k:'now_decimal',h:'now',f:r=>(+r.now_decimal).toFixed(2)},
     {k:'implied_shift',h:'shift',f:r=>fmtPP(r.implied_shift),c:r=>cls(r.implied_shift)},
     {k:'model_prob',h:'model',f:r=>fmtP(r.model_prob)},
-    {k:'direction_vs_model',h:'vs model',f:r=>r.direction_vs_model,
-     c:r=>r.direction_vs_model==='toward'?'pos':'neg'},
+    {k:'direction_vs_model',h:'vs model',f:r=>r.direction_vs_model,c:r=>r.direction_vs_model==='toward'?'pos':'neg'},
     {k:'significant',h:'sig',f:r=>(r.significant===true||r.significant==='True')?'●':''},
   ],[...mv].sort((a,b)=>Math.abs(b.implied_shift)-Math.abs(a.implied_shift)));
-})();
+}
+drawMovement();
 
 /* ── CLV ── */
 (function(){
@@ -858,7 +1052,7 @@ async function liveRefresh(){
       'Cabo Verde':'Cape Verde','Curaçao':'Curacao','Congo DR':'DR Congo'};
     const norm=s=>String(s).normalize('NFD').replace(/[^a-zA-Z]/g,'').toLowerCase().replace('and','');
     const byPair={};D.implied.forEach(m=>byPair[norm(m.home_team)+'|'+norm(m.away_team)]=m);
-    let hit=0;liveScores=[];
+    let hit=0;liveScores=[];liveStatus={};
     (j.events||[]).forEach(ev=>{
       const c=ev.competitions[0];if(!c)return;
       const tm={},sc={};c.competitors.forEach(x=>{
@@ -872,6 +1066,8 @@ async function liveRefresh(){
       }
       let m=byPair[norm(tm.home)+'|'+norm(tm.away)],sw=false;
       if(!m){m=byPair[norm(tm.away)+'|'+norm(tm.home)];sw=true;}
+      if(m){if(ev.date)kickoffByMid[m.match_id]=ev.date;
+        if(state==='in'||state==='post')liveStatus[m.match_id]={state:state,clock:(ev.status&&ev.status.displayClock)||'',sh:sw?sc.away:sc.home,sa:sw?sc.home:sc.away};}
       const o=(c.odds||[]).find(x=>x.moneyline);if(!m||!o)return;
       const g=(s,k)=>{const n=o.moneyline[s]||{};return ((n[k]||{}).odds);};
       let h=g('home','close')??g('home','open'),d=g('draw','close')??g('draw','open'),
@@ -908,7 +1104,8 @@ async function liveRefresh(){
         }});
       hit++;});
     const ts=new Date().toISOString().slice(11,16);
-    buildTicker();drawScanner();drawMatches();
+    lastFetchMs=Date.now();
+    buildTicker();drawScanner();drawMatches();drawMovement();renderHero(true);drawStrategies(currentProfile);
     drawDesk(recomputeDesk(),
       `⟳ verdicts + stakes recomputed on LIVE lines at ${ts}Z (proportional de-vig in-browser). `+
       `Model probabilities are the local 10k-sim output — run the Python pipeline to re-simulate `+
@@ -918,7 +1115,23 @@ async function liveRefresh(){
   }catch(e){st.textContent='live fetch failed ('+e.message+') — showing embedded data';}
 }
 let autoTimer=null;
-document.getElementById('auto-live').onchange=e=>{
-  if(e.target.checked){liveRefresh();autoTimer=setInterval(liveRefresh,240000);}
-  else clearInterval(autoTimer);};
-</script></body></html>
+function activeInterval(){
+  const now=Date.now();
+  const koMs=Object.keys(kickoffByMid).map(k=>Date.parse(kickoffByMid[k])).filter(t=>!isNaN(t));
+  if(koMs.some(t=>Math.abs(now-t)<=2*3600*1000))return 60000;
+  const today=new Date().toISOString().slice(0,10);
+  if((D.implied||[]).some(m=>m.date===today))return 60000;
+  return 240000;
+}
+function scheduleRefresh(){
+  clearTimeout(autoTimer);
+  if(!document.getElementById('auto-live').checked){nextRefreshMs=null;return;}
+  const iv=activeInterval();nextRefreshMs=Date.now()+iv;
+  autoTimer=setTimeout(async()=>{await liveRefresh();scheduleRefresh();},iv);
+}
+document.getElementById('auto-live').onchange=async e=>{
+  if(e.target.checked){await liveRefresh();scheduleRefresh();}
+  else{clearTimeout(autoTimer);nextRefreshMs=null;const cd=document.getElementById('refresh-countdown');if(cd)cd.textContent='';}};
+</script>
+<footer id="disclaimer">62% accuracy · edge vs market unproven out-of-sample (n&lt;40) · research model, not betting advice · ¼-Kelly sizing, 5% cap</footer>
+</body></html>
