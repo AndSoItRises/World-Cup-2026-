@@ -1,0 +1,7 @@
+# Model artifacts are byte-sensitive — git must NEVER apply EOL/text normalization.
+# LightGBM .txt models and numpy .npy arrays corrupt if LF is rewritten to CRLF on
+# a Windows checkout ("Model format error, expect a tree here"). ubuntu CI is LF so
+# it works there, but this keeps a fresh Windows clone runnable too.
+models/*.txt -text
+models/*.npy -text
+*.npy -text

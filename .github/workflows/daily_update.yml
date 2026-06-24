@@ -1,19 +1,23 @@
 name: WC2026 Daily Pipeline
 
+# DL-17 UPDATE (2026-06-24): the football-data.org path is now VERIFIED — competition
+# code is "WC" (not "WC2026", which 400s), free tier returns all FINISHED matches, and
+# the full chain (ingest → live_update → settle_bets → health_check) runs green. Per
+# DL-17's own precondition ("manual-only UNTIL the API is verified and you choose to cut
+# over"), the daily schedule is now enabled.
+#
+# ⚠️ Two-pusher note: the local ESPN loop (scripts/refresh_all.ps1) is still the documented
+# PRIMARY results writer. Both pushers merge idempotently on match_id so neither corrupts
+# the file, but they orient home/away and dates slightly differently, which can produce
+# churny re-commits if BOTH run. If you keep this cloud schedule on, consider demoting the
+# local loop to odds-only (or vice-versa) so a single source owns wc2026_live_results.csv.
 on:
-  # DECISION (DL-17): scores stay on the local ESPN loop (refresh_all.ps1) as PRIMARY.
-  # This cloud/football-data path is kept MANUAL-ONLY until the API is verified
-  # (competition code WC2026 vs WC, free-tier coverage) and you choose to cut over —
-  # so two pushers don't fight over wc2026_live_results.csv and a misconfigured API
-  # can't silently blackout. To activate twice-daily auto-fetch after verifying,
-  # uncomment the schedule block below.
-  # schedule:
-  #   - cron: '0 4 * * *'   # 04:00 UTC (midnight ET) — after most matchdays settle
-  #   - cron: '0 10 * * *'  # 10:00 UTC — second run catches late finishers
-  workflow_dispatch:       # manual trigger (Actions tab → Run workflow)
+  schedule:
+    - cron: '0 8 * * *'    # 08:00 UTC daily — guarded to the tournament window below
+  workflow_dispatch:        # manual trigger (Actions tab → Run workflow), always runs
 
 permissions:
-  contents: write          # allow the bot to push the auto-commit
+  contents: write           # allow the bot to push the auto-commit
 
 jobs:
   update:
@@ -23,46 +27,75 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # NOTE: requirements.txt pins numpy 2.4 / pandas 3.0, which need Python >= 3.11.
-      # 3.13 matches the local dev environment; do not drop to 3.10 (pip install fails).
+      # Cron can't express a date range, so gate the scheduled run to the tournament
+      # window (2026-06-11 … 2026-07-20). Manual dispatch always proceeds.
+      - name: Tournament window guard
+        id: window
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          today=$(date -u +%Y-%m-%d)
+          if [[ "$today" > "2026-06-10" && "$today" < "2026-07-21" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Outside tournament window ($today) — skipping pipeline."
+          fi
+
+      # requirements.txt pins numpy 2.4 / pandas 3.0, which need Python >= 3.11.
+      # 3.13 matches local dev; do not drop to 3.10 (pip install fails).
       - uses: actions/setup-python@v5
+        if: steps.window.outputs.run == 'true'
         with:
           python-version: '3.13'
           cache: 'pip'
 
       - name: Install dependencies
+        if: steps.window.outputs.run == 'true'
         run: pip install -r requirements.txt
 
-      # Step 1 of the pipeline: pull FINISHED matches from football-data.org and
-      # merge them into data/raw/wc2026_live_results.csv.
-      - name: Ingest results
+      # Step 1: pull FINISHED matches from football-data.org and merge them into
+      # data/raw/wc2026_live_results.csv (keyed on the internal fixture match_id,
+      # so re-runs update in place and never duplicate).
+      - name: Ingest results (football-data.org)
+        if: steps.window.outputs.run == 'true'
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python -m src.models.ingest_results
 
-      # Refresh the live forecast off the updated results file.
-      # As later phases land, live_update will orchestrate the full sequence
-      # (settle → ELO → form → picks → sim → ...) and these two steps collapse
-      # into a single `python -m src.models.live_update` entrypoint.
-      - name: Run live update
-        env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+      # Step 2: refresh the live forecast off the updated results file (no API key needed).
+      - name: Live update
+        if: steps.window.outputs.run == 'true'
         run: python -m src.models.live_update
 
-      # Single settler (DL-17): settle_bets owns status/pnl.
+      # Step 3: single settler (DL-17) — settle_bets owns status/pnl.
       - name: Settle bets
+        if: steps.window.outputs.run == 'true'
         run: python -m src.models.settle_bets
 
-      # Monitor (DL-17): a non-zero exit FAILS this workflow, and GitHub emails the
-      # repo owner — the "flag me if anything is broken" signal. Runs before the
-      # commit so a broken state is surfaced, not silently pushed.
+      # Step 4: health monitor. Kept NON-blocking so a tripped metric never stops the
+      # commit/push below (we still want the fresh data persisted). The DL-17 "flag me
+      # if broken" email signal is preserved by the final guard step after the push.
       - name: Health check
+        id: health
+        if: steps.window.outputs.run == 'true'
+        continue-on-error: true
         run: python -m src.models.health_check
 
       - name: Commit and push updates
+        if: steps.window.outputs.run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           git diff --staged --quiet || git commit -m "auto(results+picks): refresh $(date -u '+%Y-%m-%d %H:%M')"
           git push
+
+      # DL-17 notification, preserved: if health_check reported BROKEN above, fail the job
+      # now — AFTER the data is safely committed — so GitHub emails the repo owner.
+      - name: Surface unhealthy pipeline
+        if: steps.window.outputs.run == 'true' && steps.health.outcome == 'failure'
+        run: |
+          echo "::error::health_check reported a BROKEN pipeline (see the Health check step). Fresh data was still committed."
+          exit 1

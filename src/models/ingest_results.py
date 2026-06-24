@@ -46,9 +46,10 @@ FIXTURES_PATH = DATA_RAW / "wc2026_fixtures.csv"
 LIVE_PATH = DATA_RAW / "wc2026_live_results.csv"
 
 API_BASE = "https://api.football-data.org/v4"
-# Competition code is config-driven (prompt specifies WC2026; football-data.org
-# has historically used "WC"). Override via env without touching code.
-COMPETITION = os.environ.get("FOOTBALL_DATA_COMPETITION", "WC2026")
+# Competition code is config-driven. football-data.org's code for the FIFA World
+# Cup is "WC" (verified working against the live v4 API — "WC2026" returns 400).
+# Override via env without touching code if the provider ever renames it.
+COMPETITION = os.environ.get("FOOTBALL_DATA_COMPETITION", "WC")
 API_KEY_ENV = "FOOTBALL_DATA_API_KEY"
 
 # Output column order — MUST match live_update.load_live().
@@ -367,6 +368,14 @@ def _self_test() -> int:
 
 
 def main() -> int:
+    # Windows consoles default to cp1252 and choke on the box-drawing/emoji
+    # output below; force UTF-8 so local runs match CI (ubuntu, already UTF-8).
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8")
+        except (AttributeError, ValueError):
+            pass
+
     ap = argparse.ArgumentParser(description="Ingest WC2026 results from football-data.org")
     ap.add_argument("--self-test", action="store_true",
                     help="run offline parse/join/schema checks (no network, no writes)")
@@ -380,7 +389,20 @@ def main() -> int:
     print("═" * 60)
     print("  WC2026 Results Ingest (football-data.org)")
     print("═" * 60)
-    ingest_results(dry_run=args.dry_run)
+    try:
+        ingest_results(dry_run=args.dry_run)
+    except Exception as exc:  # noqa: BLE001 — top-level guard: clean message, no traceback
+        import requests  # local: only for the isinstance check
+        if isinstance(exc, requests.HTTPError) and exc.response is not None:
+            r = exc.response
+            print(f"\n❌ football-data.org API error: HTTP {r.status_code} for "
+                  f"{r.url}\n   competition={COMPETITION!r}. "
+                  f"Check the competition code and that {API_KEY_ENV} is set and valid.",
+                  file=sys.stderr)
+        else:
+            print(f"\n❌ Results ingest failed: {type(exc).__name__}: {exc}",
+                  file=sys.stderr)
+        return 1
     return 0
 
 

@@ -1,16 +1,16 @@
 {
   "status": "HEALTHY",
-  "checked_at": "2026-06-22T19:55:36Z",
+  "checked_at": "2026-06-24T15:05:28Z",
   "issues": [],
   "metrics": {
-    "live_results_rows": 40,
-    "fixtures_due": 40,
+    "live_results_rows": 48,
+    "fixtures_due": 48,
     "results_missing": 0,
-    "pending_total": 15,
+    "pending_total": 13,
     "pending_after_played": 0,
-    "settled_total": 16,
-    "net_pnl_usd": 11.82,
-    "clv_settled": 16,
-    "ledger_settled": 16
+    "settled_total": 18,
+    "net_pnl_usd": -7.16,
+    "clv_settled": 18,
+    "ledger_settled": 18
   }
 }

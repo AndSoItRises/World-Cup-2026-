@@ -5,8 +5,15 @@ __pycache__/
 *.pyo
 .env
 
-# Data — raw CSVs can be large; keep processed outputs
-data/raw/
+# Data — raw CSVs can be large; ignore the whole dir by default...
+data/raw/*
+# ...but the cloud pipeline (.github/workflows/daily_update.yml) needs these small
+# reference inputs present in a fresh CI checkout, so track them explicitly. The big
+# odds dump (wc2026_match_odds.csv, ~1.3 MB) is NOT needed by the daily chain and
+# stays ignored.
+!data/raw/wc2026_fixtures.csv
+!data/raw/current_fifa_rankings.csv
+!data/raw/wc2026_live_results.csv
 
 # Jupyter checkpoints
 .ipynb_checkpoints/
